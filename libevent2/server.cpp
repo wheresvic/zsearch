@@ -96,20 +96,21 @@ not_found:
 	return "application/misc";
 }
 
-/* Callback used for the /dump URI, and for every non-GET request:
- * dumps all information to stdout and gives back a trivial 200 ok */
-static void
-dump_request_cb(struct evhttp_request *req, void *arg)
+/**
+ * Call back used for a POST request
+ */
+static void dump_request_cb(struct evhttp_request *req, void *arg)
 {
-	const char *cmdtype;
+	const char *cmdtype = NULL;
 	struct evkeyvalq *headers;
 	struct evkeyval *header;
 	struct evbuffer *buf;
+	bool isPostRequest = false;
 
 	switch (evhttp_request_get_command(req))
 	{
 		case EVHTTP_REQ_GET: cmdtype = "GET"; break;
-		case EVHTTP_REQ_POST: cmdtype = "POST"; break;
+		case EVHTTP_REQ_POST: cmdtype = "POST"; isPostRequest = true; break;
 		case EVHTTP_REQ_HEAD: cmdtype = "HEAD"; break;
 		case EVHTTP_REQ_PUT: cmdtype = "PUT"; break;
 		case EVHTTP_REQ_DELETE: cmdtype = "DELETE"; break;
@@ -121,6 +122,11 @@ dump_request_cb(struct evhttp_request *req, void *arg)
 	}
 
 	printf("Received a %s request for %s\nHeaders:\n", cmdtype, evhttp_request_get_uri(req));
+
+	if (!isPostRequest)
+	{
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+	}
 
 	headers = evhttp_request_get_input_headers(req);
 	for (header = headers->tqh_first; header;
@@ -146,8 +152,9 @@ dump_request_cb(struct evhttp_request *req, void *arg)
 
 	std::cout << "Post data" << std::endl << postData << std::endl;
 
-	struct evkeyvalq params;
-	struct evkeyval *param;
+	struct evkeyvalq params;	// create storage for your key->value pairs
+	struct evkeyval *param;		// iterator
+
 	int result = evhttp_parse_query_str(postData.c_str(), &params);
 
 	if (result == 0)
@@ -156,12 +163,17 @@ dump_request_cb(struct evhttp_request *req, void *arg)
 	    {
 			printf("%s %s\n", param->key, param->value);
 		}
+
+		evhttp_send_reply(req, 200, "OK", NULL);
+	}
+	else
+	{
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
 	}
 
 	evhttp_clear_headers(&params);
 
-	evhttp_send_reply(req, 200, "OK", NULL);
-
+	// memory management in libevent is just confusing ...
 	/*
 	if (buf)
 	{
