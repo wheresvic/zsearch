@@ -10,14 +10,11 @@ OBJECTS =
 
 clean :
 	rm -f *.o \
-		server query_parser
+		server engine
 
-all: server query_parser engine
+all: server engine
 	
 server: server.cpp
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-
-query_parser: query_parser.cpp QueryParser.hpp Tokenizer.hpp
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 engine: engine.cpp QueryParser.hpp Tokenizer.hpp Document.hpp

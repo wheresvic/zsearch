@@ -17,9 +17,11 @@ int main()
 	string input;
 	string queryParserDelimiters = " \t\n\r.,";
 	char documentDelimiter = ' ';
+	char keyWordSplitter = '/';
 
 	unsigned long docId = 0;
 	
+	map<string, unsigned long> words;
 	map<unsigned long, CompressedSet> invertedIndex;
 	map<unsigned long, Document> documentStore;
 	
@@ -28,8 +30,8 @@ int main()
 		// cout << input;
 		Document doc;
 	
+		// parse the input, each line is a single document
 		size_t found = input.find_first_of(documentDelimiter);
-		
 		if (found != string::npos)
 		{
 			doc.addEntry(input.substr(0, found), input.substr(found + 1));		
@@ -40,16 +42,28 @@ int main()
 		}
 	
 		documentStore.insert(make_pair(docId++, doc));
-		
 	}
 	
 	for (auto iter = documentStore.begin(); iter != documentStore.end(); ++iter)
 	{
+		cout << "document id: " << iter->first << endl;
+		
 		Document doc = iter->second;
+		
+		// we know that there's only 1 entry for a document
 		string key = doc.getEntries().begin()->first;
 		string query = doc.getEntries().begin()->second;
 		
 		cout << key << " " << query << endl;
+		
+		QueryParser qp(query, queryParserDelimiters);
+		
+		for (auto token : qp.getTokens())
+		{
+			string word = key + keyWordSplitter + token;
+			cout << word << endl;
+		}
+		
 	}
 	
 	return 0;
