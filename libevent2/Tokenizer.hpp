@@ -12,12 +12,36 @@ class Tokenizer
 			m_delimiters(delimiters) {}
 
 
-        bool NextToken()
+        bool nextToken()
 		{
-			return NextToken(m_delimiters);
+			return nextToken(m_delimiters);
 		}
 
-		bool NextToken(const std::string& delimiters)
+        const std::string getToken() const
+        {
+			return m_token;
+		}
+
+		/*
+        void clear()
+        {
+			m_offset = 0;
+			m_string.clear();
+			m_token.clear();
+			m_delimiters.clear();
+		}
+		*/
+		
+    protected:
+
+        std::string m_string;
+		size_t m_offset;
+        std::string m_delimiters;
+        std::string m_token;
+		
+	private:
+		
+		bool nextToken(const std::string& delimiters)
 		{
 			size_t i = m_string.find_first_not_of(delimiters, m_offset);
 			if (string::npos == i)
@@ -38,24 +62,4 @@ class Tokenizer
 			m_offset = j;
 			return true;
 		}
-
-        const std::string GetToken() const
-        {
-			return m_token;
-		}
-
-        void Reset()
-        {
-			m_offset = 0;
-			m_string.clear();
-			m_token.clear();
-			m_delimiters.clear();
-		}
-
-    protected:
-
-        std::string m_string;
-		size_t m_offset;
-        std::string m_delimiters;
-        std::string m_token;
 };

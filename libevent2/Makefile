@@ -4,15 +4,15 @@
 # $< name of the first prerequisite 
 
 CC=g++
-CFLAGS = -std=c++0x -Wall -O0 -pedantic -I/usr/local/include
-LIBS = -L/usr/local/lib -levent -lm 
+CFLAGS = -std=c++0x -Wall -O0 -pedantic -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
+LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lm 
 OBJECTS =
 
 clean :
 	rm -f *.o \
 		server query_parser
 
-all: server query_parser
+all: server query_parser engine
 	
 server: server.cpp
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
@@ -20,6 +20,9 @@ server: server.cpp
 query_parser: query_parser.cpp QueryParser.hpp Tokenizer.hpp
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+engine: engine.cpp QueryParser.hpp Tokenizer.hpp Document.hpp
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+	
 ##
 # Classes
 ##

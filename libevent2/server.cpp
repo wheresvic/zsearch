@@ -101,6 +101,8 @@ not_found:
  */
 static void dump_request_cb(struct evhttp_request *req, void *arg)
 {
+	struct evbuffer *evb = NULL;
+
 	const char *cmdtype = NULL;
 	struct evkeyvalq *headers;
 	struct evkeyval *header;
@@ -157,14 +159,24 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 
 	int result = evhttp_parse_query_str(postData.c_str(), &params);
 
+	std::string postDataDecoded;
+	
 	if (result == 0)
 	{
 		for (param = params.tqh_first; param; param = param->next.tqe_next)
 	    {
 			printf("%s %s\n", param->key, param->value);
+			postDataDecoded.append(param->key);
+			postDataDecoded.append(" ");
+			postDataDecoded.append(param->value);
+			postDataDecoded.append("\n");
 		}
 
-		evhttp_send_reply(req, 200, "OK", NULL);
+		evb = evbuffer_new();
+		evbuffer_add_printf(evb, postDataDecoded.c_str());
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+			
+		evhttp_send_reply(req, 200, "OK", evb);
 	}
 	else
 	{
@@ -180,6 +192,9 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 		evbuffer_free(buf);
 	}
 	*/
+	
+	if (evb)
+		evbuffer_free(evb);
 }
 
 /* This callback gets invoked when we get any http request that doesn't match
@@ -312,8 +327,9 @@ send_document_cb(struct evhttp_request *req, void *arg)
 		evhttp_add_header(evhttp_request_get_output_headers(req),
 		    "Content-Type", "text/html");
 	} else {
-		/* Otherwise it's a file; add it to the buffer to get
-		 * sent via sendfile */
+		
+		/*
+		// otherwise this is a file
 		const char *type = guess_content_type(decoded_path);
 
 		printf("type %s\n",  type);
@@ -324,14 +340,17 @@ send_document_cb(struct evhttp_request *req, void *arg)
 		}
 
 		if (fstat(fd, &st)<0) {
-			/* Make sure the length still matches, now that we
-			 * opened the file :/ */
+			// Make sure the length still matches, now that we opened the file :/
 			perror("fstat");
 			goto err;
 		}
 		evhttp_add_header(evhttp_request_get_output_headers(req),
 		    "Content-Type", type);
 		evbuffer_add_file(evb, fd, 0, st.st_size);
+		*/
+		
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+		evbuffer_add_printf(evb, "Illegal file reuqest ...");
 	}
 
 	evhttp_send_reply(req, 200, "OK", evb);

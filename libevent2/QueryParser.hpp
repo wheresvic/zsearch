@@ -12,18 +12,33 @@ class QueryParser
 		QueryParser(const string& input, const string& delim) : query(input), delimiters(delim)
 		{ }
 
+		/*
+		void setQuery(const string& input)
+		{
+			query = input;
+		}
+		*/
+		
 		const vector<string>& getTokens()
 		{
 			Tokenizer s(query, delimiters);
 
-			while (s.NextToken())
+			while (s.nextToken())
 			{
-				tokens.push_back(s.GetToken());
+				tokens.push_back(s.getToken());
 			}
 
 			return tokens;
 		}
-
+		
+		/*
+		void clear()
+		{
+			query.clear();
+			tokens.clear();
+		}
+		*/
+		
 	private:
 
 		const string query;
