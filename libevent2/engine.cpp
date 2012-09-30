@@ -1,6 +1,6 @@
 
 #include "QueryParser.hpp"
-#include "DocumentIndexerImpl.h"
+#include "DocumentIndexImpl.h"
 #include "DocumentImpl.h"
 #include "../varint/CompressedSet.h"
 #include <iostream>
@@ -21,13 +21,18 @@ int main()
 	char documentDelimiter = ' ';
 	char keyWordSplitter = '/';
 
-	unsigned long docId = 0;
+	unsigned int docId = 0;
+	unsigned int wordId = 0;
 
-	map<string, unsigned long> words;
-	map<unsigned long, CompressedSet> invertedIndex;
+	// store all the words
+	map<string, unsigned int> wordIndex;
+	// store all the documents
+	shared_ptr<IDocumentIndex> documentIndex = make_shared<DocumentIndexImpl>();
+	// inverted index that maps words(wordId) to documents that contain it
+	map<unsigned int, CompressedSet> invertedIndex;
 
-	shared_ptr<IDocumentIndexer> documentStore = make_shared<DocumentIndexerImpl>();
 
+	// test input, build the documentIndex
 	while (getline(cin, input))
 	{
 		// cout << input;
@@ -44,10 +49,11 @@ int main()
 			throw "Couldn't split key value!";
 		}
 
-		documentStore->addDoc(docId++, doc);
+		documentIndex->addDoc(docId++, doc);
 	}
 
-	auto documents = documentStore->getDocuments();
+	// work with the data set
+	auto documents = documentIndex->getDocuments();
 
 	for (auto iter = documents.begin(); iter != documents.end(); ++iter)
 	{
@@ -66,7 +72,8 @@ int main()
 		for (auto token : qp.getTokens())
 		{
 			string word = key + keyWordSplitter + token;
-			cout << word << endl;
+			// cout << word << endl;
+			wordIndex.insert(make_pair(word, wordId++));
 		}
 
 	}

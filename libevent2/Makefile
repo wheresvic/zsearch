@@ -20,10 +20,10 @@ server: server.cpp
 DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h
 	$(CC) -c $(CFLAGS) $<
 
-DocumentIndexerImpl.o : DocumentIndexerImpl.cpp DocumentIndexerImpl.h IDocumentIndexer.h
+DocumentIndexImpl.o : DocumentIndexImpl.cpp DocumentIndexImpl.h IDocumentIndex.h
 	$(CC) -c $(CFLAGS) $<
 
-engine: engine.cpp QueryParser.hpp Tokenizer.hpp DocumentImpl.o DocumentIndexerImpl.o
+engine: engine.cpp QueryParser.hpp Tokenizer.hpp DocumentImpl.o DocumentIndexImpl.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 ##
