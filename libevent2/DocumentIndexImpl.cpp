@@ -1,21 +1,22 @@
 
-#include "DocumentIndexerImpl.h"
+#include "DocumentIndexImpl.h"
 #include <map>
 #include <memory>
 
 using namespace std;
 
-void DocumentIndexerImpl::addDoc(unsigned long docId, shared_ptr<IDocument> doc)
+void DocumentIndexImpl::addDoc(unsigned int docId, shared_ptr<IDocument> doc)
 {
 	documents.insert(make_pair(docId++, doc));
 }
 
-void DocumentIndexerImpl::removeDoc(unsigned long docId)
+void DocumentIndexImpl::removeDoc(unsigned int docId)
 {
 	documents.erase(docId);
 }
 
-const map<unsigned long, shared_ptr<IDocument>>& DocumentIndexerImpl::getDocuments()
+const map<unsigned int, shared_ptr<IDocument>>& DocumentIndexImpl::getDocuments()
 {
 	return documents;
 }
+

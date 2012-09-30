@@ -1,6 +1,6 @@
 
-#ifndef IDOCUMENTINDEXER_H
-#define IDOCUMENTINDEXER_H
+#ifndef IDOCUMENTINDEX_H
+#define IDOCUMENTINDEX_H
 
 
 #include "IDocument.h"
@@ -9,16 +9,16 @@
 
 using namespace std;
 
-class IDocumentIndexer
+class IDocumentIndex
 {
 	public:
-		virtual ~IDocumentIndexer() { }
+		virtual ~IDocumentIndex() { }
 
-		virtual void addDoc(unsigned long, shared_ptr<IDocument> doc) = 0;
-		virtual void removeDoc(unsigned long docId) = 0;
+		virtual void addDoc(unsigned int, shared_ptr<IDocument> doc) = 0;
+		virtual void removeDoc(unsigned int docId) = 0;
 
 		// need to add iterator class instead of exposing the underlying implementation
-		virtual const map<unsigned long, shared_ptr<IDocument>>& getDocuments() = 0;
+		virtual const map<unsigned int, shared_ptr<IDocument>>& getDocuments() = 0;
 };
 
 #endif

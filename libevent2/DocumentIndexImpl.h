@@ -1,25 +1,25 @@
 
-#ifndef DOCUMENTINDEXERIMPL_H
-#define DOCUMENTINDEXERIMPL_H
+#ifndef DOCUMENTINDEXIMPL_H
+#define DOCUMENTINDEXIMPL_H
 
-#include "IDocumentIndexer.h"
+#include "IDocumentIndex.h"
 #include <map>
 #include <memory>
 
 using namespace std;
 
-class DocumentIndexerImpl : public IDocumentIndexer
+class DocumentIndexImpl : public IDocumentIndex
 {
 	public:
 
-		void addDoc(unsigned long docId, shared_ptr<IDocument> doc);
+		void addDoc(unsigned int docId, shared_ptr<IDocument> doc);
 
-		void removeDoc(unsigned long docId);
+		void removeDoc(unsigned int docId);
 
-		const map<unsigned long, shared_ptr<IDocument>>& getDocuments();
+		const map<unsigned int, shared_ptr<IDocument>>& getDocuments();
 
 	private:
-		map<unsigned long, shared_ptr<IDocument>> documents;
+		map<unsigned int, shared_ptr<IDocument>> documents;
 };
 
 #endif
