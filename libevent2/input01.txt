@@ -1,0 +1,2 @@
+input1 some text
+input1 some more text
