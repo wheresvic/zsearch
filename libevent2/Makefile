@@ -4,7 +4,7 @@
 # $< name of the first prerequisite 
 
 CC=g++
-CFLAGS = -std=c++0x -Wall -O0 -pedantic -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
+CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
 LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lm 
 OBJECTS =
 
@@ -17,7 +17,13 @@ all: server engine
 server: server.cpp
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-engine: engine.cpp QueryParser.hpp Tokenizer.hpp Document.hpp
+DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h
+	$(CC) -c $(CFLAGS) $<
+
+DocumentIndexerImpl.o : DocumentIndexerImpl.cpp DocumentIndexerImpl.h IDocumentIndexer.h
+	$(CC) -c $(CFLAGS) $<
+
+engine: engine.cpp QueryParser.hpp Tokenizer.hpp DocumentImpl.o DocumentIndexerImpl.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 ##
