@@ -23,7 +23,7 @@ DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h
 DocumentIndexImpl.o : DocumentIndexImpl.cpp DocumentIndexImpl.h IDocumentIndex.h
 	$(CC) -c $(CFLAGS) $<
 
-engine: engine.cpp QueryParser.hpp Tokenizer.hpp DocumentImpl.o DocumentIndexImpl.o
+engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp Tokenizer.hpp DocumentImpl.o DocumentIndexImpl.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 ##
