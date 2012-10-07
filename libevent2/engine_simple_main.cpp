@@ -1,8 +1,8 @@
 
 
 #include "DocumentImpl.h"
-#include "../varint/CompressedSet.h"
-#include "Engine.hpp"
+// #include "../varint/CompressedSet.h"
+#include "EngineSet.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -19,7 +19,7 @@ int main()
 
 	char documentDelimiter = ' ';
 
-	Engine engine(queryParserDelimiters, keyWordSplitter);
+	EngineSet engine(queryParserDelimiters, keyWordSplitter);
 
 	// test input
 	while (getline(cin, input))
@@ -47,6 +47,7 @@ int main()
 	{
 		cout << word << " ";
 
+		/*
 		string bitmap = engine.getDocumentListBitmap(word);
 
 		CompressedSet set;
@@ -54,10 +55,12 @@ int main()
 		set.read(bitmapStream);
 
 		CompressedSet::Iterator it(&set);
+
 		for (; it.docID() != NO_MORE_DOCS; it.nextDoc())
 		{
 			cout << it.docID() << " ";
 		}
+		*/
 
 		cout << endl;
 	}

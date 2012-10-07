@@ -218,6 +218,7 @@ public:
    * addDoc(2), addDoc(1) is not ok.
    */
   void addDoc(unsigned int docId) {
+    assert(docId != 0);  // Docid should start at 1
     if (PREDICT_TRUE(sizeOfCurrentNoCompBlock != DEFAULT_BATCH_SIZE)) { 
        currentNoCompBlock[sizeOfCurrentNoCompBlock++] = docId;
        lastAdded = docId;

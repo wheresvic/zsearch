@@ -5,7 +5,6 @@
 #include <memory>
 #include <utility>
 #include "QueryParser.hpp"
-#include "../varint/CompressedSet.h"
 #include <set>
 
 using namespace std;
@@ -28,6 +27,8 @@ class Engine
 
 		void addDocument(shared_ptr<IDocument> document)
 		{
+			documentIndex->addDoc(docId, document);
+
 			auto entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
@@ -42,64 +43,51 @@ class Engine
 					string word = key + keyWordSplitter + token;
 
 					auto found = wordIndex.find(word);
-					string bitmap;
-					CompressedSet set;
 
+					/*
+					 * if the word exists in the wordIndex then
+					 * we know that a reverse index for it exists
+					 */
 					if (found != wordIndex.end())
 					{
-						// cout << "found!" << endl;
-
 						auto wordId = found->second;
-
-						bitmap = invertedIndex[wordId];
-						stringstream bitmapStream(bitmap);
-						set.read(bitmapStream);
-
-						// no need for unorderedAdd as we're going through the
-						// documents sequentially
-						set.addDoc(docId);
-
-						stringstream ss;
-						set.write(ss);
-						bitmap = ss.str();
-
-						invertedIndex[wordId] = bitmap;
+						invertedIndex[wordId].insert(docId);
 					}
-					else
+					else // this is a brand new word
 					{
-						// cout << "not found" << endl;
+						set<unsigned int> docSet;
+						docSet.insert(docId);
 
-						set.addDoc(docId);
-
-						stringstream ss;
-						set.write(ss);
-						bitmap = ss.str();
-
-						invertedIndex.insert(make_pair(wordId, bitmap));
+						invertedIndex.insert(make_pair(wordId, docSet));
 						wordIndex.insert(make_pair(word, wordId++));
-
 					}
 				}
 
 			} // end looping through entries
 
-			documentIndex->addDoc(docId++, document);
+			++docId;
 		}
 
-		string getDocumentListBitmap(const string& word)
+		set<shared_ptr<IDocument>> getDocumentList(const string& word)
 		{
-			CompressedSet set;
-			string bitmap;
+			set<shared_ptr<IDocument>> documentSet;
 
 			auto found = wordIndex.find(word);
 
 			if (found != wordIndex.end())
 			{
+				auto documents = documentIndex->getDocuments();
+
 				auto wordId = found->second;
-				bitmap = invertedIndex[wordId];
+				auto docSet = invertedIndex[wordId];
+
+				for (auto id : docSet)
+				{
+					documentSet.insert(documents[id]);
+				}
 			}
 
-			return move(bitmap);
+			return move(documentSet);
 		}
 
 		set<string> getWords()
@@ -116,8 +104,8 @@ class Engine
 
 	private:
 
-		unsigned long docId = 0;
-		unsigned long wordId = 0;
+		unsigned long docId = 1;
+		unsigned long wordId = 1;
 
 		string queryParserDelimiters;
 		char keyWordSplitter;
@@ -129,6 +117,6 @@ class Engine
 		IDocumentIndex* documentIndex;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		map<unsigned int, string> invertedIndex;
+		map<unsigned int, set<unsigned int>> invertedIndex;
 
 };
