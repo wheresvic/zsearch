@@ -39,7 +39,7 @@ public:
 
   int getSerialIntNum() const {
     int num = 1; // _len
-    for(int i=0; i<data2.size(); i++)
+    for(size_t i=0; i<data2.size(); i++)
     {
         num += 1 + (*data2[i]).getCompressedSize(); // 1 is the int to record the length of the array
     }
@@ -50,7 +50,7 @@ public:
     int size = data2.size();
     out.write((char*)&size,4);
 
-    for(int i=0; i<data2.size(); i++)
+    for(size_t i=0; i<data2.size(); i++)
     {
         (*data2[i]).write(out);
     }

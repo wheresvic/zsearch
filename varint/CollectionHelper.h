@@ -9,7 +9,7 @@
    * @param target
    * @return the index of the first element in the array that is equal or larger than the target. -1 if the target is out of range.
    */
-  int binarySearchForFirstElementEqualOrLargerThanTarget(const vector<unsigned int>& in, int start, int end, int target) {
+  int binarySearchForFirstElementEqualOrLargerThanTarget(const vector<unsigned int>& in, int start, int end, unsigned int target) {
     int mid;
     while(start < end) {
       mid = (start + end)/2;
@@ -35,7 +35,7 @@
    * @param target
    * @return the index of the first element in the array that is equal or larger than the target. -1 if the target is out of range.
    */
-  int binarySearchForFirstElementEqualOrLargerThanTarget(unsigned int* in, int start, int end, int target) {
+  int binarySearchForFirstElementEqualOrLargerThanTarget(unsigned int* in, int start, int end, unsigned int target) {
     int mid;
     while(start < end) {
       mid = (start + end)/2;
@@ -71,7 +71,7 @@
    * @param target
    * @return the index of the target in the input array. -1 if the target is out of range.
    */
-    int binarySearchForTarget(vector<unsigned int>& vals, int start, int end, int target)
+    int binarySearchForTarget(vector<unsigned int>& vals, int start, int end, unsigned int target)
     {
       int mid;
       while(start <= end)
