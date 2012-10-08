@@ -2,12 +2,22 @@
 # $@ name of the target
 # $^ name of all prerequisites with duplicates removed
 # $< name of the first prerequisite
-
+OSNAME  := $(shell uname -s)
+ifeq ($(OSNAME), Darwin)
+CC=g++
+CFLAGS_SIMPLE = -std=gnu++0x -Wall -O3 -pedantic
+CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include 
+LIBS = -L/opt/local/lib -levent -lm
+OBJECTS =
+endif
+ifeq ($(OSNAME), Linux)
 CC=g++
 CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
 LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lm
 OBJECTS =
+endif
+
 
 clean :
 	rm -f *.o \
