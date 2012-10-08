@@ -56,6 +56,10 @@
 
 #include <string>
 
+#include "rapidxml.hpp"
+
+
+
 char uri_root[512];
 
 static const struct table_entry {
@@ -152,7 +156,7 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 		}
 	}
 
-	std::cout << "Post data" << std::endl << postData << std::endl;
+	std::cout << "Post data: " << std::endl << postData << std::endl;
 
 	struct evkeyvalq params;	// create storage for your key->value pairs
 	struct evkeyval *param;		// iterator
@@ -160,7 +164,9 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 	int result = evhttp_parse_query_str(postData.c_str(), &params);
 
 	std::string postDataDecoded;
-	
+
+	// working code to return the parameters as plain text ...
+	/*
 	if (result == 0)
 	{
 		for (param = params.tqh_first; param; param = param->next.tqe_next)
@@ -175,8 +181,30 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 		evb = evbuffer_new();
 		evbuffer_add_printf(evb, postDataDecoded.c_str());
 		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-			
+
 		evhttp_send_reply(req, 200, "OK", evb);
+	}
+	else
+	{
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+	}
+	*/
+
+	if (result == 0)
+	{
+		param = params.tqh_first;
+
+		std::string key(param->key);
+		std::string value(param->value);
+
+		printf("%s\n%s\n", key.c_str(), value.c_str());
+
+		evb = evbuffer_new();
+		evbuffer_add_printf(evb, "Ok");
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+
+		evhttp_send_reply(req, 200, "OK", evb);
+
 	}
 	else
 	{
@@ -192,7 +220,7 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 		evbuffer_free(buf);
 	}
 	*/
-	
+
 	if (evb)
 		evbuffer_free(evb);
 }
@@ -327,8 +355,7 @@ send_document_cb(struct evhttp_request *req, void *arg)
 		evhttp_add_header(evhttp_request_get_output_headers(req),
 		    "Content-Type", "text/html");
 	} else {
-		
-		/*
+
 		// otherwise this is a file
 		const char *type = guess_content_type(decoded_path);
 
@@ -347,10 +374,11 @@ send_document_cb(struct evhttp_request *req, void *arg)
 		evhttp_add_header(evhttp_request_get_output_headers(req),
 		    "Content-Type", type);
 		evbuffer_add_file(evb, fd, 0, st.st_size);
-		*/
-		
+
+		/*
 		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
 		evbuffer_add_printf(evb, "Illegal file reuqest ...");
+		*/
 	}
 
 	evhttp_send_reply(req, 200, "OK", evb);
