@@ -9,18 +9,18 @@
 
 using namespace std;
 
-class Engine
+class EngineSet
 {
 	public:
 
-		Engine(const string& queryParserDelimiters, char keyWordSplitter) :
+		EngineSet(const string& queryParserDelimiters, char keyWordSplitter) :
 			queryParserDelimiters(queryParserDelimiters),
 			keyWordSplitter(keyWordSplitter)
 		{
 			documentIndex = new DocumentIndexImpl();
 		}
 
-		~Engine()
+		~EngineSet()
 		{
 			delete documentIndex;
 		}
@@ -68,7 +68,8 @@ class Engine
 			++docId;
 		}
 
-		set<shared_ptr<IDocument>> getDocumentList(const string& word)
+		/*
+		set<shared_ptr<IDocument>> getDocumentSet(const string& word)
 		{
 			set<shared_ptr<IDocument>> documentSet;
 
@@ -89,6 +90,32 @@ class Engine
 
 			return move(documentSet);
 		}
+		*/
+
+		/*
+		set<unsigned int> getDocumentIdSet(const set<string>& words)
+		{
+			set<unsigned int> documentSet;
+
+			for (auto word : words)
+			{
+				auto found = wordIndex.find(word);
+
+				if (found != wordIndex.end())
+				{
+					auto wordId = found->second;
+					auto docSet = invertedIndex[wordId];
+
+					for (auto id : docSet)
+					{
+						documentSet.insert(id);
+					}
+				}
+			}
+
+			return move(documentSet);
+		}
+		*/
 
 		set<string> getWords()
 		{
@@ -102,10 +129,36 @@ class Engine
 			return move(words);
 		}
 
+
+		set<shared_ptr<IDocument>> search(const set<string>& queryTokens)
+		{
+			set<shared_ptr<IDocument>> documentSet;
+
+			auto documents = documentIndex->getDocuments();
+
+			for (auto token : queryTokens)
+			{
+				auto found = wordIndex.find(token);
+
+				if (found != wordIndex.end())
+				{
+					auto wordId = found->second;
+					auto docSet = invertedIndex[wordId];
+
+					for (auto id : docSet)
+					{
+						documentSet.insert(documents[id]);
+					}
+				}
+			}
+
+			return move(documentSet);
+		}
+
 	private:
 
-		unsigned long docId = 1;
-		unsigned long wordId = 1;
+		unsigned long docId = 0;
+		unsigned long wordId = 0;
 
 		string queryParserDelimiters;
 		char keyWordSplitter;

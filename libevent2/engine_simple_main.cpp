@@ -8,8 +8,16 @@
 #include <vector>
 #include <memory>
 #include <set>
+#include <sstream>
 
 using namespace std;
+
+string convertInt(int number)
+{
+   stringstream ss;
+   ss << number;
+   return ss.str();
+}
 
 int main()
 {
@@ -18,6 +26,7 @@ int main()
 	char keyWordSplitter = '/';
 
 	char documentDelimiter = ' ';
+	int documentId = 500;
 
 	EngineSet engine(queryParserDelimiters, keyWordSplitter);
 
@@ -25,7 +34,8 @@ int main()
 	while (getline(cin, input))
 	{
 		// cout << input;
-		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
+		string title = convertInt(documentId++);
+		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(title); // (new DocumentImpl());
 
 		// parse the input, each line is a single document
 		size_t found = input.find_first_of(documentDelimiter);
@@ -62,9 +72,33 @@ int main()
 		}
 		*/
 
+		set<string> wordSet;
+		wordSet.insert(word);
+
+		/*
+		auto docIdSet = engine.getDocumentIdSet(wordSet);
+
+		for (auto id : docIdSet)
+		{
+			cout << id << " ";
+		}
+
+		cout << endl;
+		*/
+
+		auto docSet = engine.search(wordSet);
+
+		for (auto document : docSet)
+		{
+			cout << document->getTitle() << " ";
+		}
+
 		cout << endl;
 	}
 
 
 	return 0;
 }
+
+
+

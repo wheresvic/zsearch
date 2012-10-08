@@ -308,7 +308,7 @@ public:
   {
     for(int i=size-1; i>0; --i)
     {
-      block[i] -= block[i-1] - 1; 
+      block[i] = block[i] - block[i-1] - 1;
     }
   }
 
