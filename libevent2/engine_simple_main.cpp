@@ -1,14 +1,15 @@
 
-
-#include "DocumentImpl.h"
-// #include "../varint/CompressedSet.h"
-#include "EngineSet.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <memory>
 #include <set>
 #include <sstream>
+
+#include "DocumentImpl.h"
+// #include "../varint/CompressedSet.h"
+#include "EngineSet.hpp"
+#include "Constants.hpp"
 
 using namespace std;
 
@@ -22,20 +23,19 @@ string convertInt(int number)
 int main()
 {
 	string input;
-	string queryParserDelimiters = " \t\n\r.,";
-	char keyWordSplitter = '/';
 
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
-	EngineSet engine(queryParserDelimiters, keyWordSplitter);
+	EngineSet engine(zsearch::QUERY_PARSER_DELIMITERS, zsearch::KEYWORD_SPLITTER);
 
 	// test input
 	while (getline(cin, input))
 	{
 		// cout << input;
 		string title = convertInt(documentId++);
-		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(title); // (new DocumentImpl());
+		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
+		doc->setTitle(title);
 
 		// parse the input, each line is a single document
 		size_t found = input.find_first_of(documentDelimiter);
@@ -48,7 +48,7 @@ int main()
 			throw "Couldn't split key value!";
 		}
 
-		engine.addDocument(doc);
+		cout << "Added document: " << engine.addDocument(doc) << endl;
 	}
 
 	set<string> words = engine.getWords();

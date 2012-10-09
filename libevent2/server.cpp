@@ -55,9 +55,11 @@
 #endif
 
 #include <string>
+#include <memory>
+#include <exception>
 
-#include "rapidxml.hpp"
-
+#include "DocumentImpl.h"
+#include "Constants.hpp"
 
 
 char uri_root[512];
@@ -190,6 +192,7 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 	}
 	*/
 
+	// if we were able to parse post data ok
 	if (result == 0)
 	{
 		param = params.tqh_first;
@@ -197,12 +200,34 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 		std::string key(param->key);
 		std::string value(param->value);
 
-		printf("%s\n%s\n", key.c_str(), value.c_str());
-
 		evb = evbuffer_new();
-		evbuffer_add_printf(evb, "Ok");
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
 
+		// check that the first key is data
+		if (key.compare(zsearch::POST_DATA_KEY) == 0)
+		{
+			printf("%s\n%s\n", key.c_str(), value.c_str());
+
+			try
+			{
+				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
+
+				evbuffer_add_printf(evb, "Ok");
+			}
+			catch (const std::string& e)
+			{
+				evbuffer_add_printf(evb, e.c_str());
+			}
+			catch (const std::exception& e)
+			{
+				evbuffer_add_printf(evb, e.what());
+			}
+		}
+		else
+		{
+			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details");
+		}
+
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
 		evhttp_send_reply(req, 200, "OK", evb);
 
 	}

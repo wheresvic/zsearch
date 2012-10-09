@@ -5,6 +5,7 @@
 #include <map>
 #include <exception>
 #include <string>
+#include <memory>
 #include "IDocument.h"
 
 using namespace std;
@@ -15,7 +16,9 @@ class DocumentImpl : public IDocument
 
 		DocumentImpl();
 
-		DocumentImpl(const string& title);
+		DocumentImpl(const string& xml);
+
+		void setTitle(const string& title);
 
 		const string& getTitle();
 

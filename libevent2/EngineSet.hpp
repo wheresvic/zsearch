@@ -25,7 +25,7 @@ class EngineSet
 			delete documentIndex;
 		}
 
-		void addDocument(shared_ptr<IDocument> document)
+		unsigned int addDocument(shared_ptr<IDocument> document)
 		{
 			documentIndex->addDoc(docId, document);
 
@@ -65,7 +65,7 @@ class EngineSet
 
 			} // end looping through entries
 
-			++docId;
+			return docId++;
 		}
 
 		/*
