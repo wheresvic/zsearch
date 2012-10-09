@@ -11,7 +11,7 @@ OBJECTS =
 
 clean :
 	rm -f *.o \
-		server engine
+		server engine tests
 
 all: server engine tests
 
