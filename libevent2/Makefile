@@ -7,7 +7,10 @@ OSNAME  := $(shell uname -s)
 
 CC = g++
 CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
-OBJECTS = Constants.hpp DocumentImpl.o DocumentStoreImpl.o TokenizerImpl.o
+BUILD_DIR = ../build
+OBJECTS = Constants.hpp $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreImpl.o $(BUILD_DIR)/TokenizerImpl.o
+
+
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include 
@@ -21,7 +24,7 @@ endif
 
 
 clean :
-	rm -f *.o \
+	rm -f ../build/*.o *.o \
 		server engine tests
 
 all: server engine tests
@@ -40,12 +43,12 @@ engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp Constants.hpp $(OBJECT
 # Classes
 ##
 
-DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h Constants.hpp
-	$(CC) -c $(CFLAGS) $<
+$(BUILD_DIR)/DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h Constants.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
-DocumentStoreImpl.o : DocumentStoreImpl.cpp DocumentStoreImpl.h IDocumentStore.h Constants.hpp
-	$(CC) -c $(CFLAGS) $<
+$(BUILD_DIR)/DocumentStoreImpl.o : DocumentStoreImpl.cpp DocumentStoreImpl.h IDocumentStore.h Constants.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
-TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
-	$(CC) -c $(CFLAGS) $<
+$(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 

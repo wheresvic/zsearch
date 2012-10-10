@@ -11,8 +11,8 @@
 #include "DocumentImpl.h"
 #include "TokenizerImpl.h"
 #include "QueryParser.hpp"
-#include "rapidxml.hpp"
-#include "tpunit++.hpp"
+#include "lib/rapidxml.hpp"
+#include "lib/tpunit++.hpp"
 #include "Constants.hpp"
 
 

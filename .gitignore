@@ -1,5 +1,8 @@
 a.out
 
+build
+bin
+
 # Compiled Object files
 *.slo
 *.lo

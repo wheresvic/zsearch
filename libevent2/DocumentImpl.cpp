@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-#include "rapidxml.hpp"
+#include "lib/rapidxml.hpp"
 #include "DocumentImpl.h"
 #include "Constants.hpp"
 
