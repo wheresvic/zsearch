@@ -7,7 +7,6 @@
 #include <exception>
 #include <iostream>
 #include <iterator>
-#include <utility>
 
 #include "DocumentImpl.h"
 #include "TokenizerImpl.h"
@@ -38,7 +37,7 @@ string readFile(const string& fileName)
 	string fileStr(buffer);
 	delete [] buffer;
 
-	return move(fileStr);
+	return fileStr;
 }
 
 /**

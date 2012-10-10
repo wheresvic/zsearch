@@ -3,7 +3,7 @@
 #include <map>
 #include "DocumentStoreImpl.h"
 #include <memory>
-#include <utility>
+// #include <utility>
 #include "QueryParser.hpp"
 #include <set>
 
@@ -126,7 +126,8 @@ class Engine
 				words.insert(iter->first);
 			}
 
-			return move(words);
+			// http://stackoverflow.com/questions/12666362/c-stdmove-confusion
+			return words;
 		}
 
 
@@ -152,7 +153,7 @@ class Engine
 				}
 			}
 
-			return move(documentSet);
+			return documentSet;
 		}
 
 	private:

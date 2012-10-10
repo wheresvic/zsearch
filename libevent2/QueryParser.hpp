@@ -25,7 +25,7 @@ class QueryParser
 				tokens.push_back(tokenizer->getToken());
 			}
 
-			return move(tokens);
+			return tokens;
 		}
 
 	private:
