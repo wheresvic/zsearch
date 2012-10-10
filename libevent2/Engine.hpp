@@ -13,9 +13,12 @@ class Engine
 {
 	public:
 
+		//
+		// http://stackoverflow.com/questions/8385457/should-i-pass-a-shared-ptr-by-reference
+		//
 		Engine(const char keyWordSplitter,
-				const shared_ptr<ITokenizer>& tokenizer,
-				const shared_ptr<IDocumentStore>& documentStore) :
+				shared_ptr<ITokenizer> tokenizer,
+				shared_ptr<IDocumentStore> documentStore) :
 			keyWordSplitter(keyWordSplitter),
 			tokenizer(tokenizer),
 			documentStore(documentStore)

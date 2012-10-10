@@ -11,7 +11,7 @@ class QueryParser
 {
 	public:
 
-		QueryParser(const string& input, const shared_ptr<ITokenizer>& tokenizer) : query(input), tokenizer(tokenizer)
+		QueryParser(const string& input, shared_ptr<ITokenizer> tokenizer) : query(input), tokenizer(tokenizer)
 		{ }
 
 		vector<string> getTokens()
