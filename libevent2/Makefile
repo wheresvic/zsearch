@@ -5,20 +5,18 @@
 
 OSNAME  := $(shell uname -s)
 
+CC = g++
+CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
+OBJECTS = Constants.hpp DocumentImpl.o DocumentStoreImpl.o TokenizerImpl.o
+
 ifeq ($(OSNAME), Darwin)
-CC=g++
-CFLAGS_SIMPLE = -std=gnu++0x -Wall -O3 -pedantic
 CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include 
 LIBS = -L/opt/local/lib -levent -lm
-OBJECTS =
 endif
 
 ifeq ($(OSNAME), Linux)
-CC=g++
-CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
 LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lm
-OBJECTS =
 endif
 
 
@@ -28,13 +26,13 @@ clean :
 
 all: server engine tests
 
-tests: unittests.cpp QueryParser.hpp Constants.hpp DocumentImpl.o
+tests: unittests.cpp QueryParser.hpp $(OBJECTS)
 	$(CC) $(CFLAGS_SIMPLE) -o $@ $^
 
-server: server.cpp Constants.hpp DocumentImpl.o DocumentIndexImpl.o
+server: server.cpp Constants.hpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-engine: engine_simple_main.cpp EngineSet.hpp QueryParser.hpp Tokenizer.hpp Constants.hpp DocumentImpl.o DocumentIndexImpl.o
+engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp Constants.hpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 
@@ -45,6 +43,9 @@ engine: engine_simple_main.cpp EngineSet.hpp QueryParser.hpp Tokenizer.hpp Const
 DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h Constants.hpp
 	$(CC) -c $(CFLAGS) $<
 
-DocumentIndexImpl.o : DocumentIndexImpl.cpp DocumentIndexImpl.h IDocumentIndex.h Constants.hpp
+DocumentStoreImpl.o : DocumentStoreImpl.cpp DocumentStoreImpl.h IDocumentStore.h Constants.hpp
+	$(CC) -c $(CFLAGS) $<
+
+TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
 	$(CC) -c $(CFLAGS) $<
 

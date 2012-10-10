@@ -1,7 +1,9 @@
 
 #include <string>
 #include <vector>
-#include "Tokenizer.hpp"
+#include <memory>
+#include <utility>
+#include "ITokenizer.h"
 
 using namespace std;
 
@@ -9,41 +11,27 @@ class QueryParser
 {
 	public:
 
-		QueryParser(const string& input, const string& delim) : query(input), delimiters(delim)
+		QueryParser(const string& input, const shared_ptr<ITokenizer>& tokenizer) : query(input), tokenizer(tokenizer)
 		{ }
 
-		/*
-		void setQuery(const string& input)
+		vector<string> getTokens()
 		{
-			query = input;
-		}
-		*/
-		
-		const vector<string>& getTokens()
-		{
-			Tokenizer s(query, delimiters);
+			tokenizer->setString(query);
 
-			while (s.nextToken())
+			vector<string> tokens;
+
+			while (tokenizer->nextToken())
 			{
-				tokens.push_back(s.getToken());
+				tokens.push_back(tokenizer->getToken());
 			}
 
-			return tokens;
+			return move(tokens);
 		}
-		
-		/*
-		void clear()
-		{
-			query.clear();
-			tokens.clear();
-		}
-		*/
-		
+
 	private:
 
 		const string query;
-		const string delimiters;
-		vector<string> tokens;
+		shared_ptr<ITokenizer> tokenizer;
 
 };
 

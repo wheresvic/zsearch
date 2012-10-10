@@ -1,14 +1,14 @@
 
-#ifndef DOCUMENTINDEXIMPL_H
-#define DOCUMENTINDEXIMPL_H
+#ifndef DOCUMENTSTOREIMPL_H
+#define DOCUMENTSTOREIMPL_H
 
-#include "IDocumentIndex.h"
+#include "IDocumentStore.h"
 #include <map>
 #include <memory>
 
 using namespace std;
 
-class DocumentIndexImpl : public IDocumentIndex
+class DocumentStoreImpl : public IDocumentStore
 {
 	public:
 

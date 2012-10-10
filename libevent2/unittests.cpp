@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "DocumentImpl.h"
+#include "TokenizerImpl.h"
 #include "QueryParser.hpp"
 #include "rapidxml.hpp"
 #include "tpunit++.hpp"
@@ -55,14 +56,11 @@ struct QueryParserTest : tpunit::TestFixture
 	{
 		string text(" snoop  doggy dawg");
 
-		QueryParser qp(text, zsearch::QUERY_PARSER_DELIMITERS);
+		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 
-		vector<string> words;
+		QueryParser qp(text, tokenizer);
 
-		for (auto token : qp.getTokens())
-		{
-			words.push_back(token);
-		}
+		vector<string> words = qp.getTokens();
 
 		ASSERT_EQUAL(words.size(), 3);
 		ASSERT_EQUAL(words[0].compare("snoop"), 0);

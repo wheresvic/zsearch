@@ -1,6 +1,6 @@
 
-#ifndef IDOCUMENTINDEX_H
-#define IDOCUMENTINDEX_H
+#ifndef IDOCUMENTSTORE_H
+#define IDOCUMENTSTORE_H
 
 
 #include "IDocument.h"
@@ -9,10 +9,11 @@
 
 using namespace std;
 
-class IDocumentIndex
+class IDocumentStore
 {
 	public:
-		virtual ~IDocumentIndex() { }
+
+		virtual ~IDocumentStore() { }
 
 		virtual void addDoc(unsigned int, shared_ptr<IDocument> doc) = 0;
 		virtual void removeDoc(unsigned int docId) = 0;

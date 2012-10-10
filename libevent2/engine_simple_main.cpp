@@ -6,9 +6,13 @@
 #include <set>
 #include <sstream>
 
-#include "DocumentImpl.h"
 // #include "../varint/CompressedSet.h"
-#include "EngineSet.hpp"
+
+#include "DocumentImpl.h"
+#include "TokenizerImpl.h"
+#include "DocumentStoreImpl.h"
+
+#include "Engine.hpp"
 #include "Constants.hpp"
 
 using namespace std;
@@ -27,7 +31,10 @@ int main()
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
-	EngineSet engine(zsearch::QUERY_PARSER_DELIMITERS, zsearch::KEYWORD_SPLITTER);
+	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
+	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreImpl>();
+
+	Engine engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
 
 	// test input
 	while (getline(cin, input))

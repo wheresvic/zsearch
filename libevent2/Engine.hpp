@@ -1,7 +1,7 @@
 
 #include <string>
 #include <map>
-#include "DocumentIndexImpl.h"
+#include "DocumentStoreImpl.h"
 #include <memory>
 #include <utility>
 #include "QueryParser.hpp"
@@ -9,25 +9,23 @@
 
 using namespace std;
 
-class EngineSet
+class Engine
 {
 	public:
 
-		EngineSet(const string& queryParserDelimiters, char keyWordSplitter) :
-			queryParserDelimiters(queryParserDelimiters),
-			keyWordSplitter(keyWordSplitter)
+		Engine(const char keyWordSplitter,
+				const shared_ptr<ITokenizer>& tokenizer,
+				const shared_ptr<IDocumentStore>& documentStore) :
+			keyWordSplitter(keyWordSplitter),
+			tokenizer(tokenizer),
+			documentStore(documentStore)
 		{
-			documentIndex = new DocumentIndexImpl();
-		}
 
-		~EngineSet()
-		{
-			delete documentIndex;
 		}
 
 		unsigned int addDocument(shared_ptr<IDocument> document)
 		{
-			documentIndex->addDoc(docId, document);
+			documentStore->addDoc(docId, document);
 
 			auto entries = document->getEntries();
 
@@ -36,9 +34,11 @@ class EngineSet
 				string key = iter->first;
 				string query = iter->second;
 
-				QueryParser qp(query, queryParserDelimiters);
+				QueryParser qp(query, tokenizer);
 
-				for (auto token : qp.getTokens())
+				vector<string> tokens = qp.getTokens();
+
+				for (auto token : tokens)
 				{
 					string word = key + keyWordSplitter + token;
 
@@ -134,7 +134,7 @@ class EngineSet
 		{
 			set<shared_ptr<IDocument>> documentSet;
 
-			auto documents = documentIndex->getDocuments();
+			auto documents = documentStore->getDocuments();
 
 			for (auto token : queryTokens)
 			{
@@ -163,11 +163,14 @@ class EngineSet
 		string queryParserDelimiters;
 		char keyWordSplitter;
 
+		// tokenizer
+		shared_ptr<ITokenizer> tokenizer;
+
 		// store all the words
 		map<string, unsigned int> wordIndex;
 
 		// store all the documents
-		IDocumentIndex* documentIndex;
+		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
 		map<unsigned int, set<unsigned int>> invertedIndex;
