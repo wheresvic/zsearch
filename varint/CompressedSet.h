@@ -385,9 +385,6 @@ public:
         iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
         cursor = -1;
         totalDocIdNum = set->totalDocIdNum;
-        if (set->totalDocIdNum <= 0){
-            cursor = set->totalDocIdNum;
-        }
     }
 
 
