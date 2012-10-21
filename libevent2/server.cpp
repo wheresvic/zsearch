@@ -57,17 +57,26 @@
 #include <string>
 #include <memory>
 #include <exception>
+#include <iostream>
 
 #include "DocumentImpl.h"
+#include "TokenizerImpl.h"
+#include "DocumentImpl.h"
 #include "Constants.hpp"
+#include "Engine.hpp"
 
+static Engine *engine;
 
 char uri_root[512];
 
-static const struct table_entry {
+static const struct table_entry
+{
 	const char *extension;
 	const char *content_type;
-} content_type_table[] = {
+}
+
+content_type_table[] =
+{
 	{ "txt", "text/plain" },
 	{ "c", "text/plain" },
 	{ "h", "text/plain" },
@@ -83,9 +92,8 @@ static const struct table_entry {
 	{ NULL, NULL },
 };
 
-/* Try to guess a good content-type for 'path' */
-static const char *
-guess_content_type(const char *path)
+// Try to guess a good content-type for 'path'
+static const char * guess_content_type(const char *path)
 {
 	const char *last_period, *extension;
 	const struct table_entry *ent;
@@ -103,9 +111,109 @@ not_found:
 }
 
 /**
+ * Callback used for search request
+ */
+static void search_request_cb(struct evhttp_request *req, void *arg)
+{
+	struct evbuffer *evb = NULL;
+	const char *uri = evhttp_request_get_uri(req);
+	struct evhttp_uri *decoded = NULL;
+	const char *path = NULL;
+	const char *query = NULL;
+	// struct evkeyvalq *headers;
+	// struct evkeyval *header;
+
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET)
+	{
+		// evbuffer_add_printf(evb, "Invalid query request! Needs to be GET\n");
+		std::cout << "Invalid query request! Needs to be GET" << std::endl;
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		return;
+	}
+
+	printf("Got a GET request for %s\n",  uri);
+
+	// Decode the URI
+	decoded = evhttp_uri_parse(uri);
+	if (!decoded) {
+		printf("It's not a good URI. Sending BADREQUEST\n");
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		return;
+	}
+
+	path = evhttp_uri_get_path(decoded);
+	std::cout << path << std::endl;
+
+	query = evhttp_uri_get_query(decoded);
+	std::cout << query << std::endl;
+
+	// This holds the content we're sending
+	evb = evbuffer_new();
+
+	/*
+	headers = evhttp_request_get_input_headers(req);
+	for (header = headers->tqh_first; header;
+	    header = header->next.tqe_next) {
+		printf("  %s: %s\n", header->key, header->value);
+	}
+	*/
+
+	struct evkeyvalq params;	// create storage for your key->value pairs
+	struct evkeyval *param;		// iterator
+
+	int result = evhttp_parse_query_str(query, &params);
+
+	if (result == 0)
+	{
+		for (param = params.tqh_first; param; param = param->next.tqe_next)
+	    {
+			std::string key(param->key);
+			std::string value(param->value);
+
+			printf("%s\n%s\n", key.c_str(), value.c_str());
+
+			if (key.compare(zsearch::GET_QUERY_KEY) == 0)
+			{
+				std::cout << "searching for " << value << std::endl;
+				auto docSet = engine->search(value);
+
+				for (auto document : docSet)
+				{
+					std::string title = document->getTitle();
+					std::cout << title << " ";
+					evbuffer_add_printf(evb, title.c_str());
+					evbuffer_add_printf(evb, "\n");
+				}
+			}
+		}
+
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+		evhttp_send_reply(req, 200, "OK", evb);
+
+	}
+	else
+	{
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+	}
+
+	evhttp_clear_headers(&params);
+
+
+	if (decoded)
+	{
+		evhttp_uri_free(decoded);
+	}
+
+	if (evb)
+	{
+		evbuffer_free(evb);
+	}
+}
+
+/**
  * Call back used for a POST request
  */
-static void dump_request_cb(struct evhttp_request *req, void *arg)
+static void post_request_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = NULL;
 
@@ -210,21 +318,23 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 			try
 			{
 				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
-
+				std::cout << "Added document: " << engine->addDocument(document) << std::endl;
 				evbuffer_add_printf(evb, "Ok");
 			}
 			catch (const std::string& e)
 			{
+				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
 				evbuffer_add_printf(evb, e.c_str());
 			}
 			catch (const std::exception& e)
 			{
+				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
 				evbuffer_add_printf(evb, e.what());
 			}
 		}
 		else
 		{
-			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details");
+			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details\n");
 		}
 
 		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
@@ -238,24 +348,17 @@ static void dump_request_cb(struct evhttp_request *req, void *arg)
 
 	evhttp_clear_headers(&params);
 
-	// memory management in libevent is just confusing ...
-	/*
-	if (buf)
-	{
-		evbuffer_free(buf);
-	}
-	*/
-
 	if (evb)
+	{
 		evbuffer_free(evb);
+	}
 }
 
 /* This callback gets invoked when we get any http request that doesn't match
  * any other callback.  Like any evhttp server callback, it has a simple job:
  * it must eventually call evhttp_send_error() or evhttp_send_reply().
  */
-static void
-send_document_cb(struct evhttp_request *req, void *arg)
+static void send_document_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = NULL;
 	const char *docroot = (char *) arg;
@@ -269,7 +372,7 @@ send_document_cb(struct evhttp_request *req, void *arg)
 	struct stat st;
 
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
-		dump_request_cb(req, arg);
+		post_request_cb(req, arg);
 		return;
 	}
 
@@ -423,18 +526,26 @@ done:
 		evbuffer_free(evb);
 }
 
-static void
-syntax(void)
+
+
+static void syntax(void)
 {
 	fprintf(stdout, "Syntax: http-server <docroot>\n");
 }
 
-int
-main(int argc, char **argv)
+
+
+
+int main(int argc, char **argv)
 {
 	struct event_base *base;
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
+
+	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
+	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreImpl>();
+
+	engine = new Engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
 
 	unsigned short port = 8080;
 #ifdef _WIN32
@@ -444,42 +555,49 @@ main(int argc, char **argv)
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		return (1);
 #endif
-	if (argc < 2) {
+	if (argc < 2)
+	{
 		syntax();
 		return 1;
 	}
 
 	base = event_base_new();
-	if (!base) {
+	if (!base)
+	{
 		fprintf(stderr, "Couldn't create an event_base: exiting\n");
 		return 1;
 	}
 
-	/* Create a new evhttp object to handle requests. */
+	// Create a new evhttp object to handle requests
 	http = evhttp_new(base);
-	if (!http) {
+	if (!http)
+	{
 		fprintf(stderr, "couldn't create evhttp. Exiting.\n");
 		return 1;
 	}
 
-	/* The /dump URI will dump all requests to stdout and say 200 ok. */
-	evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
+	// The /dump URI will dump all requests to stdout and say 200 ok
+	// evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
 
-	/* We want to accept arbitrary requests, so we need to set a "generic"
-	 * cb.  We can also add callbacks for specific paths. */
+	evhttp_set_cb(http, "/search", search_request_cb, NULL);
+
+	// We want to accept arbitrary requests, so we need to set a "generic"
 	evhttp_set_gencb(http, send_document_cb, argv[1]);
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
-	if (!handle) {
-		fprintf(stderr, "couldn't bind to port %d. Exiting.\n",
-		    (int)port);
+
+	if (!handle)
+	{
+		fprintf(stderr, "couldn't bind to port %d. Exiting.\n", (int)port);
 		return 1;
 	}
 
 	printf("Listening on 0.0.0.0:%d\n", port);
 
 	event_base_dispatch(base);
+
+	delete engine;
 
 	return 0;
 }

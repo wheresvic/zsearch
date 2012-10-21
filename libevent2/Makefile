@@ -32,10 +32,10 @@ all: server engine tests
 tests: unittests.cpp QueryParser.hpp $(OBJECTS)
 	$(CC) $(CFLAGS_SIMPLE) -o $@ $^
 
-server: server.cpp Constants.hpp $(OBJECTS)
+server: server.cpp Engine.hpp QueryParser.hpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp Constants.hpp $(OBJECTS)
+engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 

@@ -1,2 +1,3 @@
 input1 some text
-input1 some more text
+input2 some more text
+input3 xxx
