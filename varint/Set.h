@@ -20,5 +20,7 @@ public:
 	
 	//Number of docIds in the set
 	virtual bool find(unsigned int target) const = 0;
+	
+	virtual ~Set() = 0;
 };
 #endif  // ABSTRACT_SET_H__
