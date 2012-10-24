@@ -7,13 +7,14 @@
 #include <vector>
 #include "bitpacking/compositecodec.h"
 #include "bitpacking/simdbinarypacking.h"
+#include "bitpacking/variablebyte.h"
 
 using namespace std;
 
 class Codec {
 private:
-	CompositeCodec<SIMDBinaryPacking,JustCopy> codec;
-//	JustCopy codec;
+	CompositeCodec<SIMDBinaryPacking,VariableByte> codec;
+
  public:
     Codec(){
     }

@@ -320,7 +320,7 @@ public:
 
   shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock(){ 
     preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
-    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(currentNoCompBlock,DEFAULT_BATCH_SIZE);
+    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);
     return finalRes;  
   }
 
