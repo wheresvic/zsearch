@@ -6,6 +6,7 @@
 // #include <utility>
 #include "QueryParser.hpp"
 #include <set>
+#include <vector>
 
 using namespace std;
 
@@ -34,16 +35,18 @@ class Engine
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
 			{
-				string key = iter->first;
-				string query = iter->second;
+				string field = iter->first;
+				string value = iter->second;
 
-				QueryParser qp(query, tokenizer);
+				fields.insert(field);
+
+				QueryParser qp(value, tokenizer);
 
 				vector<string> tokens = qp.getTokens();
 
 				for (auto token : tokens)
 				{
-					string word = key + keyWordSplitter + token;
+					string word = field + keyWordSplitter + token;
 
 					auto found = wordIndex.find(word);
 
@@ -133,25 +136,78 @@ class Engine
 			return words;
 		}
 
-
-		set<shared_ptr<IDocument>> search(const set<string>& queryTokens)
+		bool findInSets(const vector<set<unsigned int>>& documentSets, unsigned int docId)
 		{
+			for (auto documentSet : documentSets)
+			{
+				if (documentSet.find(docId) == documentSet.end())
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+
+		/**
+		 * Return documents that contain all the words in the query
+		 */
+		set<shared_ptr<IDocument>> search(const string& query)
+		{
+			// q = "", field1="some more text" = input1/some input1/more input1/text
+			// q = "some more text" = (input1/some OR input2/some ) AND (input1/more or input2/more)
+
 			set<shared_ptr<IDocument>> documentSet;
+
+			set<string> queryTokens;
+
+			QueryParser qp(query, tokenizer);
+			vector<string> tokens = qp.getTokens();
+
+			for (auto token : tokens)
+			{
+				queryTokens.insert(token);
+			}
 
 			auto documents = documentStore->getDocuments();
 
+			// some 500 501
+			// more 501
+			// test 500 501
+
+			vector<set<unsigned int>> tokenDocumentSets;
+
 			for (auto token : queryTokens)
 			{
-				auto found = wordIndex.find(token);
+				set<unsigned int> unionDocumentSet;
 
-				if (found != wordIndex.end())
+				for (auto field : fields)
 				{
-					auto wordId = found->second;
-					auto docSet = invertedIndex[wordId];
+					auto found = wordIndex.find(field + keyWordSplitter + token);
 
-					for (auto id : docSet)
+					if (found != wordIndex.end())
 					{
-						documentSet.insert(documents[id]);
+						auto wordId = found->second;
+						auto docSet = invertedIndex[wordId];
+
+						for (auto id : docSet)
+						{
+							unionDocumentSet.insert(id);
+						}
+					}
+				}
+
+				tokenDocumentSets.push_back(unionDocumentSet);
+			}
+
+			for (auto tokenDocumentSet : tokenDocumentSets)
+			{
+				for (auto docId : tokenDocumentSet)
+				{
+					if (findInSets(tokenDocumentSets, docId))
+					{
+						documentSet.insert(documents[docId]);
 					}
 				}
 			}
@@ -172,6 +228,9 @@ class Engine
 
 		// store all the words
 		map<string, unsigned int> wordIndex;
+
+		// store all the fields
+		set<string> fields;
 
 		// store all the documents
 		shared_ptr<IDocumentStore> documentStore;

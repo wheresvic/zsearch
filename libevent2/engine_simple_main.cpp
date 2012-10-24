@@ -79,9 +79,6 @@ int main()
 		}
 		*/
 
-		set<string> wordSet;
-		wordSet.insert(word);
-
 		/*
 		auto docIdSet = engine.getDocumentIdSet(wordSet);
 
@@ -93,7 +90,7 @@ int main()
 		cout << endl;
 		*/
 
-		auto docSet = engine.search(wordSet);
+		auto docSet = engine.search(word);
 
 		for (auto document : docSet)
 		{
@@ -103,6 +100,18 @@ int main()
 		cout << endl;
 	}
 
+	// test that searching for some more text returns only 1 document
+
+	string query = "some  more text";
+
+	auto docSet = engine.search(query);
+
+	for (auto document : docSet)
+	{
+		cout << document->getTitle() << " ";
+	}
+
+	cout << endl;
 
 	return 0;
 }
