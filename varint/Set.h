@@ -11,12 +11,11 @@ public:
 		virtual ~Iterator() {};
 	};
 	virtual std::shared_ptr<Iterator> iterator()  const = 0;
-	virtual void addDocs(unsigned int docids[],size_t start,size_t len)= 0;
-	virtual void addDoc(unsigned int docId) = 0;
-	virtual void compact() = 0;
-	virtual void flush() = 0;
+	virtual void addDocs(unsigned int docids[],size_t start,size_t len) {};
+	virtual void addDoc(unsigned int docId) {};
+	virtual void compact() {};
+	virtual void flush() {};
 	
-	//Number of docIds in the set
 	virtual bool find(unsigned int target) const = 0;
 	virtual ~Set() {}
 };
