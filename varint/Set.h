@@ -8,6 +8,7 @@ public:
 
 		virtual int nextDoc() = 0;
 		virtual int Advance(int target) = 0;
+		virtual ~Iterator() {};
 	};
 	virtual std::shared_ptr<Iterator> iterator()  const = 0;
 	virtual void addDocs(unsigned int docids[],size_t start,size_t len)= 0;
@@ -17,5 +18,6 @@ public:
 	
 	//Number of docIds in the set
 	virtual bool find(unsigned int target) const = 0;
+	virtual ~Set() {}
 };
 #endif  // ABSTRACT_SET_H__
