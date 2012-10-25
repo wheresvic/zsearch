@@ -133,12 +133,14 @@ public:
       //compressedByteSize += (*compRes).getCompressedSize();      
       sequenceOfCompBlocks.add(compRes);
       sizeOfCurrentNoCompBlock = 0;
+
     }
 
     void write(ostream & out)  {
-		flush();
+	    if(sizeOfCurrentNoCompBlock!= 0){
+		  flush();
+	    }
         out.write((char*)&totalDocIdNum,4);
-               
         //write base (skipping info)
         int baseListForOnlyCompBlocksSize = baseListForOnlyCompBlocks.size();
         out.write((char*)&baseListForOnlyCompBlocksSize,4);
@@ -163,10 +165,6 @@ public:
         baseListForOnlyCompBlocks.resize(baseListForOnlyCompBlocksSize);
         in.read((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
 
-        //read the last block (uncompressed) 
-        in.read((char*)&sizeOfCurrentNoCompBlock,4);
-        in.read((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
-		lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
 
         //write compressed blocks
         sequenceOfCompBlocks.read(in);
@@ -227,7 +225,6 @@ public:
    * addDoc(2), addDoc(1) is not ok.
    */
   void addDoc(unsigned int docId) {
-    assert(docId != 0);  // Docid should start at 1
     if (PREDICT_TRUE(sizeOfCurrentNoCompBlock != DEFAULT_BATCH_SIZE)) { 
        currentNoCompBlock[sizeOfCurrentNoCompBlock++] = docId;
        lastAdded = docId;
@@ -328,6 +325,21 @@ public:
      */
     int size() const {
       return totalDocIdNum;
+    }
+
+    bool isDense(){
+		if (totalDocIdNum == 0) return false;
+	  	CompressedSet set;
+		CompressedSet::Iterator it(this);
+		unsigned int minval = NO_MORE_DOCS;
+		unsigned int maxval = 0;
+		while (it.nextDoc() != NO_MORE_DOCS ){
+			unsigned int val = it.docID();
+			if (val < minval) minval = val;
+			if (val > maxval) maxval = val;
+		}
+		int ratio =  (maxval-minval)/ (totalDocIdNum);
+		return ratio > 8;
     }
 
     //This method will not work after a call to flush()

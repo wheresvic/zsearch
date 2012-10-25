@@ -8,13 +8,21 @@
 using namespace std;
 
 bool testvec(vector<uint32_t> & data){
-	CompressedSet myset1;
-	for (size_t i = 0; i < data.size(); ++i) {
-		myset1.addDoc(data[i]);
+	stringstream ss;
+	{
+      CompressedSet myset2;
+      for (size_t i = 0; i < data.size(); ++i) {
+      	myset2.addDoc(data[i]);
+      }
+      myset2.flush();
+      myset2.compact();
+      myset2.write(ss);
 	}
-	myset1.flush();
-	myset1.compact();
-	
+
+	CompressedSet myset1;
+	myset1.read(ss);
+
+
 	assert(data.size() == myset1.size());
 	CompressedSet::Iterator it2(&myset1);
 	for (int idx = 0; idx < data.size();++idx){
@@ -22,14 +30,16 @@ bool testvec(vector<uint32_t> & data){
 		assert(it2.docID() == data[idx]);
 	}
 	assert(it2.nextDoc() == NO_MORE_DOCS);
+
 	return true;
 }
 
 void test(){
 	
 	for (uint32_t b = 0; b <= 28; ++b) {
-        cout << "testing... b = " << b << endl;
+        cout << "testing1... b = " << b << endl;
         for (size_t length = 128; length < (1U << 12); length += 128) {
+	        //cout << "   length = " << length << endl;
 	        vector<uint32_t> data(length);
 	        for (size_t i = 0; i < data.size(); ++i) {
                 data[i] = (i + (24 - i) * (12 - i)) % (1U << b);
@@ -38,8 +48,9 @@ void test(){
 				return;
 			}
         }
-
-       	for (size_t length = 0; length < (1U << 9); ++length) {
+        cout << "testing2... b = " << b << endl;
+       	for (size_t length = 1; length < (1U << 9); ++length) {
+	      //  cout << "   length = " << length << endl;
 		    vector<uint32_t> data(length);
 	        for (size_t i = 0; i < data.size(); ++i) {
 	           data[i] = (33231 - i + i * i) % (1U << b);
@@ -54,5 +65,5 @@ void test(){
 
 
 int main() {
-	cout << "All test passed succesfully!!" << endl;
+	test();
 }
