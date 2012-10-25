@@ -1,4 +1,8 @@
-//based on https://github.com/maximecaron/kamikaze/blob/master/src/main/java/com/kamikaze/docidset/impl/PForDeltaDocIdSet.java
+// if more then 1/8 of bit are set to 1 in range [minSetValue,maxSetvalue] 
+// you should use WAHBoolArray instead 
+// because this compression will take at least 8 bits by positions 
+
+
 #ifndef COMPRESSED_SET_H__
 #define COMPRESSED_SET_H__
 
@@ -118,21 +122,27 @@ public:
         delete[] myDecompBlock;
     }
 
+    /**
+     *  Flush the data left in the currentNoCompBlock into the compressed data
+     */
+    void flush() {
+      baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
+      preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
+      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);
+      
+      //compressedByteSize += (*compRes).getCompressedSize();      
+      sequenceOfCompBlocks.add(compRes);
+      sizeOfCurrentNoCompBlock = 0;
+    }
 
-    void write(ostream & out) const {
-        out.write((char*)&lastAdded,4);
+    void write(ostream & out)  {
+		flush();
         out.write((char*)&totalDocIdNum,4);
                
-
         //write base (skipping info)
         int baseListForOnlyCompBlocksSize = baseListForOnlyCompBlocks.size();
         out.write((char*)&baseListForOnlyCompBlocksSize,4);
         out.write((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
-	     
-
-        //write the last block (uncompressed) 
-        out.write((char*)&sizeOfCurrentNoCompBlock,4);
-        out.write((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
         
         //write compressed blocks
         sequenceOfCompBlocks.write(out);
@@ -143,9 +153,7 @@ public:
         memset(myDecompBlock, 0, DEFAULT_BATCH_SIZE*4);
         memset(currentNoCompBlock, 0, DEFAULT_BATCH_SIZE*4);
 
-        //read lastAdded
-        in.read((char*)&lastAdded,4);
-        //read lastAdded
+        //read totalDocIdNum
         in.read((char*)&totalDocIdNum,4);
         
         //read base (skipping info)
@@ -158,6 +166,7 @@ public:
         //read the last block (uncompressed) 
         in.read((char*)&sizeOfCurrentNoCompBlock,4);
         in.read((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
+		lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
 
         //write compressed blocks
         sequenceOfCompBlocks.read(in);
@@ -287,18 +296,7 @@ public:
     memset(currentNoCompBlock,0,DEFAULT_BATCH_SIZE);
   }
 
-  /**
-   *  Flush the data left in the currentNoCompBlock into the compressed data
-   */
-  void flush() {
-    baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
-    preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
-    shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);
-    
-    //compressedByteSize += (*compRes).getCompressedSize();      
-    sequenceOfCompBlocks.add(compRes);
-    sizeOfCurrentNoCompBlock = 0;
-  }
+
 
   /**
    * Prefix Sum
