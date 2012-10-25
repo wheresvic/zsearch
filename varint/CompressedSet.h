@@ -1,5 +1,5 @@
 // if more then 1/8 of bit are set to 1 in range [minSetValue,maxSetvalue] 
-// you should use WAHBoolArray instead 
+// you should use EWAHBoolArray compression instead 
 // because this compression will take at least 8 bits by positions 
 
 
