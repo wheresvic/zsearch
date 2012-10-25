@@ -65,7 +65,6 @@ public:
     };
 private:    
     unsigned int sizeOfCurrentNoCompBlock; // the number of uncompressed elements that is hold in the currentNoCompBlock
-    unsigned int compressedByteSize;    
     // Two separate arrays containing
     // the last docID 
     // of each block in words in uncompressed form.
@@ -88,7 +87,6 @@ public:
         myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = other.lastAdded;
-        //compressedByteSize = other.compressedByteSize;
         sizeOfCurrentNoCompBlock = other.sizeOfCurrentNoCompBlock;
         totalDocIdNum = other.totalDocIdNum;
         memcpy( myDecompBlock,other.myDecompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
@@ -111,7 +109,6 @@ public:
         myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = 0;
-        //compressedByteSize = 0;
         sizeOfCurrentNoCompBlock = 0;
         totalDocIdNum = 0;
         initSet();
@@ -128,9 +125,7 @@ public:
     void flush() {
       baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
       preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
-      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);
-      
-      //compressedByteSize += (*compRes).getCompressedSize();      
+      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);   
       sequenceOfCompBlocks.add(compRes);
       sizeOfCurrentNoCompBlock = 0;
 
@@ -161,9 +156,11 @@ public:
         //read base (skipping info)
         int baseListForOnlyCompBlocksSize = 0;
         in.read((char*)&baseListForOnlyCompBlocksSize,4);
+
         baseListForOnlyCompBlocks.clear();
         baseListForOnlyCompBlocks.resize(baseListForOnlyCompBlocksSize);
         in.read((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
+		lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
 
 
         //write compressed blocks
@@ -233,8 +230,7 @@ public:
         baseListForOnlyCompBlocks.push_back(lastAdded);
 
         // compress currentNoCompBlock[] (excluding the input docId),
-        shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressCurrentBlock();
-        //compressedByteSize += (*compRes).getCompressedSize();      
+        shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressCurrentBlock(); 
         sequenceOfCompBlocks.add(compRes);
 
         // next block
