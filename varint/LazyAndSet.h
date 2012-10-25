@@ -4,7 +4,7 @@
 #include "Set.h"
 class LazyAndSet;
 
-class LazyAndSetIterator : Set::Iterator {
+class LazyAndSetIterator : public Set::Iterator {
 private:
 	int lastReturn; 
 	vector<shared_ptr<Set::Iterator> > iterators;
@@ -50,11 +50,10 @@ class LazyAndSet : Set {
         return setSize;
     }
 
-	
-	LazyAndSetIterator iterator() {
-		LazyAndSetIterator it(this);
-		return it;
-	}
+    shared_ptr<Set::Iterator> iterator() const {
+        shared_ptr<Set::Iterator> it(new LazyAndSetIterator(this));
+        return it;
+    }	
 };
 
 LazyAndSetIterator::LazyAndSetIterator(const LazyAndSet* parent) : set(*parent){
