@@ -65,50 +65,15 @@
 #include "Constants.hpp"
 #include "Engine.hpp"
 
+static const std::string POST_HTM = "post.htm";
+static const std::string SEARCH_PATH = "/search";
+static const std::string POST_PATH = "/post";
+static const std::string ROOT = "/";
+
 static Engine *engine;
 
 char uri_root[512];
 
-static const struct table_entry
-{
-	const char *extension;
-	const char *content_type;
-}
-
-content_type_table[] =
-{
-	{ "txt", "text/plain" },
-	{ "c", "text/plain" },
-	{ "h", "text/plain" },
-	{ "html", "text/html" },
-	{ "htm", "text/html" },
-	{ "css", "text/css" },
-	{ "gif", "image/gif" },
-	{ "jpg", "image/jpeg" },
-	{ "jpeg", "image/jpeg" },
-	{ "png", "image/png" },
-	{ "pdf", "application/pdf" },
-	{ "ps", "application/postsript" },
-	{ NULL, NULL },
-};
-
-// Try to guess a good content-type for 'path'
-static const char * guess_content_type(const char *path)
-{
-	const char *last_period, *extension;
-	const struct table_entry *ent;
-	last_period = strrchr(path, '.');
-	if (!last_period || strchr(last_period, '/'))
-		goto not_found; /* no exension */
-	extension = last_period + 1;
-	for (ent = &content_type_table[0]; ent->extension; ++ent) {
-		if (!evutil_ascii_strcasecmp(ent->extension, extension))
-			return ent->content_type;
-	}
-
-not_found:
-	return "application/misc";
-}
 
 /**
  * Callback used for search request
@@ -179,7 +144,8 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 
 				for (auto document : docSet)
 				{
-					std::string title = document->getTitle();
+					std::string title;
+					document->getEntry("title", title);
 					std::cout << title << " ";
 					evbuffer_add_printf(evb, title.c_str());
 					evbuffer_add_printf(evb, "\n");
@@ -354,12 +320,19 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 	}
 }
 
-/* This callback gets invoked when we get any http request that doesn't match
+/**
+ * This callback gets invoked when we get any http request that doesn't match
  * any other callback.  Like any evhttp server callback, it has a simple job:
  * it must eventually call evhttp_send_error() or evhttp_send_reply().
  */
-static void send_document_cb(struct evhttp_request *req, void *arg)
+static void generic_request_cb(struct evhttp_request *req, void *arg)
 {
+	// if this is a post request try to index post data
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
+		post_request_cb(req, arg);
+		return;
+	}
+	
 	struct evbuffer *evb = NULL;
 	const char *docroot = (char *) arg;
 	const char *uri = evhttp_request_get_uri(req);
@@ -371,151 +344,83 @@ static void send_document_cb(struct evhttp_request *req, void *arg)
 	int fd = -1;
 	struct stat st;
 
-	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
-		post_request_cb(req, arg);
-		return;
-	}
+	printf("Got a GET request for %s\n",  uri);
 
-	printf("Got a GET request for <%s>\n",  uri);
-
-	/* Decode the URI */
+	// Decode the URI
 	decoded = evhttp_uri_parse(uri);
-	if (!decoded) {
+	if (!decoded) 
+	{
 		printf("It's not a good URI. Sending BADREQUEST\n");
 		evhttp_send_error(req, HTTP_BADREQUEST, 0);
 		return;
 	}
 
-	/* Let's see what path the user asked for. */
+	// Let's see what path the user asked for 
 	path = evhttp_uri_get_path(decoded);
-	if (!path) path = "/";
+	if (!path)
+	{	
+		path = ROOT.c_str();
+	}
 
-	/* We need to decode it, to see what path the user really wanted. */
+	// We need to decode it, to see what path the user really wanted 
 	decoded_path = evhttp_uridecode(path, 0, NULL);
+	
 	if (decoded_path == NULL)
-		goto err;
-	/* Don't allow any ".."s in the path, to avoid exposing stuff outside
-	 * of the docroot.  This test is both overzealous and underzealous:
-	 * it forbids aceptable paths like "/this/one..here", but it doesn't
-	 * do anything to prevent symlink following." */
-	if (strstr(decoded_path, ".."))
-		goto err;
-
-	len = strlen(decoded_path)+strlen(docroot)+2;
-	if (!(whole_path = (char *) malloc(len))) {
-		perror("malloc");
+	{
 		goto err;
 	}
-	evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
-
-	if (stat(whole_path, &st)<0) {
-		goto err;
-	}
-
-	/* This holds the content we're sending. */
+	
+	// This holds the content we're sending 
 	evb = evbuffer_new();
-
-	if (S_ISDIR(st.st_mode)) {
-		/* If it's a directory, read the comments and make a little
-		 * index page */
-#ifdef _WIN32
-		HANDLE d;
-		WIN32_FIND_DATAA ent;
-		char *pattern;
-		size_t dirlen;
-#else
-		DIR *d;
-		struct dirent *ent;
-#endif
-		const char *trailing_slash = "";
-
-		if (!strlen(path) || path[strlen(path)-1] != '/')
-			trailing_slash = "/";
-
-#ifdef _WIN32
-		dirlen = strlen(whole_path);
-		pattern = malloc(dirlen+3);
-		memcpy(pattern, whole_path, dirlen);
-		pattern[dirlen] = '\\';
-		pattern[dirlen+1] = '*';
-		pattern[dirlen+2] = '\0';
-		d = FindFirstFileA(pattern, &ent);
-		free(pattern);
-		if (d == INVALID_HANDLE_VALUE)
+		
+	// add headers
+	evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+	
+	if (POST_HTM.compare(decoded_path) == 0)
+	{
+		len = strlen(decoded_path)+strlen(docroot)+2;
+		if (!(whole_path = (char *) malloc(len))) 
+		{
+			perror("malloc");
 			goto err;
-#else
-		if (!(d = opendir(whole_path)))
-			goto err;
-#endif
-
-		evbuffer_add_printf(evb, "<html>\n <head>\n"
-		    "  <title>%s</title>\n"
-		    "  <base href='%s%s%s'>\n"
-		    " </head>\n"
-		    " <body>\n"
-		    "  <h1>%s</h1>\n"
-		    "  <ul>\n",
-		    decoded_path, /* XXX html-escape this. */
-		    uri_root, path, /* XXX html-escape this? */
-		    trailing_slash,
-		    decoded_path /* XXX html-escape this */);
-#ifdef _WIN32
-		do {
-			const char *name = ent.cFileName;
-#else
-		while ((ent = readdir(d))) {
-			const char *name = ent->d_name;
-#endif
-			evbuffer_add_printf(evb,
-			    "    <li><a href=\"%s\">%s</a>\n",
-			    name, name);/* XXX escape this */
-#ifdef _WIN32
-		} while (FindNextFileA(d, &ent));
-#else
 		}
-#endif
-		evbuffer_add_printf(evb, "</ul></body></html>\n");
-#ifdef _WIN32
-		CloseHandle(d);
-#else
-		closedir(d);
-#endif
-		evhttp_add_header(evhttp_request_get_output_headers(req),
-		    "Content-Type", "text/html");
-	} else {
+		
+		evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
 
-		// otherwise this is a file
-		const char *type = guess_content_type(decoded_path);
+		if (stat(whole_path, &st)<0) 
+		{
+			goto err;
+		}
 
-		printf("type %s\n",  type);
-
-		if ((fd = open(whole_path, O_RDONLY)) < 0) {
+		if ((fd = open(whole_path, O_RDONLY)) < 0) 
+		{
 			perror("open");
 			goto err;
 		}
 
-		if (fstat(fd, &st)<0) {
+		if (fstat(fd, &st)<0) 
+		{
 			// Make sure the length still matches, now that we opened the file :/
 			perror("fstat");
 			goto err;
 		}
-		evhttp_add_header(evhttp_request_get_output_headers(req),
-		    "Content-Type", type);
+		
 		evbuffer_add_file(evb, fd, 0, st.st_size);
-
-		/*
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-		evbuffer_add_printf(evb, "Illegal file reuqest ...");
-		*/
 	}
-
+	else // if (ROOT.compare(decoded_path) == 0)
+	{
+		evbuffer_add_printf(evb, "Invalid request, try %s to post data or %s to search.\n", POST_HTM.c_str(), SEARCH_PATH.c_str());
+	}
+	
 	evhttp_send_reply(req, 200, "OK", evb);
 	goto done;
+
 err:
-	evhttp_send_error(req, 404, "Document was not found");
+	evhttp_send_error(req, 404, "Document not found.");
 	if (fd>=0)
 		close(fd);
 done:
+
 	if (decoded)
 		evhttp_uri_free(decoded);
 	if (decoded_path)
@@ -527,14 +432,10 @@ done:
 }
 
 
-
 static void syntax(void)
 {
 	fprintf(stdout, "Syntax: http-server <docroot>\n");
 }
-
-
-
 
 int main(int argc, char **argv)
 {
@@ -582,9 +483,9 @@ int main(int argc, char **argv)
 	evhttp_set_cb(http, "/search", search_request_cb, NULL);
 
 	// We want to accept arbitrary requests, so we need to set a "generic"
-	evhttp_set_gencb(http, send_document_cb, argv[1]);
+	evhttp_set_gencb(http, generic_request_cb, argv[1]);
 
-	/* Now we tell the evhttp what port to listen on */
+	// Now we tell the evhttp what port to listen on
 	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
 
 	if (!handle)

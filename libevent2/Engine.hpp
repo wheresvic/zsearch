@@ -7,6 +7,7 @@
 #include "QueryParser.hpp"
 #include <set>
 #include <vector>
+#include "Word.hpp"
 
 using namespace std;
 
@@ -46,7 +47,8 @@ class Engine
 
 				for (auto token : tokens)
 				{
-					string word = field + keyWordSplitter + token;
+					// string word = field + keyWordSplitter + token;
+					Word word(field, token);
 
 					auto found = wordIndex.find(word);
 
@@ -123,9 +125,9 @@ class Engine
 		}
 		*/
 
-		set<string> getWords()
+		set<Word> getWords()
 		{
-			set<string> words;
+			set<Word> words;
 
 			for (auto iter = wordIndex.begin(); iter != wordIndex.end(); ++iter)
 			{
@@ -184,7 +186,8 @@ class Engine
 
 				for (auto field : fields)
 				{
-					auto found = wordIndex.find(field + keyWordSplitter + token);
+					Word word(field, token);
+					auto found = wordIndex.find(word);
 
 					if (found != wordIndex.end())
 					{
@@ -227,7 +230,7 @@ class Engine
 		shared_ptr<ITokenizer> tokenizer;
 
 		// store all the words
-		map<string, unsigned int> wordIndex;
+		map<Word, unsigned int> wordIndex;
 
 		// store all the fields
 		set<string> fields;

@@ -8,8 +8,8 @@ OSNAME  := $(shell uname -s)
 CC = g++
 CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 BUILD_DIR = ../build
-OBJECTS = Constants.hpp $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreImpl.o $(BUILD_DIR)/TokenizerImpl.o
-
+OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreImpl.o $(BUILD_DIR)/TokenizerImpl.o
+HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
 ifeq ($(OSNAME), Darwin)
@@ -29,13 +29,13 @@ clean :
 
 all: server engine tests
 
-tests: unittests.cpp QueryParser.hpp $(OBJECTS)
+tests: unittests.cpp $(HEADERS) $(OBJECTS)
 	$(CC) $(CFLAGS_SIMPLE) -o $@ $^
 
-server: server.cpp Engine.hpp QueryParser.hpp $(OBJECTS)
+server: server.cpp $(HEADERS) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-engine: engine_simple_main.cpp Engine.hpp QueryParser.hpp $(OBJECTS)
+engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 

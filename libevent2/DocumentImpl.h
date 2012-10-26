@@ -18,17 +18,13 @@ class DocumentImpl : public IDocument
 
 		DocumentImpl(const string& xml);
 
-		void setTitle(const string& title);
-
-		const string& getTitle();
-
 		void addEntry(const string& key, const string& value);
+		
+		void getEntry(const string& key, string& value);
 
 		const map<string, string>& getEntries();
 
 	private:
-
-		string title;
 
 		map<string, string> entries;
 

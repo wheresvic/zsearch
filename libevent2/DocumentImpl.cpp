@@ -13,7 +13,7 @@
 using namespace std;
 
 
-DocumentImpl::DocumentImpl() : title("Document")
+DocumentImpl::DocumentImpl()
 { }
 
 DocumentImpl::DocumentImpl(const string& xml)
@@ -47,15 +47,7 @@ DocumentImpl::DocumentImpl(const string& xml)
 				}
 
 				string value(v);
-
-				if (field.compare(zsearch::DOCUMENT_TITLE) == 0)
-				{
-					this->setTitle(value);
-				}
-				else
-				{
-					this->addEntry(field, value);
-				}
+				this->addEntry(field, value);				
 			}
 
 			return;
@@ -63,16 +55,6 @@ DocumentImpl::DocumentImpl(const string& xml)
 	}
 
 	throw message;
-}
-
-void DocumentImpl::setTitle(const string& title)
-{
-	this->title = title;
-}
-
-const string& DocumentImpl::getTitle()
-{
-	return title;
 }
 
 void DocumentImpl::addEntry(const string& key, const string& value)
@@ -85,4 +67,13 @@ const map<string, string>& DocumentImpl::getEntries()
 	return entries;
 }
 
+void DocumentImpl::getEntry(const string& key, string& value)
+{
+	if (entries.find(key) != entries.end())
+	{
+		value = entries[key];
+	}
+	
+	return;
+}
 

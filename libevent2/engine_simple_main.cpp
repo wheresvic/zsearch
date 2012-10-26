@@ -14,6 +14,7 @@
 
 #include "Engine.hpp"
 #include "Constants.hpp"
+#include "Word.hpp"
 
 using namespace std;
 
@@ -42,8 +43,9 @@ int main()
 		// cout << input;
 		string title = convertInt(documentId++);
 		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
-		doc->setTitle(title);
-
+		// doc->setTitle(title);
+		doc->addEntry("title", title);
+		
 		// parse the input, each line is a single document
 		size_t found = input.find_first_of(documentDelimiter);
 		if (found != string::npos)
@@ -58,11 +60,11 @@ int main()
 		cout << "Added document: " << engine.addDocument(doc) << endl;
 	}
 
-	set<string> words = engine.getWords();
+	set<Word> words = engine.getWords();
 
-	for (string word : words)
+	for (Word word : words)
 	{
-		cout << word << " ";
+		cout << word.getField() << "," << word.getWord() << " ";
 
 		/*
 		string bitmap = engine.getDocumentListBitmap(word);
@@ -90,11 +92,13 @@ int main()
 		cout << endl;
 		*/
 
-		auto docSet = engine.search(word);
-
+		auto docSet = engine.search(word.getWord());
+		
 		for (auto document : docSet)
 		{
-			cout << document->getTitle() << " ";
+			string title;
+			document->getEntry("title", title);
+			cout << title << " ";
 		}
 
 		cout << endl;
@@ -103,18 +107,19 @@ int main()
 	// test that searching for some more text returns only 1 document
 
 	string query = "some  more text";
+	cout << "searching for: " << query << endl;
 
 	auto docSet = engine.search(query);
-
+	
 	for (auto document : docSet)
 	{
-		cout << document->getTitle() << " ";
+		string title;
+		document->getEntry("title", title);
+		cout << title << " ";
 	}
 
 	cout << endl;
 
 	return 0;
 }
-
-
 
