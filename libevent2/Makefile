@@ -8,7 +8,7 @@ OSNAME  := $(shell uname -s)
 CC = g++
 CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 BUILD_DIR = ../build
-OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreImpl.o $(BUILD_DIR)/TokenizerImpl.o
+OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o
 HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
@@ -46,7 +46,7 @@ engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
 $(BUILD_DIR)/DocumentImpl.o : DocumentImpl.cpp DocumentImpl.h IDocument.h Constants.hpp
 	$(CC) -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/DocumentStoreImpl.o : DocumentStoreImpl.cpp DocumentStoreImpl.h IDocumentStore.h Constants.hpp
+$(BUILD_DIR)/DocumentStoreSimple.o : DocumentStoreSimple.cpp DocumentStoreSimple.h IDocumentStore.h Constants.hpp
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp

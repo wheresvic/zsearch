@@ -10,7 +10,7 @@
 
 #include "DocumentImpl.h"
 #include "TokenizerImpl.h"
-#include "DocumentStoreImpl.h"
+#include "DocumentStoreSimple.h"
 
 #include "Engine.hpp"
 #include "Constants.hpp"
@@ -33,7 +33,7 @@ int main()
 	int documentId = 500;
 
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreImpl>();
+	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 
 	Engine engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
 

@@ -59,7 +59,7 @@
 #include <exception>
 #include <iostream>
 
-#include "DocumentImpl.h"
+#include "DocumentStoreSimple.h"
 #include "TokenizerImpl.h"
 #include "DocumentImpl.h"
 #include "Constants.hpp"
@@ -444,7 +444,7 @@ int main(int argc, char **argv)
 	struct evhttp_bound_socket *handle;
 
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreImpl>();
+	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 
 	engine = new Engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
 

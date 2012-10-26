@@ -1,7 +1,7 @@
 
 #include <string>
 #include <map>
-#include "DocumentStoreImpl.h"
+#include "DocumentStoreSimple.h"
 #include <memory>
 // #include <utility>
 #include "QueryParser.hpp"

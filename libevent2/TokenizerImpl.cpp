@@ -1,5 +1,7 @@
 
 #include <string>
+#include <algorithm>
+#include <locale>
 #include "TokenizerImpl.h"
 
 using namespace std;
@@ -37,7 +39,19 @@ bool TokenizerImpl::nextToken()
 	return true;
 }
 
+
+
 const std::string TokenizerImpl::getToken() const
 {
-	return m_token;
+	std::string out(m_token.length(), 'X');
+	locale loc;
+	
+	// std::transform(m_token.begin(), m_token.end(), std::back_inserter(out) /* m_token.begin() */, std::tolower);
+	
+	for (size_t i=0; i < m_token.length(); ++i)
+	{
+		out[i] = tolower(m_token[i], loc);
+	}
+	
+	return out;
 }

@@ -1,6 +1,6 @@
 
-#ifndef DOCUMENTSTOREIMPL_H
-#define DOCUMENTSTOREIMPL_H
+#ifndef DOCUMENTSTORESIMPLE_H
+#define DOCUMENTSTORESIMPLE_H
 
 #include "IDocumentStore.h"
 #include <map>
@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class DocumentStoreImpl : public IDocumentStore
+class DocumentStoreSimple : public IDocumentStore
 {
 	public:
 
