@@ -29,7 +29,7 @@ class LazyOrSetIterator : public Set::Iterator {
 		int Advance(int target);
 };
 
-class LazyOrSet : Set {
+class LazyOrSet : public Set {
 	private:
 		const int INVALID = -1;
 		vector<shared_ptr<Set>> sets;

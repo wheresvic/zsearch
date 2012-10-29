@@ -8,7 +8,10 @@
 #include <set>
 #include <vector>
 #include "Word.hpp"
-
+#include "InvertedIndexSimple.hpp"
+#include "../varint/CompressedSet.h"
+#include "../varint/LazyOrSet.h"
+#include "../varint/LazyAndSet.h"
 using namespace std;
 
 class Engine
@@ -51,24 +54,14 @@ class Engine
 					Word word(field, token);
 
 					auto found = wordIndex.find(word);
-
-					/*
-					 * if the word exists in the wordIndex then
-					 * we know that a reverse index for it exists
-					 */
-					if (found != wordIndex.end())
-					{
-						auto wordId = found->second;
-						invertedIndex[wordId].insert(docId);
-					}
-					else // this is a brand new word
-					{
-						set<unsigned int> docSet;
-						docSet.insert(docId);
-
-						invertedIndex.insert(make_pair(wordId, docSet));
-						wordIndex.insert(make_pair(word, wordId++));
-					}
+                    if (found != wordIndex.end()){
+	                   unsigned int id = found->second;
+					   invertedIndex.add(id,docId);
+                    } else {
+ 					   wordIndex.insert(make_pair(word,wordId));
+	                   invertedIndex.add(wordId++,docId);
+                    }
+				
 				}
 
 			} // end looping through entries
@@ -167,52 +160,33 @@ class Engine
 			QueryParser qp(query, tokenizer);
 			vector<string> tokens = qp.getTokens();
 
-			for (auto token : tokens)
-			{
+			for (auto token : tokens) {
 				queryTokens.insert(token);
 			}
-
-			auto documents = documentStore->getDocuments();
-
-			// some 500 501
-			// more 501
-			// test 500 501
-
-			vector<set<unsigned int>> tokenDocumentSets;
-
-			for (auto token : queryTokens)
-			{
-				set<unsigned int> unionDocumentSet;
-
-				for (auto field : fields)
-				{
+			
+			vector<shared_ptr<Set>> intersectionSet;
+			for (auto token : queryTokens) {
+				vector<shared_ptr<Set>> unionSet;
+				for (auto field : fields) {
 					Word word(field, token);
 					auto found = wordIndex.find(word);
-
-					if (found != wordIndex.end())
-					{
+					
+					if (found != wordIndex.end()) {
 						auto wordId = found->second;
-						auto docSet = invertedIndex[wordId];
-
-						for (auto id : docSet)
-						{
-							unionDocumentSet.insert(id);
-						}
+						CompressedSet* docSet; 
+						invertedIndex.get(wordId,docSet);
+						unionSet.push_back(shared_ptr<Set>(docSet));
 					}
 				}
-
-				tokenDocumentSets.push_back(unionDocumentSet);
+				intersectionSet.push_back(shared_ptr<Set>(new LazyOrSet(unionSet)));
 			}
-
-			for (auto tokenDocumentSet : tokenDocumentSets)
-			{
-				for (auto docId : tokenDocumentSet)
-				{
-					if (findInSets(tokenDocumentSets, docId))
-					{
-						documentSet.insert(documents[docId]);
-					}
-				}
+			LazyAndSet andSet(intersectionSet);
+			auto documents = documentStore->getDocuments();
+			
+			
+			shared_ptr<Set::Iterator> it = andSet.iterator();
+			while(it->nextDoc()!= NO_MORE_DOCS) {
+				documentSet.insert(documents[it->docID()]);
 			}
 
 			return documentSet;
@@ -239,6 +213,8 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		map<unsigned int, set<unsigned int>> invertedIndex;
+	//	map<unsigned int, set<unsigned int>> invertedIndex;
+		
+		InvertedIndexSimple invertedIndex;
 
 };
