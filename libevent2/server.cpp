@@ -65,7 +65,7 @@
 #include "Constants.hpp"
 #include "Engine.hpp"
 
-static const std::string POST_HTM = "post.htm";
+static const std::string POST_HTM = "/post.htm";
 static const std::string SEARCH_PATH = "/search";
 static const std::string POST_PATH = "/post";
 static const std::string ROOT = "/";
