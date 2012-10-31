@@ -26,8 +26,8 @@ class Word
 
 		bool operator<(const Word& compare) const
 		{
-			string me = field + zsearch::KEYWORD_SPLITTER + word;
-			string other = compare.getField() + zsearch::KEYWORD_SPLITTER + compare.getWord();
+			string me = field + '/' + word;
+			string other = compare.getField() + '/' + compare.getWord();
 			return me < other;
 		}
 		

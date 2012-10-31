@@ -21,10 +21,8 @@ class Engine
 		//
 		// http://stackoverflow.com/questions/8385457/should-i-pass-a-shared-ptr-by-reference
 		//
-		Engine(const char keyWordSplitter,
-				shared_ptr<ITokenizer> tokenizer,
+		Engine(	shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore) :
-			keyWordSplitter(keyWordSplitter),
 			tokenizer(tokenizer),
 			documentStore(documentStore)
 		{
@@ -50,7 +48,6 @@ class Engine
 
 				for (auto token : tokens)
 				{
-					// string word = field + keyWordSplitter + token;
 					Word word(field, token);
 
 					auto found = wordIndex.find(word);
@@ -68,55 +65,6 @@ class Engine
 
 			return docId++;
 		}
-
-		/*
-		set<shared_ptr<IDocument>> getDocumentSet(const string& word)
-		{
-			set<shared_ptr<IDocument>> documentSet;
-
-			auto found = wordIndex.find(word);
-
-			if (found != wordIndex.end())
-			{
-				auto documents = documentIndex->getDocuments();
-
-				auto wordId = found->second;
-				auto docSet = invertedIndex[wordId];
-
-				for (auto id : docSet)
-				{
-					documentSet.insert(documents[id]);
-				}
-			}
-
-			return move(documentSet);
-		}
-		*/
-
-		/*
-		set<unsigned int> getDocumentIdSet(const set<string>& words)
-		{
-			set<unsigned int> documentSet;
-
-			for (auto word : words)
-			{
-				auto found = wordIndex.find(word);
-
-				if (found != wordIndex.end())
-				{
-					auto wordId = found->second;
-					auto docSet = invertedIndex[wordId];
-
-					for (auto id : docSet)
-					{
-						documentSet.insert(id);
-					}
-				}
-			}
-
-			return move(documentSet);
-		}
-		*/
 
 		set<Word> getWords()
 		{
@@ -198,7 +146,6 @@ class Engine
 		unsigned long wordId = 0;
 
 		string queryParserDelimiters;
-		char keyWordSplitter;
 
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;

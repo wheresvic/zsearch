@@ -446,7 +446,7 @@ int main(int argc, char **argv)
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 
-	engine = new Engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
+	engine = new Engine( tokenizer, documentStore);
 
 	unsigned short port = 8080;
 #ifdef _WIN32
