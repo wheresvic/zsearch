@@ -13,13 +13,13 @@ HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include 
-LIBS = -L/opt/local/lib -levent -lm
+CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include -I../leveldb-1.7.0/include
+LIBS = -L/opt/local/lib -levent -lleveldb -lm
 endif
 
 ifeq ($(OSNAME), Linux)
-CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
-LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lm
+CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include -I../leveldb-1.7.0/include
+LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lleveldb -lm
 endif
 
 
