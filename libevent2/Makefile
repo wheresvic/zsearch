@@ -8,7 +8,7 @@ OSNAME  := $(shell uname -s)
 CC = g++
 CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 BUILD_DIR = ../build
-OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o
+OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/CompressedSet.a
 HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
@@ -37,7 +37,6 @@ server: server.cpp $(HEADERS) $(OBJECTS)
 
 engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-
 
 ##
 # Classes

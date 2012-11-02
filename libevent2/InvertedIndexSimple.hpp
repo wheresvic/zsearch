@@ -13,26 +13,7 @@
 class InvertedIndexSimple : public IInvertedIndex
 {
 private:
-	KVStore::KVStore store;
-	
-	char* EncodeVarint64(char* dst, uint64_t v) {
-	  static const int B = 128;
-	  unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
-	  while (v >= B) {
-	    *(ptr++) = (v & (B-1)) | B;
-	    v >>= 7;
-	  }
-	  *(ptr++) = static_cast<unsigned char>(v);
-	  return reinterpret_cast<char*>(ptr);
-	}
-
-	void PutVarint64(std::string& dst, uint64_t v) {
-	  char buf[10];
-	  char* ptr = EncodeVarint64(buf, v);
-	  dst.append(buf, ptr - buf);
-	}
-	
-	
+	KVStore::KVStore store;	
 	void printSet(unsigned int wordId,CompressedSet& set){
 		std::cout << "wordId: [" << wordId << "]" << std::endl;
 		shared_ptr<Set::Iterator> it = set.iterator();
@@ -50,10 +31,8 @@ public:
          }
 
 		 int get(unsigned int wordId, CompressedSet*& set) {
-			string key;
-			PutVarint64(key,wordId);
 			string bitmap;
-			if(store.Get(key,bitmap).ok()){
+			if(store.Get(wordId,bitmap).ok()){
 				stringstream bitmapStream(bitmap);
 				set = new CompressedSet();
 			    set->read(bitmapStream);
@@ -64,24 +43,19 @@ public:
 		 }
 		
 		 bool exist(unsigned int wordId){
-			string key;
-			PutVarint64(key,wordId);
 			string ret;
-			bool found = store.Get(key,ret).ok();
+			bool found = store.Get(wordId,ret).ok();
 
 			return found;
 		 };
 		
 		
 		 int put(unsigned int wordId, CompressedSet& set) {
-			string key;
-			PutVarint64(key,wordId);
-			
 			stringstream ss;
 			set.write(ss);
 			string bitmap = ss.str();
 			
-			if (store.Put(key,bitmap).ok()){
+			if (store.Put(wordId,bitmap).ok()){
 				return 1;
 			} else {
 				return 0;

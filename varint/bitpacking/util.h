@@ -28,17 +28,9 @@ using namespace std;
 #endif
 
  __attribute__ ((const))
- bool divisibleby(size_t a, uint32_t x) {
-     return (a % x == 0);
- }
+bool divisibleby(size_t a, uint32_t x);
 
- void checkifdivisibleby(size_t a, uint32_t x) {
-     if (!divisibleby(a, x)) {
-         ostringstream convert;
-         convert << a << " not divisible by " << x;
-         throw logic_error(convert.str());
-     }
- }
+void checkifdivisibleby(size_t a, uint32_t x);
 
  template <class T>
  __attribute__ ((const))
@@ -60,7 +52,6 @@ using namespace std;
      }
      return gccbits(accumulator);
  }
-
 
  // For VariableByte codec
  template <class T>

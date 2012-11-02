@@ -16,6 +16,7 @@ class IDocumentStore
 		virtual ~IDocumentStore() { }
 
 		virtual void addDoc(unsigned int, shared_ptr<IDocument> doc) = 0;
+		
 		virtual void removeDoc(unsigned int docId) = 0;
 
 		// need to add iterator class instead of exposing the underlying implementation

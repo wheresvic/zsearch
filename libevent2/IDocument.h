@@ -8,6 +8,7 @@
 #include <exception>
 #include <string>
 #include <memory>
+#include <iostream>
 
 using namespace std;
 
@@ -20,8 +21,9 @@ class IDocument
 		virtual const map<string, string>& getEntries() = 0;
 		
 		virtual void getEntry(const string& key, string& value) = 0;
+		
+		virtual void write(ostream & out) = 0;
 
-		// http://stackoverflow.com/questions/318064/how-do-you-declare-an-interface-in-c
 		virtual ~IDocument() { }
 };
 

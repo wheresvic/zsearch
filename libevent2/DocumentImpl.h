@@ -23,6 +23,8 @@ class DocumentImpl : public IDocument
 		void getEntry(const string& key, string& value);
 
 		const map<string, string>& getEntries();
+		
+		void write(ostream & out);
 
 	private:
 

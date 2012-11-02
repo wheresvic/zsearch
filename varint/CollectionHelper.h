@@ -86,26 +86,4 @@
       }
       return -1;
     }
-
-///**
-// * Prefix Sum
-// * 
-// */
-//void preProcessBlockOpt(unsigned int block[], size_t start, size_t len)
-//{
-//  for(int i=start+len-1; i>start; --i)
-//  {
-//    block[i] = block[i] - block[i-1] - 1; 
-//  }
-//}
-//
-//
-///**
-// * Reverse Prefix Sum
-// */
-//void postProcessBlock(unsigned int block[], size_t size){
-//  for(int i=1; i<size; ++i) {
-//    block[i] = block[i] + block[i-1] + 1;     
-//  }
-//}
 #endif // COLLECTION_HELPER_H__

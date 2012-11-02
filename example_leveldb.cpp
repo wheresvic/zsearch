@@ -22,10 +22,35 @@ using namespace std;
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
 
-vector<char> encodeVarInt(int64_t nParam)
+char* EncodeVarint64(char* dst, uint64_t v) {
+  static const int B = 128;
+  unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
+  while (v >= B) {
+    *(ptr++) = (v & (B-1)) | B;
+    v >>= 7;
+  }
+  *(ptr++) = static_cast<unsigned char>(v);
+  return reinterpret_cast<char*>(ptr);
+}
+
+void PutVarint64(std::string* dst, uint64_t v) {
+  char buf[10];
+  char* ptr = EncodeVarint64(buf, v);
+  dst->append(buf, ptr - buf);
+}
+
+int VarintLength(uint64_t v) {
+  int len = 1;
+  while (v >= 128) {
+    v >>= 7;
+    len++;
+  }
+  return len;
+}
+
+vector<char> encodeVarInt(uint64_t n)
 {
-    uint64_t n = static_cast<uint64_t>(nParam);
-    std::vector<char> ret; // FIXME: Size this at creation.
+    std::vector<char> ret(10); 
 
     do {
         unsigned char c = n & 0x7f;

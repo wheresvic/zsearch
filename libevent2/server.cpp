@@ -140,8 +140,9 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 			if (key.compare(zsearch::GET_QUERY_KEY) == 0)
 			{
 				std::cout << "searching for " << value << std::endl;
+			
 				auto docSet = engine->search(value);
-
+	            
 				for (auto document : docSet)
 				{
 					std::string title;
@@ -150,6 +151,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 					evbuffer_add_printf(evb, title.c_str());
 					evbuffer_add_printf(evb, "\n");
 				}
+				
 			}
 		}
 

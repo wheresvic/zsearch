@@ -3,7 +3,6 @@
 
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
-#include <map>
 #include <string>
 namespace KVStore {
 class Status {
@@ -60,35 +59,17 @@ public:
 
 class KVStore
 {
-private:
-	char* EncodeVarint64(char* dst, uint64_t v) {
-	  static const int B = 128;
-	  unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
-	  while (v >= B) {
-	    *(ptr++) = (v & (B-1)) | B;
-	    v >>= 7;
-	  }
-	  *(ptr++) = static_cast<unsigned char>(v);
-	  return reinterpret_cast<char*>(ptr);
-	}
-
-	void PutVarint64(std::string& dst, uint64_t v) {
-	  char buf[10];
-	  char* ptr = EncodeVarint64(buf, v);
-	  dst.append(buf, ptr - buf);
-	}
-		
 	leveldb::DB* db;
-public:
+	public:
   
 		KVStore(){
 			db = NULL;
 		}
 		
-		Status Open(const std::string& path){
+		Status Open(){
 			leveldb::Options options;
 		    options.create_if_missing = true;
-		    leveldb::Status status = leveldb::DB::Open(options, path, &db);
+		    leveldb::Status status = leveldb::DB::Open(options, "/tmp/testdb", &db);
 			return Status::OK();	
 		}
 			
@@ -100,12 +81,6 @@ public:
 				return Status::NotFound();
 			}
 		}
-		
-		Status Put(uint64_t key,const std::string& value){
-			string keystr;
-			PutVarint64(keystr,key);
-			return Put(keystr,value);
-		}
 
 		Status Get(const std::string& key, std::string* value){
 			leveldb::Status s = db->Get(leveldb::ReadOptions(), key, value);
@@ -116,15 +91,6 @@ public:
 			}
 		}
 		
-		Status Get(const std::string& key, std::string& value){
-			return Get(key,&value);
-		}
-		
-		Status Get(uint64_t key, std::string& value){
-			string keystr;
-			PutVarint64(keystr,key);
-			return Get(keystr,&value);
-		}
 		
 		Status Delete(const std::string& key){
 			leveldb::Status s = db->Delete(leveldb::WriteOptions(), key);
@@ -135,7 +101,8 @@ public:
 			}
 		}
 		
-
+		
+		
 		~KVStore(){
 			delete db;	
 		}
