@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool testvec(vector<uint32_t,cacheallocator> & data){
+bool testvec(vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> & data){
 	stringstream ss;
 	{
       CompressedSet myset2;
@@ -41,7 +41,7 @@ void test(){
         cout << "testing1... b = " << b << endl;
         for (size_t length = 128; length < (1U << 12); length += 128) {
 	        //cout << "   length = " << length << endl;
-	        vector<uint32_t,cacheallocator> data(length);
+	        vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> data(length);
 	        for (size_t i = 0; i < data.size(); ++i) {
                 data[i] = (i + (24 - i) * (12 - i)) % (1U << b);
             }
@@ -52,7 +52,7 @@ void test(){
         cout << "testing2... b = " << b << endl;
        	for (size_t length = 1; length < (1U << 9); ++length) {
 	      //  cout << "   length = " << length << endl;
-		    vector<uint32_t,cacheallocator> data(length);
+		    vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> data(length);
 	        for (size_t i = 0; i < data.size(); ++i) {
 	           data[i] = (33231 - i + i * i) % (1U << b);
 	        }
