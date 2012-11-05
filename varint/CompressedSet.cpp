@@ -10,7 +10,7 @@
 
     CompressedSet::CompressedSet(const CompressedSet& other){
 	    assert(totalDocIdNum <= 1); // You are trying to copy the bitmap, a terrible idea in general, for performance reasons
-		
+		//Need to be fixed (myDecompBlock should be 128bit aligned)
         myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = other.lastAdded;
@@ -320,6 +320,7 @@
         compBlockNum = set->sequenceOfCompBlocks.size();
 
         lastAccessedDocId = -1;
+        // need to be fixed (iterDecompBlock should be 128bit aligned)
         iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
         cursor = -1;
         totalDocIdNum = set->totalDocIdNum;
@@ -330,7 +331,7 @@
     totalDocIdNum = other.totalDocIdNum;
     lastAccessedDocId = other.lastAccessedDocId;    
     compBlockNum = other.compBlockNum;
-    // need to be fixed (should be 128bit aligned)
+    // need to be fixed (iterDecompBlock should be 128bit aligned)
     iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
     memcpy(iterDecompBlock,other.iterDecompBlock,sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
 
