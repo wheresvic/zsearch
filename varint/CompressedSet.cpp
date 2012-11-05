@@ -8,15 +8,18 @@
 #include "CollectionHelper.h"
 #include "CompressedSet.h"
 
-    CompressedSet::CompressedSet(const CompressedSet& other){
+    CompressedSet::CompressedSet(const CompressedSet& other) : myDecompBlock(DEFAULT_BATCH_SIZE, 0)
+	{
 	    assert(totalDocIdNum <= 1); // You are trying to copy the bitmap, a terrible idea in general, for performance reasons
 		//Need to be fixed (myDecompBlock should be 128bit aligned)
-        myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
+        // myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
+		
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = other.lastAdded;
         sizeOfCurrentNoCompBlock = other.sizeOfCurrentNoCompBlock;
         totalDocIdNum = other.totalDocIdNum;
-        memcpy( myDecompBlock,other.myDecompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
+        // memcpy( myDecompBlock,other.myDecompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
+		memcpy(&myDecompBlock[0], &other.myDecompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
         memcpy( currentNoCompBlock,other.currentNoCompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE );	
     }
 
@@ -32,9 +35,10 @@
     }
 
     
-    CompressedSet::CompressedSet(){
+    CompressedSet::CompressedSet() : myDecompBlock(DEFAULT_BATCH_SIZE, 0)
+	{
 	    //Need to be fixed (myDecompBlock should be 128bit aligned)
-        myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
+        // myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = 0;
         sizeOfCurrentNoCompBlock = 0;
@@ -44,13 +48,14 @@
     
     CompressedSet::~CompressedSet(){
         delete[] currentNoCompBlock;
-        delete[] myDecompBlock;
+        // delete[] myDecompBlock;
     }
 
     /**
      *  Flush the data left in the currentNoCompBlock into the compressed data
      */
-    void CompressedSet::flush() {
+    void CompressedSet::flush() 
+	{
       baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
       preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
       shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);   
@@ -59,7 +64,8 @@
 
     }
 
-    void CompressedSet::write(ostream & out)  {
+    void CompressedSet::write(ostream & out)  
+	{
 	    if(sizeOfCurrentNoCompBlock!= 0){
 		  flush();
 	    }
@@ -74,8 +80,9 @@
         out.flush();    
     }
 
-    void CompressedSet::read(istream & in)  {
-        memset(myDecompBlock, 0, DEFAULT_BATCH_SIZE*4);
+    void CompressedSet::read(istream & in)  
+	{
+        memset(&myDecompBlock[0], 0, DEFAULT_BATCH_SIZE*4);
         memset(currentNoCompBlock, 0, DEFAULT_BATCH_SIZE*4);
 
         //read totalDocIdNum
@@ -302,60 +309,64 @@
         // first find which block to decompress by looking into baseListForOnlyCompBlocks
         if(baseListForOnlyCompBlocks.size()>0) {
             // baseListForOnlyCompBlocks.size() must then >0
-           int iterDecompBlock = binarySearchInBaseListForBlockThatMayContainTarget(baseListForOnlyCompBlocks, 0, baseListForOnlyCompBlocks.size()-1, target);
-           if(iterDecompBlock<0)
+           int index = binarySearchInBaseListForBlockThatMayContainTarget(baseListForOnlyCompBlocks, 0, baseListForOnlyCompBlocks.size()-1, target);
+           if(index<0)
              return false; // target is bigger then biggest value
             
            ////uncompress block 
-           Source src = sequenceOfCompBlocks.get(iterDecompBlock).getSource();
-           size_t uncompSize = codec.Uncompress(src,myDecompBlock,DEFAULT_BATCH_SIZE);
-           return codec.findInDeltaArray(myDecompBlock,uncompSize,target);
+           Source src = sequenceOfCompBlocks.get(index).getSource();
+           size_t uncompSize = codec.Uncompress(src, &myDecompBlock[0] ,DEFAULT_BATCH_SIZE);
+           return codec.findInDeltaArray(&myDecompBlock[0], uncompSize,target);
         }
         return false;
     }
 
 
-   CompressedSet::Iterator::Iterator(const CompressedSet* const parentSet) {
+   CompressedSet::Iterator::Iterator(const CompressedSet* const parentSet) : iterDecompBlock(DEFAULT_BATCH_SIZE, 0)
+   {
         set = parentSet;
         compBlockNum = set->sequenceOfCompBlocks.size();
 
         lastAccessedDocId = -1;
         // need to be fixed (iterDecompBlock should be 128bit aligned)
-        iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
+        // iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
         cursor = -1;
         totalDocIdNum = set->totalDocIdNum;
     }
 
-   CompressedSet::Iterator::Iterator(const CompressedSet::Iterator& other){
+   CompressedSet::Iterator::Iterator(const CompressedSet::Iterator& other) : iterDecompBlock(DEFAULT_BATCH_SIZE, 0)
+   {
     cursor = other.cursor;
     totalDocIdNum = other.totalDocIdNum;
     lastAccessedDocId = other.lastAccessedDocId;    
     compBlockNum = other.compBlockNum;
     // need to be fixed (iterDecompBlock should be 128bit aligned)
-    iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
-    memcpy(iterDecompBlock,other.iterDecompBlock,sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
+    // iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
+    memcpy(&iterDecompBlock[0], &other.iterDecompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
 
     set = other.set;
     //BLOCK_INDEX_SHIFT_BITS = other.BLOCK_INDEX_SHIFT_BITS;
    }
 
-   CompressedSet::Iterator& CompressedSet::Iterator::operator=(const CompressedSet::Iterator& other){
-    delete[] iterDecompBlock;
+   CompressedSet::Iterator& CompressedSet::Iterator::operator=(const CompressedSet::Iterator& other)
+   {
+    // delete[] iterDecompBlock;
     cursor = other.cursor;
     totalDocIdNum = other.totalDocIdNum;
     lastAccessedDocId = other.lastAccessedDocId;    
     compBlockNum = other.compBlockNum;
 
-    iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
-    memcpy(iterDecompBlock,other.iterDecompBlock,sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
+    // iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
+    memcpy(&iterDecompBlock[0], &other.iterDecompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
 
     set = other.set;
     //BLOCK_INDEX_SHIFT_BITS = other.BLOCK_INDEX_SHIFT_BITS;
     return *this;
    }
 
-   CompressedSet::Iterator::~Iterator(){
-       delete[] iterDecompBlock;
+   CompressedSet::Iterator::~Iterator()
+   {
+       // delete[] iterDecompBlock;
    }
 
     /**
@@ -384,7 +395,7 @@
          } else {
 	        // (offset==0) must be in one of the compressed blocks
              Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
-             size_t uncompSize = set->codec.Uncompress(src,iterDecompBlock,DEFAULT_BATCH_SIZE);
+             size_t uncompSize = set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
              lastAccessedDocId = iterDecompBlock[0];
          }
         }
@@ -410,7 +421,7 @@
       assert(iterBlockIndex >= 0); 
 
       Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
-      size_t uncompSize = set->codec.Uncompress(src,iterDecompBlock,DEFAULT_BATCH_SIZE);
+      size_t uncompSize = set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
 
       lastAccessedDocId = iterDecompBlock[0];
       if (lastAccessedDocId >= target) {

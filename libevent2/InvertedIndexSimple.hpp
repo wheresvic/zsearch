@@ -26,8 +26,9 @@ private:
 	}
 		
 public:
-         InvertedIndexSimple(){
-			store.Open("/tmp/InvertedIndex");
+         InvertedIndexSimple() : store("/tmp/InvertedIndex")
+		 {
+			store.Open();
          }
 
 		 int get(unsigned int wordId, CompressedSet*& set) {

@@ -47,7 +47,8 @@ class Engine
 				for (auto token : tokens)
 				{
 					Word word(field, token);
-
+					cout << "field : " << field << ", token: " << token << endl;
+					
 					auto found = wordIndex.find(word);
                     if (found != wordIndex.end()){
 	                   unsigned int id = found->second;

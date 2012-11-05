@@ -16,7 +16,7 @@ using namespace std;
        
     //Code below is part of the public interface
 
-    bool Codec::findInDeltaArray(unsigned int array[],size_t size,unsigned int target) const {       
+    bool Codec::findInDeltaArray(const unsigned int* array, size_t size,unsigned int target) const {       
        unsigned int lastId = array[0];
        if (lastId == target) return true;
        // searching while doing prefix sum (to get docIds instead of d-gaps)

@@ -13,7 +13,7 @@ HEADERS =
 
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  
+CFLAGS = -std=gnu++0x -Wall -O3 -pedantic  
 LIBS = 
 endif
 

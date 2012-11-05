@@ -50,7 +50,10 @@ int main()
 		size_t found = input.find_first_of(documentDelimiter);
 		if (found != string::npos)
 		{
-			doc->addEntry(input.substr(0, found), input.substr(found + 1));
+			string field = input.substr(0, found);
+			string value = input.substr(found + 1);
+			cout << "field : " << field << ", value: " << value << endl;
+			doc->addEntry(field, value);
 		}
 		else
 		{

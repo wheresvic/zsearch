@@ -6,7 +6,7 @@
 using namespace std;
 
 DocumentStoreSimple::DocumentStoreSimple() {
-	store.Open("/tmp/DocumentStore");	
+	// store.Open("/tmp/DocumentStore");	
 }
 
 void DocumentStoreSimple::addDoc(unsigned int docId, shared_ptr<IDocument> doc) {

@@ -21,7 +21,7 @@ class DocumentStoreSimple : public IDocumentStore
 
 	private:
 		map<unsigned int, shared_ptr<IDocument>> documents;
-		KVStore::KVStore store;
+		// KVStore::KVStore store;
 };
 
 #endif

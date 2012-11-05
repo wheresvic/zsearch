@@ -5,6 +5,9 @@
 #include "leveldb/cache.h"
 #include <map>
 #include <string>
+#include <sstream>
+#include <iostream>
+
 namespace KVStore {
 class Status {
 	enum Code {
@@ -61,7 +64,8 @@ public:
 class KVStore
 {
 private:
-	char* EncodeVarint64(char* dst, uint64_t v) {
+	char* EncodeVarint64(char* dst, uint64_t v) 
+	{
 	  static const int B = 128;
 	  unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
 	  while (v >= B) {
@@ -72,20 +76,40 @@ private:
 	  return reinterpret_cast<char*>(ptr);
 	}
 
-	void PutVarint64(std::string& dst, uint64_t v) {
+	void PutVarint64(std::string& dst, uint64_t v) 
+	{
+	  /*
 	  char buf[10];
 	  char* ptr = EncodeVarint64(buf, v);
 	  dst.append(buf, ptr - buf);
+	  */
+	  
+	  std::stringstream ss;
+	  ss << v;
+	  dst = ss.str();
+	  std::cout << "converted " << dst << std::endl;
+
 	}
 		
 	leveldb::DB* db;
+	std::string path;
+	
 public:
   
-		KVStore(){
+		KVStore(const std::string& path) : path(path)
+		{
 			db = NULL;
 		}
 		
-		Status Open(const std::string& path){
+		~KVStore()
+		{
+			delete db;	
+			leveldb::Options options;
+			leveldb::DestroyDB(path, options);
+		}
+		
+		Status Open()
+		{
 			leveldb::Options options;
 		    options.create_if_missing = true;
 		    leveldb::Status status = leveldb::DB::Open(options, path, &db);
@@ -102,6 +126,8 @@ public:
 		}
 		
 		Status Put(uint64_t key,const std::string& value){
+		
+		     cout << "PUT ... KEY: " << key << " ,Value.length(): " << value.size()<<endl;
 			string keystr;
 			PutVarint64(keystr,key);
 			return Put(keystr,value);
@@ -110,6 +136,7 @@ public:
 		Status Get(const std::string& key, std::string* value){
 			leveldb::Status s = db->Get(leveldb::ReadOptions(), key, value);
 			if (s.ok()) {
+				cout << "GET ... KEY: " << key << " ,Value.length(): " << value->size()<<endl;
 				return Status::OK();	
 			} else {
 				return Status::NotFound();
@@ -135,10 +162,6 @@ public:
 			}
 		}
 		
-
-		~KVStore(){
-			delete db;	
-		}
 
 };
 

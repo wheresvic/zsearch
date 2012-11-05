@@ -16,6 +16,8 @@
 #include "DeltaChunkStore.h"
 #include "CompressedDeltaChunk.h"
 #include "Codec.h"
+#include "bitpacking/memutil.h"
+
 using namespace std;
 const int NO_MORE_DOCS = std::numeric_limits<int>::max();
 class CompressedSet;
@@ -28,7 +30,8 @@ public:
         unsigned int totalDocIdNum;
        
         int compBlockNum; // the number of compressed blocks
-        unsigned int*  iterDecompBlock; // temporary storage for the decompressed data
+        // unsigned int*  iterDecompBlock; // temporary storage for the decompressed data
+		vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> iterDecompBlock;
 		unsigned int* currentNoCompBlock;
 
         //parent
@@ -53,7 +56,9 @@ private:
     // the last docID 
     // of each block in words in uncompressed form.
     vector<unsigned int> baseListForOnlyCompBlocks;
-    unsigned int* myDecompBlock;
+    // unsigned int* myDecompBlock;
+	mutable vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> myDecompBlock;
+	
 	const CompressedSet& operator=(const CompressedSet& other);
 
 

@@ -4,6 +4,7 @@
 # $< name of the first prerequisite
 
 OSNAME  := $(shell uname -s)
+ARCH := $(shell uname -m)
 
 CC = g++
 BUILD_DIR = ../build
@@ -13,13 +14,13 @@ HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS =  -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include -I../leveldb-1.7.0/include
-LIBS = -L/opt/local/lib -levent -lleveldb -lm
+CFLAGS = -std=gnu++0x -Wall -O3 -pedantic  -I/opt/local/include -I../leveldb-1.7.0/include
+LIBS = -L/opt/local/lib -lleveldb -lm -levent
 endif
 
 ifeq ($(OSNAME), Linux)
 CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include -I../leveldb-1.7.0/include
-LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L../leveldb-1.7.0 -levent -lm
+LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L../leveldb-1.7.0 -lm -lpthread -levent
 endif
 
 
