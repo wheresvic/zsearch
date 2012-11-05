@@ -17,7 +17,7 @@ private:
 	
 	KVStore::KVStoreLevelDb store;	
 	
-	void printSet(unsigned int wordId,CompressedSet& set)
+	void printSet(unsigned int wordId, CompressedSet& set)
 	{
 		std::cout << "wordId: [" << wordId << "]" << std::endl;
 		shared_ptr<Set::Iterator> it = set.iterator();
@@ -74,7 +74,7 @@ public:
 		return 0;	
 	}
 
-	int add(unsigned int wordId, unsigned int  docid)
+	int add(unsigned int wordId, unsigned int docid)
 	{		
 		if (exist(wordId))
 		{
@@ -89,7 +89,7 @@ public:
 			CompressedSet set;
 			set.addDoc(docid);
 			put(wordId,set);
-		}
+		}		
 		
 		return 1;
 	}
