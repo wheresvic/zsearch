@@ -21,13 +21,11 @@ class Engine
 		//
 		// http://stackoverflow.com/questions/8385457/should-i-pass-a-shared-ptr-by-reference
 		//
-		Engine(	shared_ptr<ITokenizer> tokenizer,
+		Engine(shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore) :
 			tokenizer(tokenizer),
 			documentStore(documentStore)
-		{
-
-		}
+		{ }
 
 		unsigned int addDocument(shared_ptr<IDocument> document)
 		{
@@ -58,7 +56,7 @@ class Engine
  					   wordIndex.insert(make_pair(word,wordId));
 	                   invertedIndex.add(wordId++,docId);
                     }
-				
+
 				}
 
 			} // end looping through entries
@@ -111,17 +109,17 @@ class Engine
 			for (auto token : tokens) {
 				queryTokens.insert(token);
 			}
-			
+
 			vector<shared_ptr<Set>> intersectionSet;
 			for (auto token : queryTokens) {
 				vector<shared_ptr<Set>> unionSet;
 				for (auto field : fields) {
 					Word word(field, token);
 					auto found = wordIndex.find(word);
-					
+
 					if (found != wordIndex.end()) {
 						auto wordId = found->second;
-						CompressedSet* docSet; 
+						CompressedSet* docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(shared_ptr<Set>(docSet));
 					}
@@ -130,8 +128,8 @@ class Engine
 			}
 			LazyAndSet andSet(intersectionSet);
 			auto documents = documentStore->getDocuments();
-			
-			
+
+
 			shared_ptr<Set::Iterator> it = andSet.iterator();
 			while(it->nextDoc()!= NO_MORE_DOCS) {
 				cout << it->docID() << endl;
@@ -162,7 +160,7 @@ class Engine
 
 		// inverted index that maps words(wordId) to documents that contain it
 	//	map<unsigned int, set<unsigned int>> invertedIndex;
-		
+
 		InvertedIndexSimple invertedIndex;
 
 };

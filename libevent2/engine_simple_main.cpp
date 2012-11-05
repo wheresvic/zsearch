@@ -35,7 +35,7 @@ int main()
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 
-	Engine engine(zsearch::KEYWORD_SPLITTER, tokenizer, documentStore);
+	Engine engine(tokenizer, documentStore);
 
 	// test input
 	while (getline(cin, input))
@@ -45,7 +45,7 @@ int main()
 		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
 		// doc->setTitle(title);
 		doc->addEntry("title", title);
-		
+
 		// parse the input, each line is a single document
 		size_t found = input.find_first_of(documentDelimiter);
 		if (found != string::npos)
@@ -93,7 +93,7 @@ int main()
 		*/
 
 		auto docSet = engine.search(word.getWord());
-		
+
 		for (auto document : docSet)
 		{
 			string title;
@@ -110,7 +110,7 @@ int main()
 	cout << "searching for: " << query << endl;
 
 	auto docSet = engine.search(query);
-	
+
 	for (auto document : docSet)
 	{
 		string title;

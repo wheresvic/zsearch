@@ -15,6 +15,7 @@
 #include "lib/tpunit++.hpp"
 #include "Constants.hpp"
 
+#include "InvertedIndexSimple.hpp"
 
 using namespace std;
 
@@ -179,11 +180,32 @@ struct DocumentImplTest : tpunit::TestFixture
 };
 
 
+/**
+ * Test InvertedIndex
+ */
+struct InvertedIndexSimpleTest : tpunit::TestFixture
+{
+	InvertedIndexSimpleTest() : tpunit::TestFixture
+	(
+		TEST(InvertedIndexSimpleTest::testBasic)
+	)
+	{ }
+
+	void testBasic()
+	{
+		InvertedIndexSimple invertedIndex;
+		invertedIndex.add(1, 44);
+		ASSERT_TRUE(invertedIndex.exist(1));
+	}
+
+};
+
 int main()
 {
 	QueryParserTest __QueryParserTest;
 	XmlTest __XmlTest;
 	DocumentImplTest __DocumentImplTest;
+	InvertedIndexSimpleTest __InvertedIndexSimpleTest;
 
 	/**
 	 * Run all of the registered tpunit++ tests. Returns 0 if

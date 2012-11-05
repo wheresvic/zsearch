@@ -6,9 +6,9 @@
 OSNAME  := $(shell uname -s)
 
 CC = g++
-CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
 BUILD_DIR = ../build
-OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/CompressedSet.a
+LEVELDB_DIR = ../leveldb-1.7.0
+OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
 
@@ -19,7 +19,7 @@ endif
 
 ifeq ($(OSNAME), Linux)
 CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse3 -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include -I../leveldb-1.7.0/include
-LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -levent -lleveldb -lm
+LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L../leveldb-1.7.0 -levent -lm
 endif
 
 
@@ -30,7 +30,7 @@ clean :
 all: server engine tests
 
 tests: unittests.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS_SIMPLE) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 server: server.cpp $(HEADERS) $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
