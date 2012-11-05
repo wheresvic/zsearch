@@ -33,6 +33,7 @@
 
     
     CompressedSet::CompressedSet(){
+	    //Need to be fixed (myDecompBlock should be 128bit aligned)
         myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = 0;
@@ -329,7 +330,7 @@
     totalDocIdNum = other.totalDocIdNum;
     lastAccessedDocId = other.lastAccessedDocId;    
     compBlockNum = other.compBlockNum;
-
+    // need to be fixed (should be 128bit aligned)
     iterDecompBlock  = new unsigned int[DEFAULT_BATCH_SIZE];
     memcpy(iterDecompBlock,other.iterDecompBlock,sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
 
