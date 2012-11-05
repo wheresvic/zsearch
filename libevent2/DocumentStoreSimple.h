@@ -5,7 +5,8 @@
 #include "IDocumentStore.h"
 #include <map>
 #include <memory>
-#include "KVStore.hpp"
+#include "KVStoreLevelDb.hpp"
+
 using namespace std;
 
 class DocumentStoreSimple : public IDocumentStore

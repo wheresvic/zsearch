@@ -52,7 +52,7 @@ int main()
 		{
 			string field = input.substr(0, found);
 			string value = input.substr(found + 1);
-			cout << "field : " << field << ", value: " << value << endl;
+			// cout << "field : " << field << ", value: " << value << endl;
 			doc->addEntry(field, value);
 		}
 		else
