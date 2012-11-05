@@ -1,7 +1,7 @@
 #include "Codec.h"
 #include "Common.h"
 #include <vector>
-
+#include "bitpacking/util.h"
 
 using namespace std;
 
@@ -36,10 +36,13 @@ using namespace std;
 	}
 	
     size_t Codec::Uncompress(Source& src, unsigned int* dst,size_t size) const  {
-	   
+	   assert(!needPaddingTo128Bits(dst));
+	
+	
 	   size_t sourceSize;
 	   const uint8* srcptr = src.Peek(&sourceSize);
 	   const uint32_t* srcptr2= (const uint32_t*)srcptr;
+	   assert(!needPaddingTo128Bits(srcptr2));
 	   size_t memavailable = size;
 	   codec.decodeArray(srcptr2, sourceSize/4,dst,memavailable);
        return memavailable*4;

@@ -9,6 +9,9 @@
 using namespace std;
 
 bool testvec(vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> & data){
+	if (needPaddingTo128Bits(&data[0])){
+		cout << "test failed because of bad allignement" << endl;
+	}
 	stringstream ss;
 	{
       CompressedSet myset2;
