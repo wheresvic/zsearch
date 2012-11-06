@@ -58,7 +58,7 @@
 	{
       baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
       preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
-      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);   
+      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(currentNoCompBlock,DEFAULT_BATCH_SIZE);   
       sequenceOfCompBlocks.add(compRes);
       sizeOfCurrentNoCompBlock = 0;
 
