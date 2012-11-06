@@ -67,7 +67,7 @@ int main()
 
 	for (Word word : words)
 	{
-		cout << word.getField() << "," << word.getWord() << " ";
+		cout << word.getField() << "," << word.getWord() << " (" << word.getWord().size() << ") ";
 
 		/*
 		string bitmap = engine.getDocumentListBitmap(word);
@@ -122,6 +122,18 @@ int main()
 	}
 
 	cout << endl;
+
+	query = "bandes";
+	cout << "searching for: " << query << endl;
+
+	docSet = engine.search(query);
+
+	for (auto document : docSet)
+	{
+		string title;
+		document->getEntry("title", title);
+		cout << title << " ";
+	}
 
 	return 0;
 }
