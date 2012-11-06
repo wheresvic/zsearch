@@ -31,9 +31,9 @@ private:
     template<typename srctype>
     __inline__ shared_ptr<CompressedDeltaChunk> Compress(const srctype src, size_t srcSize) const {
 	   assert(!needPaddingTo128Bits(src));
-	
        shared_ptr<CompressedDeltaChunk> compblock(new CompressedDeltaChunk(sizeof(*src)*(srcSize + 2048)));
 	   vector<uint8,cacheallocator>& v = compblock->getVector();
+	   assert(!needPaddingTo128Bits(&v[0]));
 	   size_t memavailable = v.size()/4;
 	   codec.encodeArray((const uint32_t *)src, (sizeof(*src)*srcSize) / 4,(uint32_t *)&v[0], memavailable);
        compblock->resize(memavailable*4);
