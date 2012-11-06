@@ -246,7 +246,7 @@
 
   shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressCurrentBlock(){ 
     preProcessBlock(currentNoCompBlock, sizeOfCurrentNoCompBlock);
-    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(currentNoCompBlock,sizeOfCurrentNoCompBlock);
+    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(currentNoCompBlock,DEFAULT_BATCH_SIZE);
     return finalRes;  
   }
 
