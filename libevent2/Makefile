@@ -10,7 +10,7 @@ CC = g++
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
-HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
+HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp KVStoreInMemory.hpp
 
 
 ifeq ($(OSNAME), Darwin)
