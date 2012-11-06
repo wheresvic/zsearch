@@ -16,7 +16,7 @@ class InvertedIndexSimple : public IInvertedIndex
 {
 private:
 
-	KVStore::KVStoreInMemory store;
+	KVStore::KVStoreLevelDb store;
 
 	void printSet(unsigned int wordId, CompressedSet& set)
 	{
@@ -34,7 +34,7 @@ private:
 
 public:
 
-	InvertedIndexSimple() // : store("/tmp/InvertedIndex")
+	InvertedIndexSimple()  : store("/tmp/InvertedIndex")
 	{
 		store.Open();
 	}
