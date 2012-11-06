@@ -25,14 +25,15 @@ class CompressedSet;
 class CompressedSet : public Set {
 public:
     class Iterator : public Set::Iterator {
-	    int lastAccessedDocId; 
-        int cursor; // the current pointer of the input 
+	    int lastAccessedDocId;
+        int cursor; // the current pointer of the input
         unsigned int totalDocIdNum;
-       
+
         int compBlockNum; // the number of compressed blocks
         // unsigned int*  iterDecompBlock; // temporary storage for the decompressed data
+		// unsigned int* currentNoCompBlock;
 		vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> iterDecompBlock;
-		unsigned int* currentNoCompBlock;
+		vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> currentNoCompBlock;
 
         //parent
         const CompressedSet* set;
@@ -45,31 +46,32 @@ public:
         // assignator operator disabled for now
         CompressedSet::Iterator& operator=(const CompressedSet::Iterator& rhs);
         ~Iterator();
-    
+
         __inline__ int docID();
         __inline__ int nextDoc();
         int Advance(int target);
     };
-private:    
+private:
     unsigned int sizeOfCurrentNoCompBlock; // the number of uncompressed elements that is hold in the currentNoCompBlock
     // Two separate arrays containing
-    // the last docID 
+    // the last docID
     // of each block in words in uncompressed form.
     vector<unsigned int> baseListForOnlyCompBlocks;
     // unsigned int* myDecompBlock;
 	mutable vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> myDecompBlock;
-	
+
 	const CompressedSet& operator=(const CompressedSet& other);
 
 
 public:
-	unsigned int lastAdded; // recently inserted/accessed element   
-    Codec codec; // varint encoding codec    
-    unsigned int totalDocIdNum; // the total number of elemnts that have been inserted/accessed so far  
-    unsigned int* currentNoCompBlock;  // the memory used to store the uncompressed elements. Once the block is full, all its elements are compressed into sequencOfCompBlock and the block is cleared.
-    DeltaChunkStore sequenceOfCompBlocks; // Store for list compressed delta chunk 
-    
-    
+	unsigned int lastAdded; // recently inserted/accessed element
+    Codec codec; // varint encoding codec
+    unsigned int totalDocIdNum; // the total number of elemnts that have been inserted/accessed so far
+    // unsigned int* currentNoCompBlock;
+    vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> currentNoCompBlock;  // the memory used to store the uncompressed elements. Once the block is full, all its elements are compressed into sequencOfCompBlock and the block is cleared.
+    DeltaChunkStore sequenceOfCompBlocks; // Store for list compressed delta chunk
+
+
 	CompressedSet(const CompressedSet& other);
 
 
@@ -79,9 +81,9 @@ public:
      */
 	void swap(CompressedSet & x);
 
-    
+
     CompressedSet();
-    
+
 	~CompressedSet();
 
     /**
@@ -103,24 +105,24 @@ public:
     /**
      * Add document to this set
      * Note that you must set the bits in increasing order:
-     * addDoc(1), addDoc(2) is ok; 
+     * addDoc(1), addDoc(2) is ok;
      * addDoc(2), addDoc(1) is not ok.
      */
 	void addDoc(unsigned int docId);
-  
+
     CompressedSet unorderedAdd(unsigned int docId);
-    
+
     CompressedSet removeDoc(unsigned int docId);
-    
+
     void compactBaseListForOnlyCompBlocks();
-    
+
     void compact();
-    
+
     void initSet();
-    
+
     /**
      * Prefix Sum
-     * 
+     *
      */
     void preProcessBlock(unsigned int block[], size_t size);
 
@@ -135,8 +137,8 @@ public:
 	int size() const;
 
     /**
-     * if more then 1/8 of bit are set to 1 in range [minSetValue,maxSetvalue] 
-     * you should use EWAHBoolArray compression instead 
+     * if more then 1/8 of bit are set to 1 in range [minSetValue,maxSetvalue]
+     * you should use EWAHBoolArray compression instead
      * because this compression will take at least 8 bits by positions
      */
 	bool isDense();
