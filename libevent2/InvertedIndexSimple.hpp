@@ -80,8 +80,10 @@ public:
 		{
 			CompressedSet *set;
 			get(wordId,set);
-			set->addDoc(docid);
-			put(wordId,*set);
+			if (!set->find(docid)){
+				set->addDoc(docid);
+				put(wordId,*set);
+			}
 			delete set;
 		} 
 		else 
