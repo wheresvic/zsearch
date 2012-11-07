@@ -25,19 +25,15 @@ endif
 
 
 clean :
-	rm -f ../build/*.o *.o \
-		server engine tests
+	rm -f $(BUILD_DIR)/*.o $(BUILD_DIR)/server $(BUILD_DIR)/engine
 
-all: server engine tests
-
-tests: unittests.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+all: server engine
 
 server: server.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
 
 engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
 
 ##
 # Classes

@@ -9,7 +9,7 @@
 
 namespace zsearch
 {
-	const std::string QUERY_PARSER_DELIMITERS = " \t\n\r.,";
+	const std::string QUERY_PARSER_DELIMITERS = " \t\n\r.,;";
 	//const char KEYWORD_SPLITTER = '/';
 
 	const std::string POST_DATA_KEY = "data";
