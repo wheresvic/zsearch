@@ -9,8 +9,8 @@
 #include <iterator>
 
 
-#include "../src/lib/rapidxml.hpp"
-#include "../src/lib/tpunit++.hpp"
+#include "lib/rapidxml.hpp"
+#include "lib/tpunit++.hpp"
 #include "TestUtils.hpp"
 
 using namespace std;

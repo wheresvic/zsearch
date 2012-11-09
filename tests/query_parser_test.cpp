@@ -1,6 +1,6 @@
 
 #include "QueryParserTest.hpp"
-#include "../src/lib/tpunit++.hpp"
+#include "lib/tpunit++.hpp"
 
 using namespace std;
 

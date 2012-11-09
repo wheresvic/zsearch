@@ -7,8 +7,8 @@
 #include <iostream>
 #include <iterator>
 
-#include "../src/lib/tpunit++.hpp"
-#include "../src/DocumentImpl.h"
+#include "lib/tpunit++.hpp"
+#include "src/DocumentImpl.h"
 #include "TestUtils.hpp"
 
 using namespace std;

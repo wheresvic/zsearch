@@ -1,7 +1,7 @@
 // g++ --std=gnu++0x CompressedSet.cpp 
 
-#include "../varint/CompressedSet.h"
-#include "../varint/bitpacking/memutil.h"
+#include "varint/CompressedSet.h"
+#include "varint/bitpacking/memutil.h"
 #include <vector>
 #include <assert.h>
 #include <iostream>

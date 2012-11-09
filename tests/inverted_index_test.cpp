@@ -1,12 +1,12 @@
 
-#include "InvertedIndexSimpleTest.hpp"
-#include "../src/lib/tpunit++.hpp"
+#include "InvertedIndexImplTest.hpp"
+#include "lib/tpunit++.hpp"
 
 using namespace std;
 
 int main()
 {
-	InvertedIndexSimpleTest __InvertedIndexSimpleTest;
+	InvertedIndexImplTest __InvertedIndexImplTest;
 
 	/**
 	 * Run all of the registered tpunit++ tests. Returns 0 if

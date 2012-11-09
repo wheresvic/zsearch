@@ -8,10 +8,10 @@
 #include <iostream>
 #include <iterator>
 
-#include "../src/QueryParser.hpp"
-#include "../src/TokenizerImpl.h"
-#include "../src/Constants.hpp"
-#include "../src/lib/tpunit++.hpp"
+#include "src/QueryParser.hpp"
+#include "src/TokenizerImpl.h"
+#include "src/Constants.hpp"
+#include "lib/tpunit++.hpp"
 #include "TestUtils.hpp"
 
 using namespace std;
