@@ -7,8 +7,6 @@
 #include <string>
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
-#include "KVStoreLevelDb.hpp"
-#include "KVStoreInMemory.hpp"
 #include "IKVStore.h"
 
 	InvertedIndexImpl::InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store) : store(store)

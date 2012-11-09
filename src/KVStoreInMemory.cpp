@@ -1,40 +1,31 @@
-#ifndef KVSTORE_IN_MEMORY_H
-#define KVSTORE_IN_MEMORY_H
 
 #include <map>
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "IKVStore.h"
 #include <memory>
+
+#include "IKVStore.h"
+#include "KVStoreInMemory.h"
 
 namespace KVStore
 {
-
-	class KVStoreInMemory : public IKVStore
-	{
-		private:
-
-			void ConvertUint64ToString(std::string& dst, uint64_t v)
+			void KVStoreInMemory::ConvertUint64ToString(std::string& dst, uint64_t v)
 			{
 				std::stringstream ss;
 				ss << v;
 				dst = ss.str();
 			}
 
-			std::map<std::string, std::string> store;
-
-		public:
-		
-			KVStoreInMemory(const std::string& path) : IKVStore(path)
+			KVStoreInMemory::KVStoreInMemory(const std::string& path) : IKVStore(path)
 			{ }
 
-			Status Open()
+			Status KVStoreInMemory::Open()
 			{
 				return Status::OK();
 			}
 
-			Status Put(const std::string& key, const std::string& value)
+			Status KVStoreInMemory::Put(const std::string& key, const std::string& value)
 			{
 				auto iter = store.find(key);
 
@@ -50,14 +41,14 @@ namespace KVStore
 				return Status::OK();
 			}
 
-			Status Put(uint64_t key, const std::string& value)
+			Status KVStoreInMemory::Put(uint64_t key, const std::string& value)
 			{
 				std::string strKey;
 				ConvertUint64ToString(strKey, key);
 				return Put(strKey, value);
 			}
 
-			Status Get(const std::string& key, std::string* value)
+			Status KVStoreInMemory::Get(const std::string& key, std::string* value)
 			{
 				auto iter = store.find(key);
 
@@ -70,19 +61,19 @@ namespace KVStore
 				return Status::NotFound();
 			}
 
-			Status Get(const std::string& key, std::string& value)
+			Status KVStoreInMemory::Get(const std::string& key, std::string& value)
 			{
 				return Get(key, &value);
 			}
 
-			Status Get(uint64_t key, std::string& value)
+			Status KVStoreInMemory::Get(uint64_t key, std::string& value)
 			{
 				std::string strKey;
 				ConvertUint64ToString(strKey, key);
 				return Get(strKey, &value);
 			}
 
-			Status Delete(const std::string& key)
+			Status KVStoreInMemory::Delete(const std::string& key)
 			{
 				auto iter = store.find(key);
 
@@ -94,9 +85,6 @@ namespace KVStore
 
 				return Status::NotFound();
 			}
-	};
-
-
+	
 } // namespace KVStore
 
-#endif

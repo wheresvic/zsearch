@@ -1,6 +1,10 @@
 #ifndef ABSTRACT_SET_H__
 #define ABSTRACT_SET_H__
-class Set {
+
+#include <memory>
+
+class Set 
+{
 public:
 	class Iterator {
 		public:

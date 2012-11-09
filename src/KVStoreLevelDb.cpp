@@ -1,22 +1,15 @@
-#ifndef KVSTORE_LEVELDB_H
-#define KVSTORE_LEVELDB_H
-
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
 #include <map>
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "IKVStore.h"
+#include "KVStoreLevelDb.h"
 
 namespace KVStore
 {
 
-	class KVStoreLevelDb : public IKVStore
-	{
-		private:
-
-			char* EncodeVarint64(char* dst, uint64_t v)
+			char* KVStoreLevelDb::EncodeVarint64(char* dst, uint64_t v)
 			{
 				static const unsigned int B = 128;
 				unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
@@ -30,7 +23,7 @@ namespace KVStore
 				return reinterpret_cast<char*>(ptr);
 			}
 
-			void PutVarint64(std::string& dst, uint64_t v)
+			void KVStoreLevelDb::PutVarint64(std::string& dst, uint64_t v)
 			{
 				/*
 				char buf[10];
@@ -44,12 +37,8 @@ namespace KVStore
 				// std::cout << "converted " << dst << std::endl;
 
 			}
-
-			leveldb::DB* db;
-			
-		public:
-
-			KVStoreLevelDb(const std::string& path) : IKVStore(path)
+	
+			KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
 			{
 				db = NULL;
 
@@ -57,12 +46,12 @@ namespace KVStore
 				leveldb::DestroyDB(path, options);
 			}
 
-			~KVStoreLevelDb()
+			KVStoreLevelDb::~KVStoreLevelDb()
 			{
 				delete db;
 			}
 
-			Status Open()
+			Status KVStoreLevelDb::Open()
 			{
 				leveldb::Options options;
 				options.create_if_missing = true;
@@ -70,7 +59,7 @@ namespace KVStore
 				return Status::OK();
 			}
 
-			Status Put(const std::string& key,const std::string& value)
+			Status KVStoreLevelDb::Put(const std::string& key, const std::string& value)
 			{
 				leveldb::Status s = db->Put(leveldb::WriteOptions(), key, value);
 
@@ -83,15 +72,15 @@ namespace KVStore
 
 			}
 
-			Status Put(uint64_t key,const std::string& value)
+			Status KVStoreLevelDb::Put(uint64_t key, const std::string& value)
 			{
 				// cout << "PUT ... KEY: " << key << " ,Value.length(): " << value.size()<<endl;
-				string keystr;
+				std::string keystr;
 				PutVarint64(keystr, key);
 				return Put(keystr, value);
 			}
 
-			Status Get(const std::string& key, std::string* value)
+			Status KVStoreLevelDb::Get(const std::string& key, std::string* value)
 			{
 				leveldb::Status s = db->Get(leveldb::ReadOptions(), key, value);
 				if (s.ok())
@@ -103,19 +92,19 @@ namespace KVStore
 				return Status::NotFound();
 			}
 
-			Status Get(const std::string& key, std::string& value)
+			Status KVStoreLevelDb::Get(const std::string& key, std::string& value)
 			{
 				return Get(key, &value);
 			}
 
-			Status Get(uint64_t key, std::string& value)
+			Status KVStoreLevelDb::Get(uint64_t key, std::string& value)
 			{
-				string keystr;
+				std::string keystr;
 				PutVarint64(keystr, key);
 				return Get(keystr, &value);
 			}
 
-			Status Delete(const std::string& key)
+			Status KVStoreLevelDb::Delete(const std::string& key)
 			{
 				leveldb::Status s = db->Delete(leveldb::WriteOptions(), key);
 
@@ -126,9 +115,6 @@ namespace KVStore
 
 				return Status::NotFound();
 			}
-	};
-
-
+	
 } // namespace KVStore
 
-#endif

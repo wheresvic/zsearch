@@ -62,8 +62,10 @@
 #include "DocumentStoreSimple.h"
 #include "TokenizerImpl.h"
 #include "DocumentImpl.h"
+#include "KVStoreLevelDb.h"
 #include "Constants.hpp"
 #include "Engine.hpp"
+
 
 static const std::string POST_HTM = "/post.htm";
 static const std::string SEARCH_PATH = "/search";
@@ -447,8 +449,9 @@ int main(int argc, char **argv)
 
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
+	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine( tokenizer, documentStore);
+	engine = new Engine(tokenizer, documentStore, invertedIndexStore);
 
 	unsigned short port = 8080;
 #ifdef _WIN32
