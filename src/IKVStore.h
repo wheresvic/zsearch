@@ -5,7 +5,6 @@
 
 namespace KVStore
 {
-
 	class Status 
 	{
 		enum Code 
@@ -72,7 +71,13 @@ namespace KVStore
 			virtual Status Get(uint64_t key, std::string& value) = 0;
 			virtual Status Delete(const std::string& key) = 0;
 		
+			IKVStore(const std::string& path) : path(path) { }
+			
 			virtual ~IKVStore() { }
+			
+		protected:
+		
+			const std::string path;
 	};
 
 }

@@ -25,6 +25,9 @@ namespace KVStore
 			std::map<std::string, std::string> store;
 
 		public:
+		
+			KVStoreInMemory(const std::string& path) : IKVStore(path)
+			{ }
 
 			Status Open()
 			{

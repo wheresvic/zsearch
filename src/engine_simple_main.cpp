@@ -11,7 +11,8 @@
 #include "DocumentImpl.h"
 #include "TokenizerImpl.h"
 #include "DocumentStoreSimple.h"
-
+#include "KVStoreLevelDb.hpp"
+#include "KVStoreInMemory.hpp"
 #include "Engine.hpp"
 #include "Constants.hpp"
 #include "Word.hpp"
@@ -34,9 +35,12 @@ int main()
 
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
+	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
+	
+	Engine engine(tokenizer, documentStore, invertedIndexStore);
 
-	Engine engine(tokenizer, documentStore);
-
+	cout << "Made engine!" << endl;
+	
 	// test input
 	while (getline(cin, input))
 	{

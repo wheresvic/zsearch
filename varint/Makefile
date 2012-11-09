@@ -24,18 +24,17 @@ endif
 
 
 clean :
-	rm -f ../build/*.o *.o \
-		lib
+	rm -f $(LIBOBJECTS) *.o $(BUILD_DIR)/CompressedSet.a
 
-all: $(BUILD_DIR)/CompressedSet.a
+all: CompressedSet.a
 
+CompressedSet.a : $(LIBOBJECTS)
+	$(AR) -rs $(BUILD_DIR)/$@ $(LIBOBJECTS)
 
 
 ##
 # Classes
 ##
-$(BUILD_DIR)/CompressedSet.a : $(LIBOBJECTS)
-	$(AR) -rs $@ $(LIBOBJECTS)
 
 $(BUILD_DIR)/varint_CompressedSet.o : ../varint/CompressedSet.cpp 
 	$(CC) -c $(CFLAGS) $< -o $@

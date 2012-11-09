@@ -1,6 +1,6 @@
 #ifndef IINVERTED_INDEX_H
 #define IINVERTED_INDEX_H
-#include "../varint/CompressedSet.h"
+#include "varint/CompressedSet.h"
 
 class IInvertedIndex
 {

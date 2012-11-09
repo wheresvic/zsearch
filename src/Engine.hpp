@@ -8,10 +8,12 @@
 #include <set>
 #include <vector>
 #include "Word.hpp"
-#include "InvertedIndexSimple.hpp"
-#include "../varint/CompressedSet.h"
-#include "../varint/LazyOrSet.h"
-#include "../varint/LazyAndSet.h"
+#include "InvertedIndexImpl.h"
+#include "varint/CompressedSet.h"
+#include "varint/LazyOrSet.h"
+#include "varint/LazyAndSet.h"
+#include "IKVStore.h"
+
 using namespace std;
 
 class Engine
@@ -22,10 +24,14 @@ class Engine
 		// http://stackoverflow.com/questions/8385457/should-i-pass-a-shared-ptr-by-reference
 		//
 		Engine(shared_ptr<ITokenizer> tokenizer,
-				shared_ptr<IDocumentStore> documentStore) :
+				shared_ptr<IDocumentStore> documentStore,
+				shared_ptr<KVStore::IKVStore> invertedIndexStore) :
 			tokenizer(tokenizer),
-			documentStore(documentStore)
-		{ }
+			documentStore(documentStore),
+			invertedIndex(invertedIndexStore)
+		{ 
+			
+		}
 
 		unsigned int addDocument(shared_ptr<IDocument> document)
 		{
@@ -160,8 +166,8 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-	//	map<unsigned int, set<unsigned int>> invertedIndex;
+		// map<unsigned int, set<unsigned int>> invertedIndex;
 
-		InvertedIndexSimple invertedIndex;
+		InvertedIndexImpl invertedIndex;
 
 };

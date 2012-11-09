@@ -46,11 +46,10 @@ namespace KVStore
 			}
 
 			leveldb::DB* db;
-			std::string path;
-
+			
 		public:
 
-			KVStoreLevelDb(const std::string& path) : path(path)
+			KVStoreLevelDb(const std::string& path) : IKVStore(path)
 			{
 				db = NULL;
 
