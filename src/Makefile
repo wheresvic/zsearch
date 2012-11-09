@@ -16,7 +16,7 @@ OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveld
 
 HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
 
-CFLAGS_PLAIN = -std=c++0x -Wall -O0 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
+CFLAGS_PLAIN = -std=c++0x -Wall -g -O0 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include 

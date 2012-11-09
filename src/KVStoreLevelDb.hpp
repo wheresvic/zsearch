@@ -18,7 +18,7 @@ namespace KVStore
 
 			char* EncodeVarint64(char* dst, uint64_t v)
 			{
-				static const int B = 128;
+				static const unsigned int B = 128;
 				unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
 				while (v >= B)
 				{

@@ -148,8 +148,8 @@ class Engine
 
 	private:
 
-		unsigned long docId = 0;
-		unsigned long wordId = 0;
+		unsigned long docId = 1;
+		unsigned long wordId = 1;
 
 		string queryParserDelimiters;
 
