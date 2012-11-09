@@ -1,7 +1,7 @@
 
 #include "src/InvertedIndexImpl.h"
 #include "lib/tpunit++.hpp"
-#include "src/KVStoreInMemory.hpp"
+#include "src/KVStoreInMemory.h"
 #include <memory>
 
 using namespace std;
