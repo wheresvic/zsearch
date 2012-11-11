@@ -94,16 +94,13 @@ class Engine
 			vector<shared_ptr<Set>> intersectionSet;
 			for (auto token : queryTokens) {
 				vector<shared_ptr<Set>> unionSet;
-				for (auto field : fields) {
-					
-					
+				for (auto field : fields) {					
 					unsigned int wordId = 0;
-				    string token = tokenizer->getToken();
                     if(wordIndex.Get(field,token,wordId)){
 					    shared_ptr<CompressedSet> docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(docSet);
-					} 
+					}
 				}
 				intersectionSet.push_back(shared_ptr<Set>(new LazyOrSet(unionSet)));
 			}
