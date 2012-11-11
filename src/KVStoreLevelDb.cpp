@@ -25,17 +25,9 @@ namespace KVStore
 
 			void KVStoreLevelDb::PutVarint64(std::string& dst, uint64_t v)
 			{
-				/*
 				char buf[10];
 				char* ptr = EncodeVarint64(buf, v);
-				dst.append(buf, ptr - buf);
-				*/
-
-				std::stringstream ss;
-				ss << v;
-				dst = ss.str();
-				// std::cout << "converted " << dst << std::endl;
-
+				dst.append(buf, ptr - buf);	
 			}
 	
 			KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
@@ -54,6 +46,7 @@ namespace KVStore
 			Status KVStoreLevelDb::Open()
 			{
 				leveldb::Options options;
+				options.write_buffer_size = 128000000;
 				options.create_if_missing = true;
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 				return Status::OK();
