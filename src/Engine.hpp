@@ -8,7 +8,7 @@
 #include <set>
 #include <vector>
 #include "Word.hpp"
-#include "InvertedIndexImpl.h"
+#include "InvertedIndexBatch.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
 #include "varint/LazyAndSet.h"
@@ -21,9 +21,6 @@ class Engine
 {
 	public:
 
-		//
-		// http://stackoverflow.com/questions/8385457/should-i-pass-a-shared-ptr-by-reference
-		//
 		Engine(shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore) :
@@ -33,6 +30,14 @@ class Engine
 		{ 
 			
 		}
+
+        void flushBatch(){
+			invertedIndex.flushBatch();
+        }
+
+        ~Engine(){
+			flushBatch();
+        }
 
 		unsigned int addDocument(shared_ptr<IDocument> document)
 		{
@@ -95,9 +100,9 @@ class Engine
 					unsigned int wordId = 0;
 				    string token = tokenizer->getToken();
                     if(wordIndex.Get(field,token,wordId)){
-					    CompressedSet* docSet;
+					    shared_ptr<CompressedSet> docSet;
 						invertedIndex.get(wordId,docSet);
-						unionSet.push_back(shared_ptr<Set>(docSet));
+						unionSet.push_back(docSet);
 					} 
 				}
 				intersectionSet.push_back(shared_ptr<Set>(new LazyOrSet(unionSet)));
@@ -135,8 +140,6 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		// map<unsigned int, set<unsigned int>> invertedIndex;
-
-		InvertedIndexImpl invertedIndex;
+		InvertedIndexBatch invertedIndex;
 
 };

@@ -1,7 +1,7 @@
 #ifndef INVERTED_INDEX_BATCH_H
 #define INVERTED_INDEX_BATCH_H
 
-#include "IInvertedIndex.hpp"
+#include "IInvertedIndex.h"
 #include <memory>
 #include <map>
 #include <iostream>
@@ -9,14 +9,13 @@
 #include <string>
 #include "../varint/Set.h"
 #include "../varint/CompressedSet.h"
-#include "KVStoreLevelDb.hpp"
-#include "KVStoreInMemory.hpp"
+#include "IKVStore.h"
  //TODO implement ConcurrentMerge
 class InvertedIndexBatch : public IInvertedIndex
 {
 private:
 
-	KVStore::KVStoreLevelDb store;
+	std::shared_ptr<KVStore::IKVStore> store;
 	//should use a hashmap
 	std::map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
 	int maxbatchsize;
@@ -28,7 +27,7 @@ private:
 		set->write(ss);
 		string bitmap = ss.str();
 
-		if (store.Put(wordId,bitmap).ok())
+		if (store->Put(wordId,bitmap).ok())
 		{
 			return 1;
 		}
@@ -43,18 +42,18 @@ private:
 
 public:
 	
-	InvertedIndexBatch()  : store("/tmp/InvertedIndex")
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store)  : store(store)
 	{
 		maxbatchsize = 200000000;
 		batchsize = 0;
-		store.Open();
+		store->Open();
 	}
 	
 
 	int get(unsigned int wordId, shared_ptr<CompressedSet>& inset)
 	{		
 		string bitmap;
-		if(store.Get(wordId,bitmap).ok())
+		if(store->Get(wordId,bitmap).ok())
 		{
 			stringstream bitmapStream(bitmap);
 			inset = make_shared<CompressedSet>();
@@ -79,7 +78,7 @@ public:
 	bool exist(unsigned int wordId)
 	{
 		string ret;
-		bool found = store.Get(wordId,ret).ok();
+		bool found = store->Get(wordId,ret).ok();
 		return found;		
 	}
 	
@@ -120,11 +119,12 @@ public:
 		if(batchsize > maxbatchsize){
 			flushBatch();
 		}
+		return 1;
 	}
 	
 	
 	int Compact(){
-		store.Compact();
+	//	store.Compact();
 		return 1;
 	}
 };

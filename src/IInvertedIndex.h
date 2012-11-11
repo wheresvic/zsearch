@@ -5,8 +5,8 @@
 class IInvertedIndex
 {
 	public:
-		virtual int get(unsigned int wordId, CompressedSet*& set) = 0;
-		virtual int put(unsigned int, CompressedSet& set) = 0;
+		virtual int get(unsigned int wordId, shared_ptr<CompressedSet>& outset) = 0;
+		virtual int add(unsigned int wordId, unsigned int docid) = 0;
 		
 		// Virtual destructor
 		virtual ~IInvertedIndex() { }
