@@ -67,50 +67,6 @@ int main()
 		cout << "Added document: " << engine.addDocument(doc) << endl;
 	}
 
-	set<Word> words = engine.getWords();
-
-	for (Word word : words)
-	{
-		cout << word.getField() << "," << word.getWord() << " (" << word.getWord().size() << ") ";
-
-		/*
-		string bitmap = engine.getDocumentListBitmap(word);
-
-		CompressedSet set;
-		stringstream bitmapStream(bitmap);
-		set.read(bitmapStream);
-
-		CompressedSet::Iterator it(&set);
-
-		for (; it.docID() != NO_MORE_DOCS; it.nextDoc())
-		{
-			cout << it.docID() << " ";
-		}
-		*/
-
-		/*
-		auto docIdSet = engine.getDocumentIdSet(wordSet);
-
-		for (auto id : docIdSet)
-		{
-			cout << id << " ";
-		}
-
-		cout << endl;
-		*/
-
-		auto docSet = engine.search(word.getWord());
-
-		for (auto document : docSet)
-		{
-			string title;
-			document->getEntry("title", title);
-			cout << title << " ";
-		}
-
-		cout << endl;
-	}
-
 	// test that searching for some more text returns only 1 document
 
 	string query = "some  more text";

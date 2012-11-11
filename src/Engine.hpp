@@ -13,6 +13,7 @@
 #include "varint/LazyOrSet.h"
 #include "varint/LazyAndSet.h"
 #include "IKVStore.h"
+#include "WordIndex.hpp"
 
 using namespace std;
 
@@ -46,55 +47,23 @@ class Engine
 
 				fields.insert(field);
 
-				QueryParser qp(value, tokenizer);
-
-				vector<string> tokens = qp.getTokens();
-
-				for (auto token : tokens)
+				tokenizer->setString(value);
+				while (tokenizer->nextToken())
 				{
-					Word word(field, token);
-					// cout << "field : " << field << ", token: " << token << endl;
-					
-					auto found = wordIndex.find(word);
-                    if (found != wordIndex.end()){
-	                   unsigned int id = found->second;
-					   invertedIndex.add(id,docId);
-                    } else {
- 					   wordIndex.insert(make_pair(word,wordId));
-	                   invertedIndex.add(wordId++,docId);
-                    }
+				    unsigned int id = 0;
+				    string token = tokenizer->getToken();
+                    if(wordIndex.Get(field,token,id)){
+					    invertedIndex.add(id,docId);
+					} else {
+					   	wordIndex.Put(field,token,wordId);
+					   	invertedIndex.add(wordId++,docId);
+					}
 
 				}
 
 			} // end looping through entries
 
 			return docId++;
-		}
-
-		set<Word> getWords()
-		{
-			set<Word> words;
-
-			for (auto iter = wordIndex.begin(); iter != wordIndex.end(); ++iter)
-			{
-				words.insert(iter->first);
-			}
-
-			// http://stackoverflow.com/questions/12666362/c-stdmove-confusion
-			return words;
-		}
-
-		bool findInSets(const vector<set<unsigned int>>& documentSets, unsigned int docId)
-		{
-			for (auto documentSet : documentSets)
-			{
-				if (documentSet.find(docId) == documentSet.end())
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 
@@ -110,26 +79,26 @@ class Engine
 
 			set<string> queryTokens;
 
-			QueryParser qp(query, tokenizer);
-			vector<string> tokens = qp.getTokens();
 
-			for (auto token : tokens) {
-				queryTokens.insert(token);
+			tokenizer->setString(query);
+			while (tokenizer->nextToken())
+			{
+				queryTokens.insert(tokenizer->getToken());
 			}
 
 			vector<shared_ptr<Set>> intersectionSet;
 			for (auto token : queryTokens) {
 				vector<shared_ptr<Set>> unionSet;
 				for (auto field : fields) {
-					Word word(field, token);
-					auto found = wordIndex.find(word);
-
-					if (found != wordIndex.end()) {
-						auto wordId = found->second;
-						CompressedSet* docSet;
+					
+					
+					unsigned int wordId = 0;
+				    string token = tokenizer->getToken();
+                    if(wordIndex.Get(field,token,wordId)){
+					    CompressedSet* docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(shared_ptr<Set>(docSet));
-					}
+					} 
 				}
 				intersectionSet.push_back(shared_ptr<Set>(new LazyOrSet(unionSet)));
 			}
@@ -157,7 +126,7 @@ class Engine
 		shared_ptr<ITokenizer> tokenizer;
 
 		// store all the words
-		map<Word, unsigned int> wordIndex;
+		WordIndex wordIndex;
 
 		// store all the fields
 		set<string> fields;
