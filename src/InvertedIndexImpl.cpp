@@ -54,13 +54,12 @@
 	{
 		if (exist(wordId))
 		{
-			CompressedSet *set;
+			shared_ptr<CompressedSet> set;
 			get(wordId,set);
 			if (!set->find(docid)){
 				set->addDoc(docid);
 				put(wordId,*set);
 			}
-			delete set;
 		}
 		else
 		{
