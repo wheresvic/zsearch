@@ -11,14 +11,16 @@
 #include "../varint/Set.h"
 #include "../varint/CompressedSet.h"
 #include "IKVStore.h"
+#include <sparsehash/dense_hash_map>
+using google::dense_hash_map;
  //TODO implement ConcurrentMerge
 class InvertedIndexBatch : public IInvertedIndex
 {
 private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
-	//should use a hashmap
-	std::map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
+	dense_hash_map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
+
 	int maxbatchsize;
 	int batchsize;
 
@@ -43,11 +45,16 @@ private:
 
 public:
 	
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store)  : store(store)
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store)  : store(store), buffer(656538)
 	{
 		maxbatchsize = 200000000;
 		batchsize = 0;
 		store->Open();
+		buffer.set_empty_key(0);
+	}
+	~InvertedIndexBatch()
+	{
+
 	}
 	
 

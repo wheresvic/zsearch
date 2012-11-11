@@ -25,7 +25,7 @@ class WordIndex
 private:
   dense_hash_map<string, unsigned int> map;
 public:
-  WordIndex() : map(){
+  WordIndex() : map(656538){
     map.set_empty_key("");
 
   }
