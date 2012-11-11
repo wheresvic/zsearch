@@ -17,7 +17,7 @@
 
     CompressedDeltaChunk::CompressedDeltaChunk(size_t compressedSize):data_(compressedSize){
         compressedSize_ = compressedSize;
-        assert(!needPaddingTo128Bits(&data_[0]));
+        //assert(!needPaddingTo128Bits(&data_[0]));
     }
     
     CompressedDeltaChunk::CompressedDeltaChunk(istream & in) :compressedSize_(0) {

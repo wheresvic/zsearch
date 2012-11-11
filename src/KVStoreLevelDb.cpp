@@ -78,7 +78,6 @@ namespace KVStore
 				leveldb::Status s = db->Get(leveldb::ReadOptions(), key, value);
 				if (s.ok())
 				{
-					// cout << "GET ... KEY: " << key << " ,Value.length(): " << value->size()<<endl;
 					return Status::OK();
 				}
 

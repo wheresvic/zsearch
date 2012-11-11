@@ -125,9 +125,9 @@ public:
      */
     void preProcessBlock(unsigned int block[], size_t size);
 
-    shared_ptr<CompressedDeltaChunk> PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize);
+    const shared_ptr<CompressedDeltaChunk> PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize);
 
-	shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock();
+	const shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock();
 
     /**
      * Gets the number of ids in the set

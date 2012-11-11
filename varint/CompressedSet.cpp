@@ -235,14 +235,13 @@
   }
 
 
-  shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize){
-    shared_ptr<CompressedDeltaChunk> compblock = codec.Compress(block,blocksize);
-    return compblock;
+  const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize){
+    return codec.Compress(block,blocksize);
   }
 
-  shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressCurrentBlock(){
+  const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressCurrentBlock(){
     preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
-    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
+    const shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
     return finalRes;
   }
 

@@ -18,7 +18,7 @@ public:
     return compblock;
   }
 
-  void add(shared_ptr<CompressedDeltaChunk> val) {
+  void add(const shared_ptr<CompressedDeltaChunk>& val) {
     data2.push_back(val);
   }
 
