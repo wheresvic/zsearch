@@ -4,6 +4,7 @@
 #include "IInvertedIndex.h"
 #include <memory>
 #include <map>
+#include <set>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -90,11 +91,14 @@ public:
 			if(!get(iter->first,docSet)){
 			    docSet = make_shared<CompressedSet>();	
 			}
+			//use a normal set to remove duplicate document
+			set<unsigned int> docBatch;
 			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){
-				//todo use an iterator instead
-				if (!docSet->find(*docid)){
-				  docSet->addDoc(*docid);
-				}
+				docBatch.insert(*docid);	
+			}
+			//add all elements of the set to our compressed Set
+			for (auto docid : docBatch) {
+				docSet->addDoc(docid);
 			}
 			storePut(iter->first, docSet);		
         }
