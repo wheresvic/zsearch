@@ -14,14 +14,14 @@
 		store->Open();
 	}
 
-	int InvertedIndexImpl::get(unsigned int wordId, CompressedSet*& set)
+    int InvertedIndexImpl::get(unsigned int wordId, shared_ptr<CompressedSet>& outset)
 	{
 		string bitmap;
 		if(store->Get(wordId,bitmap).ok())
-		{
+		{ 
+			outset = make_shared<CompressedSet>();
 			stringstream bitmapStream(bitmap);
-			set = new CompressedSet();
-			set->read(bitmapStream);
+			outset->read(bitmapStream);
 			return 1;
 		}
 

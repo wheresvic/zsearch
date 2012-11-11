@@ -17,7 +17,7 @@ class InvertedIndexImpl : public IInvertedIndex
 
 		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store);
 
-		int get(unsigned int wordId, CompressedSet*& set);
+		int get(unsigned int wordId, shared_ptr<CompressedSet>& outset);
 		
 		bool exist(unsigned int wordId);
 		
