@@ -113,7 +113,6 @@ class Engine
 
 			shared_ptr<Set::Iterator> it = andSet.iterator();
 			while(it->nextDoc()!= NO_MORE_DOCS) {
-				cout << it->docID() << endl;
 				documentSet.insert(documents[it->docID()]);
 			}
 
