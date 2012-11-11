@@ -7,21 +7,14 @@
 #include <memory>
 #include "CollectionHelper.h"
 #include "CompressedSet.h"
-
+//baseListForOnlyCompBlocks
     CompressedSet::CompressedSet(const CompressedSet& other)
-		: myDecompBlock(DEFAULT_BATCH_SIZE, 0), currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
+		:  currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
 	{
 	    assert(totalDocIdNum <= 1); // You are trying to copy the bitmap, a terrible idea in general, for performance reasons
-		// Need to be fixed (myDecompBlock should be 128bit aligned)
-        // myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
-		// currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
-
         lastAdded = other.lastAdded;
         sizeOfCurrentNoCompBlock = other.sizeOfCurrentNoCompBlock;
         totalDocIdNum = other.totalDocIdNum;
-        // memcpy( myDecompBlock,other.myDecompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE);
-		// memcpy( currentNoCompBlock,other.currentNoCompBlock, sizeof(unsigned int)*DEFAULT_BATCH_SIZE );
-		memcpy(&myDecompBlock[0], &other.myDecompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
         memcpy(&currentNoCompBlock[0], &other.currentNoCompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
     }
 
@@ -37,20 +30,15 @@
     }
 
 
-    CompressedSet::CompressedSet() : myDecompBlock(DEFAULT_BATCH_SIZE, 0), currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
+ //   CompressedSet::CompressedSet() : currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
+    CompressedSet::CompressedSet() : currentNoCompBlock(0)
 	{
-	    //Need to be fixed (myDecompBlock should be 128bit aligned)
-        // myDecompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
-        // currentNoCompBlock = new unsigned int[DEFAULT_BATCH_SIZE];
         lastAdded = 0;
         sizeOfCurrentNoCompBlock = 0;
         totalDocIdNum = 0;
-        initSet();
     }
 
     CompressedSet::~CompressedSet(){
-        // delete[] currentNoCompBlock;
-        // delete[] myDecompBlock;
     }
 
     /**
@@ -60,7 +48,8 @@
 	{
       baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
       preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
-      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], DEFAULT_BATCH_SIZE);
+   
+      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
       sequenceOfCompBlocks.add(compRes);
       sizeOfCurrentNoCompBlock = 0;
 
@@ -86,7 +75,7 @@
 
     void CompressedSet::read(istream & in)
 	{
-        memset(&myDecompBlock[0], 0, DEFAULT_BATCH_SIZE*4);
+		currentNoCompBlock.resize(DEFAULT_BATCH_SIZE);
         memset(&currentNoCompBlock[0], 0, DEFAULT_BATCH_SIZE*4);
 
         //read totalDocIdNum
@@ -117,11 +106,13 @@
      */
     void CompressedSet::addDocs(unsigned int docids[],size_t start,size_t len){
       if ((len + sizeOfCurrentNoCompBlock) <= DEFAULT_BATCH_SIZE) {
+	    //currentNoCompBlock.resize(len + sizeOfCurrentNoCompBlock);
         memcpy( &currentNoCompBlock[sizeOfCurrentNoCompBlock],&docids[start], len*4 );
         sizeOfCurrentNoCompBlock += len;
       } else {
          // the first block can be completed so fillup a complet block
          int copyLen = DEFAULT_BATCH_SIZE - sizeOfCurrentNoCompBlock;
+         // currentNoCompBlock.resize(DEFAULT_BATCH_SIZE);
          memcpy( &currentNoCompBlock[sizeOfCurrentNoCompBlock],&docids[start], copyLen*4 );
          sizeOfCurrentNoCompBlock = DEFAULT_BATCH_SIZE;
 
@@ -149,6 +140,7 @@
             memcpy( &currentNoCompBlock[0],&docids[newStart], leftLen*4 );
          }
          sizeOfCurrentNoCompBlock = leftLen;
+         //currentNoCompBlock.resize(sizeOfCurrentNoCompBlock);
       }
       lastAdded = docids[start+len-1];
       totalDocIdNum += len;
@@ -162,6 +154,7 @@
    */
   void CompressedSet::addDoc(unsigned int docId) {
     if (PREDICT_TRUE(sizeOfCurrentNoCompBlock != DEFAULT_BATCH_SIZE)) {
+	   currentNoCompBlock.resize(sizeOfCurrentNoCompBlock+1);
        currentNoCompBlock[sizeOfCurrentNoCompBlock++] = docId;
        lastAdded = docId;
     } else {
@@ -176,6 +169,7 @@
         sizeOfCurrentNoCompBlock = 1;
         lastAdded = docId;
         currentNoCompBlock[0] = docId;
+		currentNoCompBlock.resize(1);
     }
     totalDocIdNum++;
   }
@@ -224,10 +218,7 @@
  }
 
 
-	void CompressedSet::initSet()
-	{
-		memset(&currentNoCompBlock[0], 0, DEFAULT_BATCH_SIZE);
-	}
+
 
 
 
@@ -251,7 +242,7 @@
 
   shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressCurrentBlock(){
     preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
-    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], DEFAULT_BATCH_SIZE);
+    shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
     return finalRes;
   }
 
@@ -285,6 +276,8 @@
 
     //This method will not work after a call to flush()
     inline bool CompressedSet::find(unsigned int target) const {
+		assert(false);
+	    vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> myDecompBlock(DEFAULT_BATCH_SIZE, 0);
         //unsigned int lastId = lastAdded;
         if(PREDICT_FALSE(totalDocIdNum==0))
               return false;

@@ -57,8 +57,7 @@ private:
     // the last docID
     // of each block in words in uncompressed form.
     vector<unsigned int> baseListForOnlyCompBlocks;
-    // unsigned int* myDecompBlock;
-	mutable vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> myDecompBlock;
+
 
 	const CompressedSet& operator=(const CompressedSet& other);
 
