@@ -1,11 +1,10 @@
-// g++ --std=gnu++0x CompressedSet.cpp 
 
-#include "varint/CompressedSet.h"
-#include "varint/bitpacking/memutil.h"
+#include "varint/BasicSet.h"
 #include <vector>
 #include <set>
-#include <assert.h>
 #include <iostream>
+#include <sstream>
+#include <assert.h>
 
 using namespace std;
 
@@ -13,7 +12,7 @@ bool testvec(set<unsigned int>& data)
 {
 	stringstream ss;
 	{
-      CompressedSet myset2;
+      BasicSet myset2;
       for (auto i : data) 
 	  {
 	    myset2.addDoc(i);
@@ -24,16 +23,17 @@ bool testvec(set<unsigned int>& data)
       myset2.write(ss);
 	}
 
-	CompressedSet myset1;
+	BasicSet myset1;
 	myset1.read(ss);
 
 	assert(data.size() == myset1.size());
-	CompressedSet::Iterator it2(&myset1);
+	BasicSet::Iterator it2(&myset1);
 	for (auto idx : data)
 	{
 		assert(it2.nextDoc()!=NO_MORE_DOCS );
 		assert(it2.docID() == idx);
 	}
+	
 	assert(it2.nextDoc() == NO_MORE_DOCS);
 
 	return true;

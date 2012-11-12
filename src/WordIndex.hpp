@@ -23,16 +23,18 @@ struct hashstr
 class WordIndex
 {
 private:
-  dense_hash_map<string, unsigned int> map;
+  // dense_hash_map<string, unsigned int> map;
+	std::map<string, unsigned int> map;
 public:
-  WordIndex() : map(656538){
-    map.set_empty_key("");
+  WordIndex() // : map(656538)
+  {
+    // map.set_empty_key("");
 
   }
 
   int Put(const std::string& field, const std::string& token, unsigned int value) {
-	map.insert(make_pair(field+token,value));
-	return 1;
+	Word word(field, token);
+	return Put(word, value);
   }
 
   int Put(const Word& word, unsigned int value) {
@@ -41,12 +43,8 @@ public:
   }
 
   int Get(const std::string& field, const std::string& token, unsigned int& value) {
-	auto found = map.find(field+token);
-	if (found != map.end()){
-       value = found->second;
-       return 1;
-    } 
-	return 0;		
+	Word word(field, token);
+    return Get(word, value);
   }
 
 
@@ -63,4 +61,5 @@ public:
 	
   }
 };
+
 #endif // WORDINDEX_H

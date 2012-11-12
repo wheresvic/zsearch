@@ -10,11 +10,11 @@ CC = g++
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 
-BUILD_OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/InvertedIndexImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o
+BUILD_OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp
+HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I..
 
@@ -50,9 +50,6 @@ $(BUILD_DIR)/DocumentStoreSimple.o : DocumentStoreSimple.cpp DocumentStoreSimple
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
-	$(CC) -c $(CFLAGS) $< -o $@
-
-$(BUILD_DIR)/InvertedIndexImpl.o : InvertedIndexImpl.cpp InvertedIndexImpl.h IInvertedIndex.h $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/KVStoreInMemory.o : KVStoreInMemory.cpp KVStoreInMemory.h IKVStore.h 

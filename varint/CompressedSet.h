@@ -19,7 +19,7 @@
 #include "bitpacking/memutil.h"
 
 using namespace std;
-const int NO_MORE_DOCS = std::numeric_limits<int>::max();
+
 class CompressedSet;
 
 class CompressedSet : public Set {

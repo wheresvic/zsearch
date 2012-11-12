@@ -12,9 +12,14 @@
 #include "../varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
+
+
 using google::dense_hash_map;
- //TODO implement ConcurrentMerge
-class InvertedIndexBatch : public IInvertedIndex
+// TODO implement ConcurrentMerge
+
+template <class SET> 
+
+class InvertedIndexBatch : public IInvertedIndex<SET>
 {
 private:
 
@@ -24,7 +29,7 @@ private:
 	int maxbatchsize;
 	int batchsize;
 
-	int storePut(unsigned int wordId, const shared_ptr<CompressedSet>& set)
+	int storePut(unsigned int wordId, const shared_ptr<SET>& set)
 	{
 		stringstream ss;
 		set->write(ss);
@@ -38,7 +43,7 @@ private:
 		return 0;
 	}
 	
-	int put(unsigned int wordId, const shared_ptr<CompressedSet>& set)
+	int put(unsigned int wordId, const shared_ptr<SET>& set)
 	{
 		return 1;
 	}
@@ -58,13 +63,13 @@ public:
 	}
 	
 
-	int get(unsigned int wordId, shared_ptr<CompressedSet>& inset)
+	int get(unsigned int wordId, shared_ptr<SET>& inset)
 	{		
 		string bitmap;
 		if(store->Get(wordId,bitmap).ok())
 		{
 			stringstream bitmapStream(bitmap);
-			inset = make_shared<CompressedSet>();
+			inset = make_shared<SET>();
 			inset->read(bitmapStream);
 			return 1;
 		}
@@ -72,7 +77,7 @@ public:
 		auto iter = buffer.find(wordId);
 		if (iter != buffer.end())
 		{
-			inset = make_shared<CompressedSet>();
+			inset = make_shared<SET>();
 			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){	
 			   inset->addDoc(*docid);
 			}
@@ -94,9 +99,9 @@ public:
 	{
 		for (auto iter = buffer.begin(); iter != buffer.end(); ++iter)
         {
-            shared_ptr<CompressedSet> docSet;
+            shared_ptr<SET> docSet;
 			if(!get(iter->first,docSet)){
-			    docSet = make_shared<CompressedSet>();	
+			    docSet = make_shared<SET>();	
 			}
 			//use a normal set to remove duplicate document
 			set<unsigned int> docBatch;

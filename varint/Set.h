@@ -2,6 +2,9 @@
 #define ABSTRACT_SET_H__
 
 #include <memory>
+#include <limits>
+
+const int NO_MORE_DOCS = std::numeric_limits<int>::max();
 
 class Set 
 {

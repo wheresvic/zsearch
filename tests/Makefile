@@ -14,7 +14,7 @@ LEVELDB_DIR = ../leveldb-1.7.0
 
 OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/InvertedIndexImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-CFLAGS_PLAIN = -std=c++0x -Wall -O0 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
+CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include
@@ -30,7 +30,7 @@ endif
 clean :
 	rm -f $(BUILD_DIR_TEST)/*
 
-all: document_test query_parser_test xml_test inverted_index_test compressed_set_test
+all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test
 
 document_test : document_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
@@ -45,4 +45,7 @@ inverted_index_test : inverted_index_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 
 compressed_set_test : CompressedSetTests.cpp $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
+
+basic_set_test : BasicSetTest.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)

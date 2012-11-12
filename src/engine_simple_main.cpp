@@ -16,6 +16,8 @@
 #include "Engine.hpp"
 #include "Constants.hpp"
 #include "Word.hpp"
+#include "varint/CompressedSet.h"
+#include "varint/BasicSet.h"
 
 using namespace std;
 
@@ -37,7 +39,7 @@ int main()
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 	
-	Engine engine(tokenizer, documentStore, invertedIndexStore);
+	Engine<BasicSet> engine(tokenizer, documentStore, invertedIndexStore);
 
 	cout << "Made engine!" << endl;
 	
@@ -94,6 +96,8 @@ int main()
 		document->getEntry("title", title);
 		cout << title << " ";
 	}
+
+	cout << endl;
 
 	return 0;
 }

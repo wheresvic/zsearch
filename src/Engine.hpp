@@ -17,6 +17,7 @@
 
 using namespace std;
 
+template <class SET>
 class Engine
 {
 	public:
@@ -97,7 +98,7 @@ class Engine
 				for (auto field : fields) {					
 					unsigned int wordId = 0;
                     if(wordIndex.Get(field,token,wordId)){
-					    shared_ptr<CompressedSet> docSet;
+					    shared_ptr<SET> docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(docSet);
 					}
@@ -136,6 +137,6 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch invertedIndex;
+		InvertedIndexBatch<SET> invertedIndex;
 
 };

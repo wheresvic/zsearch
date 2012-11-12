@@ -46,13 +46,16 @@
      */
     void CompressedSet::flush()
 	{
-      baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
-      preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
-   
-      shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
-      sequenceOfCompBlocks.add(compRes);
-      sizeOfCurrentNoCompBlock = 0;
+	  if (sizeOfCurrentNoCompBlock > 0)
+	  {	
+			baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
 
+			preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
+
+			shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
+			sequenceOfCompBlocks.add(compRes);
+			sizeOfCurrentNoCompBlock = 0;
+		}
     }
 
     void CompressedSet::write(ostream & out)
@@ -75,24 +78,30 @@
 
     void CompressedSet::read(istream & in)
 	{
+	
+	
 		currentNoCompBlock.resize(DEFAULT_BATCH_SIZE);
         memset(&currentNoCompBlock[0], 0, DEFAULT_BATCH_SIZE*4);
 
         //read totalDocIdNum
         in.read((char*)&totalDocIdNum,4);
+		
+		if (totalDocIdNum)
+		{
+		
+			//read base (skipping info)
+			int baseListForOnlyCompBlocksSize = 0;
+			in.read((char*)&baseListForOnlyCompBlocksSize,4);
 
-        //read base (skipping info)
-        int baseListForOnlyCompBlocksSize = 0;
-        in.read((char*)&baseListForOnlyCompBlocksSize,4);
-
-        baseListForOnlyCompBlocks.clear();
-        baseListForOnlyCompBlocks.resize(baseListForOnlyCompBlocksSize);
-        in.read((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
-		lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
+			baseListForOnlyCompBlocks.clear();
+			baseListForOnlyCompBlocks.resize(baseListForOnlyCompBlocksSize);
+			in.read((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
+			lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
 
 
-        //write compressed blocks
-        sequenceOfCompBlocks.read(in);
+			//write compressed blocks
+			sequenceOfCompBlocks.read(in);
+		}
     }
 
     shared_ptr<Set::Iterator>  CompressedSet::iterator() const {

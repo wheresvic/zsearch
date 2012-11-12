@@ -6,21 +6,21 @@
 OSNAME  := $(shell uname -s)
 
 CC = g++
-CFLAGS_SIMPLE = -std=c++0x -Wall -O0 -pedantic
+CFLAGS_SIMPLE = -std=gnu++0x -Wall -O3 -pedantic
 BUILD_DIR = ../build
 
-LIBOBJECTS = $(BUILD_DIR)/varint_CompressedSet.o $(BUILD_DIR)/varint_CompressedDeltaChunk.o $(BUILD_DIR)/varint_Codec.o $(BUILD_DIR)/varint_bitpacksimd.o $(BUILD_DIR)/varint_util.o $(BUILD_DIR)/varint_LazyAndSet.o $(BUILD_DIR)/varint_LazyOrSet.o
+LIBOBJECTS = $(BUILD_DIR)/varint_CompressedSet.o $(BUILD_DIR)/varint_CompressedDeltaChunk.o $(BUILD_DIR)/varint_Codec.o $(BUILD_DIR)/varint_bitpacksimd.o $(BUILD_DIR)/varint_util.o $(BUILD_DIR)/varint_LazyAndSet.o $(BUILD_DIR)/varint_LazyOrSet.o $(BUILD_DIR)/varint_BasicSet.o
 
 HEADERS = 
 
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS = -std=gnu++0x -Wall -O3 -pedantic  
+CFLAGS = $(CFLAGS_SIMPLE)
 LIBS = 
 endif
 
 ifeq ($(OSNAME), Linux)
-CFLAGS = -std=c++0x -Wall -O0 -pedantic -msse2
+CFLAGS = $(CFLAGS_SIMPLE) -msse2
 LIBS = 
 endif
 
@@ -41,6 +41,9 @@ CompressedSet.a : $(LIBOBJECTS)
 $(BUILD_DIR)/varint_CompressedSet.o : CompressedSet.cpp 
 	$(CC) -c $(CFLAGS) $< -o $@
 
+$(BUILD_DIR)/varint_BasicSet.o : BasicSet.cpp 
+	$(CC) -c $(CFLAGS) $< -o $@
+	
 $(BUILD_DIR)/varint_CompressedDeltaChunk.o : CompressedDeltaChunk.cpp 
 	$(CC) -c $(CFLAGS) $< -o $@
 
