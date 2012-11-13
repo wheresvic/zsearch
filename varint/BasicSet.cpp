@@ -29,8 +29,6 @@
     BasicSet::~BasicSet()
 	{ }
 
-    void BasicSet::flush()
-	{ }
 
     void BasicSet::write(ostream & out)
 	{
@@ -57,22 +55,6 @@
 		return it;
     }
 
-
-    /**
-     * Add an array of sorted docIds to the set
-	 * This method is really broken
-     */
-    void BasicSet::addDocs(unsigned int docids[], size_t start, size_t len)
-	{
-		assert(false);
-		
-		/*
-		for (size_t i = start; i < len; ++i)
-		{
-			set.insert(docids[i];			
-		}
-		*/
-    }
 
 	/**
 	 * Add document to this set
@@ -168,7 +150,7 @@
 		
 	}
 
-    int BasicSet::Iterator::nextDoc()
+    unsigned int BasicSet::Iterator::nextDoc()
 	{
 		if (!init)
 		{
@@ -184,7 +166,7 @@
         return NO_MORE_DOCS;
     }
 
-    int BasicSet::Iterator::docID()
+    unsigned int BasicSet::Iterator::docID()
 	{
         if (cursor != (set->docs).end())
 			return *cursor;
@@ -194,7 +176,7 @@
 
 	// Advances to the first beyond the current
     // whose value is greater than or equal to target.    
-    int BasicSet::Iterator::Advance(int target)
+    unsigned int BasicSet::Iterator::Advance(unsigned int target)
 	{
 		while (cursor != (set->docs).end())
 		{

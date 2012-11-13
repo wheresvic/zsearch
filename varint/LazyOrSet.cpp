@@ -42,11 +42,11 @@ LazyOrSetIterator::LazyOrSetIterator(vector<shared_ptr<Set>> sets){
 	}
 }
 	
-int LazyOrSetIterator::docID() {
+unsigned int LazyOrSetIterator::docID() {
     return _curDoc;
 }
 	
-int LazyOrSetIterator::nextDoc() {
+unsigned int LazyOrSetIterator::nextDoc() {
     if(_curDoc == NO_MORE_DOCS) {
         return NO_MORE_DOCS;
     }
@@ -72,7 +72,7 @@ int LazyOrSetIterator::nextDoc() {
     }
 }
 	
-int LazyOrSetIterator::Advance(int target) {
+unsigned int LazyOrSetIterator::Advance(unsigned int target) {
   if(_curDoc == NO_MORE_DOCS) {
     return NO_MORE_DOCS;
   }

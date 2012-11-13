@@ -385,7 +385,7 @@
       return docIdIndex >> BLOCK_INDEX_SHIFT_BITS;
     }
 
-    int CompressedSet::Iterator::nextDoc(){
+    unsigned int CompressedSet::Iterator::nextDoc(){
         //: if the pointer points to the end
         if(PREDICT_FALSE(++cursor == totalDocIdNum)) {
           lastAccessedDocId = NO_MORE_DOCS;
@@ -408,7 +408,7 @@
         return lastAccessedDocId;
     }
 
-    int CompressedSet::Iterator::docID(){
+    unsigned int CompressedSet::Iterator::docID(){
         return lastAccessedDocId;
     }
 
@@ -453,7 +453,7 @@
     // Advances to the first beyond the current
     // whose value is greater than or equal to target.
     // we do linear search inside block because of delta encoding
-    int CompressedSet::Iterator::Advance(int target){
+    unsigned int CompressedSet::Iterator::Advance(unsigned int target){
     // if the pointer points past the end
     if( PREDICT_FALSE(cursor == totalDocIdNum || totalDocIdNum <= 0)){
         lastAccessedDocId = NO_MORE_DOCS;

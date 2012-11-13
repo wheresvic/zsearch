@@ -11,9 +11,9 @@ private:
 	const LazyAndSet& set;
 public:
 	LazyAndSetIterator(const LazyAndSet* parent);
-	int docID();
-	int nextDoc();
-	int Advance(int target);
+	unsigned int docID();
+	unsigned int nextDoc();
+	unsigned int Advance(unsigned int target);
 };
 
 class LazyAndSet : Set {

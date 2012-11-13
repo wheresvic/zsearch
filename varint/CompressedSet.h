@@ -47,9 +47,9 @@ public:
         CompressedSet::Iterator& operator=(const CompressedSet::Iterator& rhs);
         ~Iterator();
 
-        __inline__ int docID();
-        __inline__ int nextDoc();
-        int Advance(int target);
+        __inline__ unsigned int docID();
+        __inline__ unsigned int nextDoc();
+        unsigned  int Advance(unsigned int target);
     };
 private:
     unsigned int sizeOfCurrentNoCompBlock; // the number of uncompressed elements that is hold in the currentNoCompBlock

@@ -55,11 +55,11 @@ LazyAndSetIterator::LazyAndSetIterator(const LazyAndSet* parent) : set(*parent){
 	lastReturn = (iterators.size() > 0 ? -1 : NO_MORE_DOCS);
 }
 
-int LazyAndSetIterator::docID() {
+unsigned int  LazyAndSetIterator::docID() {
     return lastReturn;
 }
 
-int LazyAndSetIterator::nextDoc() {
+unsigned int LazyAndSetIterator::nextDoc() {
     // DAAT
     if (lastReturn == NO_MORE_DOCS) 
        return NO_MORE_DOCS;    
@@ -105,7 +105,7 @@ int LazyAndSetIterator::nextDoc() {
     return (lastReturn = target);
 }
 
-int LazyAndSetIterator::Advance(int target) {
+unsigned int LazyAndSetIterator::Advance(unsigned int  target) {
      if (lastReturn == NO_MORE_DOCS) 
         return NO_MORE_DOCS;
     

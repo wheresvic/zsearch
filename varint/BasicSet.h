@@ -32,9 +32,9 @@ class BasicSet : public Set
 				BasicSet::Iterator& operator=(const BasicSet::Iterator& rhs);
 				~Iterator();
 
-				__inline__ int docID();
-				__inline__ int nextDoc();
-				int Advance(int target);
+				__inline__ unsigned int docID();
+				__inline__ unsigned int nextDoc();
+				unsigned int Advance(unsigned int target);
 			
 		};
 
@@ -59,21 +59,12 @@ class BasicSet : public Set
 
 		~BasicSet();
 
-		/**
-		 *  Flush the data left in the currentNoCompBlock into the compressed data
-		 */
-		void flush();
-
 		void write(ostream & out);
 
 		void read(istream & in);
 
 		shared_ptr<Set::Iterator> iterator() const;
 
-		/**
-		 * Add an array of sorted docIds to the set
-		 */
-		void addDocs(unsigned int docids[],size_t start,size_t len);
 
 		/**
 		 * Add document to this set

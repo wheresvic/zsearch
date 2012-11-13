@@ -11,15 +11,14 @@ class Set
 public:
 	class Iterator {
 		public:
-		virtual int docID() = 0;
-
-		virtual int nextDoc() = 0;
+		virtual unsigned int docID() = 0;
+		virtual unsigned int nextDoc() = 0;
 		// very efficient Advance method implemented with Skip list 
-		virtual int Advance(int target) = 0;
+		virtual unsigned int Advance(unsigned int target) = 0;
 		virtual ~Iterator() {};
 	};
 	virtual std::shared_ptr<Iterator> iterator()  const = 0;
-	virtual void addDocs(unsigned int docids[],size_t start,size_t len) {};
+	virtual void addDocs(unsigned int* docids,size_t start,size_t len) {};
 	virtual void addDoc(unsigned int docId) {};
 	// Free up unused memory in dynamic collection
 	virtual void compact() {};

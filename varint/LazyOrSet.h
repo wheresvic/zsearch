@@ -11,10 +11,10 @@ class LazyOrSetIterator : public Set::Iterator {
 		class Item {
 		  public:
 			shared_ptr<Set::Iterator> iter;
-			int doc;
+			unsigned int doc;
 			Item(shared_ptr<Set::Iterator> it){
 				iter = it;
-				doc = -1;
+				doc = 0;
 			}	
 		};
 		int _curDoc;
@@ -24,9 +24,9 @@ class LazyOrSetIterator : public Set::Iterator {
 		void heapAdjust();
 	public:
 		LazyOrSetIterator(vector<shared_ptr<Set>> sets);
-		int docID();
-		int nextDoc();
-		int Advance(int target);
+		unsigned int docID();
+		unsigned int nextDoc();
+		unsigned int Advance(unsigned int target);
 };
 
 class LazyOrSet : public Set 
