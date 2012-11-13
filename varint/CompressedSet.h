@@ -25,9 +25,9 @@ class CompressedSet;
 class CompressedSet : public Set {
 public:
     class Iterator : public Set::Iterator {
-	    int lastAccessedDocId;
+	    unsigned int lastAccessedDocId;
         int cursor; // the current pointer of the input
-        unsigned int totalDocIdNum;
+        int totalDocIdNum;
 
         int compBlockNum; // the number of compressed blocks
         // unsigned int*  iterDecompBlock; // temporary storage for the decompressed data
@@ -38,7 +38,7 @@ public:
         //parent
         const CompressedSet* set;
         //int BLOCK_INDEX_SHIFT_BITS; // floor(log(blockSize))
-        int advanceToTargetInTheFollowingCompBlocksNoPostProcessing(int target, int startBlockIndex);
+        int advanceToTargetInTheFollowingCompBlocksNoPostProcessing(unsigned int target, int startBlockIndex);
         int getBlockIndex(int docIdIndex);
     public:
         Iterator(const CompressedSet* parentSet);
@@ -52,7 +52,7 @@ public:
         unsigned  int Advance(unsigned int target);
     };
 private:
-    unsigned int sizeOfCurrentNoCompBlock; // the number of uncompressed elements that is hold in the currentNoCompBlock
+    int sizeOfCurrentNoCompBlock; // the number of uncompressed elements that is hold in the currentNoCompBlock
     // Two separate arrays containing
     // the last docID
     // of each block in words in uncompressed form.

@@ -20,7 +20,7 @@ LazyAndSet::LazyAndSet(vector<shared_ptr<Set> >& sets)
 inline bool LazyAndSet::find(unsigned int val) const 
 { 
 	LazyAndSetIterator finder(this);
-	int docid = finder.Advance(val);
+	unsigned docid = finder.Advance(val);
 	return docid != NO_MORE_DOCS && docid == val;
 }
 
@@ -65,7 +65,7 @@ unsigned int LazyAndSetIterator::nextDoc() {
        return NO_MORE_DOCS;    
     
     shared_ptr<Set::Iterator> dcit = iterators[0];
-    int target = dcit->nextDoc();
+    unsigned target = dcit->nextDoc();
 
     // shortcut: if it reaches the end of the shortest list, do not scan other lists
     if(target == NO_MORE_DOCS) { 
@@ -80,7 +80,7 @@ unsigned int LazyAndSetIterator::nextDoc() {
     while (i < size) {
       if (i != skip) {
         dcit = iterators[i];
-        int docId = dcit->Advance(target);
+        unsigned int docId = dcit->Advance(target);
        
         // once we reach the end of one of the blocks, we return NO_MORE_DOCS
         if(docId == NO_MORE_DOCS) {
@@ -121,7 +121,7 @@ unsigned int LazyAndSetIterator::Advance(unsigned int  target) {
      while (i < size) {
        if (i != skip) {
          dcit = iterators[i];
-         int docId = dcit->Advance(target);
+         unsigned int docId = dcit->Advance(target);
          if(docId == NO_MORE_DOCS) {
            return (lastReturn = docId);
          }

@@ -4,7 +4,7 @@
 #include <memory>
 #include <limits>
 
-const int NO_MORE_DOCS = std::numeric_limits<int>::max();
+const unsigned int NO_MORE_DOCS = std::numeric_limits<unsigned int>::max();
 
 class Set 
 {

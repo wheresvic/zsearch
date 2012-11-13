@@ -17,7 +17,7 @@ class LazyOrSetIterator : public Set::Iterator {
 				doc = 0;
 			}	
 		};
-		int _curDoc;
+		unsigned _curDoc;
 		vector<shared_ptr<Item>> _heap;
 		int _size;
 		void heapRemoveRoot();

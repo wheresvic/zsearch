@@ -401,7 +401,7 @@
          } else {
 	        // (offset==0) must be in one of the compressed blocks
              Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
-             size_t uncompSize = set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
+             set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
              lastAccessedDocId = iterDecompBlock[0];
          }
         }
@@ -418,7 +418,7 @@
     * except that this function do prefix sum during searching
     *
     */
-    int CompressedSet::Iterator::advanceToTargetInTheFollowingCompBlocksNoPostProcessing(int target, int startBlockIndex)
+    int CompressedSet::Iterator::advanceToTargetInTheFollowingCompBlocksNoPostProcessing(unsigned int target, int startBlockIndex)
     {
       // searching from the current block
       int iterBlockIndex = binarySearchInBaseListForBlockThatMayContainTarget(set->baseListForOnlyCompBlocks, startBlockIndex, set->baseListForOnlyCompBlocks.size()-1, target);
@@ -436,7 +436,7 @@
       }
 
 
-      for (int offset=1; offset < uncompSize; ++offset)
+      for (size_t offset=1; offset < uncompSize; ++offset)
       {
         lastAccessedDocId += ( iterDecompBlock[offset]+1);
         if (lastAccessedDocId >= target) {

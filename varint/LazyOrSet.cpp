@@ -26,7 +26,7 @@ int LazyOrSet::size()
 bool LazyOrSet::find(unsigned int val) const 
 { 
 	LazyOrSetIterator finder(sets);
-	int docid = finder.Advance(val);
+	unsigned int docid = finder.Advance(val);
 	return docid != NO_MORE_DOCS && docid == val;
 }
 
@@ -54,7 +54,7 @@ unsigned int LazyOrSetIterator::nextDoc() {
     shared_ptr<Item> top = _heap[0];
     while(true) {
       shared_ptr<Set::Iterator> topIter = top->iter;
-      int docid;
+      unsigned int docid;
       if((docid = topIter->nextDoc())!=NO_MORE_DOCS) {
         top->doc = docid;
         heapAdjust();
@@ -65,7 +65,7 @@ unsigned int LazyOrSetIterator::nextDoc() {
         }
       }
       top = _heap[0];
-      int topDoc = top->doc;
+      unsigned int topDoc = top->doc;
       if(topDoc > _curDoc) {
         return (_curDoc = topDoc);
       }
@@ -84,7 +84,7 @@ unsigned int LazyOrSetIterator::Advance(unsigned int target) {
   shared_ptr<Item> top = _heap[0];
   while(true) {
     shared_ptr<Set::Iterator> topIter = top->iter;
-    int docid;
+    unsigned int docid;
     if((docid = topIter->Advance(target))!=NO_MORE_DOCS) {
       top->doc = docid;
       heapAdjust();
@@ -95,7 +95,7 @@ unsigned int LazyOrSetIterator::Advance(unsigned int target) {
       }
     }
     top = _heap[0];
-    int topDoc = top->doc;
+    unsigned int topDoc = top->doc;
     if(topDoc >= target) {
       return (_curDoc = topDoc);
     }

@@ -6,7 +6,7 @@ class LazyAndSet;
 
 class LazyAndSetIterator : public Set::Iterator {
 private:
-	int lastReturn; 
+	unsigned lastReturn; 
 	vector<shared_ptr<Set::Iterator> > iterators;
 	const LazyAndSet& set;
 public:
