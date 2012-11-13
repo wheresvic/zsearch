@@ -113,15 +113,15 @@
     /**
      * Add an array of sorted docIds to the set
      */
-    void CompressedSet::addDocs(unsigned int docids[],size_t start,size_t len){
+    void CompressedSet::addDocs(unsigned int* docids,size_t start,size_t len){
       if ((len + sizeOfCurrentNoCompBlock) <= DEFAULT_BATCH_SIZE) {
-	    //currentNoCompBlock.resize(len + sizeOfCurrentNoCompBlock);
+	    currentNoCompBlock.resize(len + sizeOfCurrentNoCompBlock);
         memcpy( &currentNoCompBlock[sizeOfCurrentNoCompBlock],&docids[start], len*4 );
         sizeOfCurrentNoCompBlock += len;
       } else {
          // the first block can be completed so fillup a complet block
          int copyLen = DEFAULT_BATCH_SIZE - sizeOfCurrentNoCompBlock;
-         // currentNoCompBlock.resize(DEFAULT_BATCH_SIZE);
+         currentNoCompBlock.resize(DEFAULT_BATCH_SIZE);
          memcpy( &currentNoCompBlock[sizeOfCurrentNoCompBlock],&docids[start], copyLen*4 );
          sizeOfCurrentNoCompBlock = DEFAULT_BATCH_SIZE;
 
