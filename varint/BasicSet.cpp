@@ -112,7 +112,7 @@
      * Gets the number of ids in the set
      * @return docset size
      */
-    int BasicSet::size() const 
+    unsigned int BasicSet::size() const 
 	{
 		return docs.size();
     }

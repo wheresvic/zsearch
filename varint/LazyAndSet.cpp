@@ -24,7 +24,7 @@ inline bool LazyAndSet::find(unsigned int val) const
 	return docid != NO_MORE_DOCS && docid == val;
 }
 
-int LazyAndSet::size() 
+unsigned int LazyAndSet::size() const
 {
 	// Do the size if we haven't done it so far.
 	if(setSize < 0) {

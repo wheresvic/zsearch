@@ -20,14 +20,14 @@ class LazyAndSet : Set {
  public:
 	vector<shared_ptr<Set> > sets_;
 	int nonNullSize;
-	int setSize;
+	mutable unsigned int setSize;
 	LazyAndSet();
 	
 	LazyAndSet(vector<shared_ptr<Set> >& sets);
 	
 	inline bool find(unsigned int val) const;
 	
-	int size();
+	unsigned int size() const ;
 
     shared_ptr<Set::Iterator> iterator() const;
 	

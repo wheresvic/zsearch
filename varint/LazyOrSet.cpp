@@ -12,7 +12,7 @@ shared_ptr<Set::Iterator>  LazyOrSet::iterator() const
    return it;
 }
 
-int LazyOrSet::size() 
+unsigned int LazyOrSet::size()  const
 {
 	if(_size==INVALID){
 	  _size=0;

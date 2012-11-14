@@ -284,7 +284,7 @@
 
     //This method will not work after a call to flush()
     inline bool CompressedSet::find(unsigned int target) const {
-		assert(false);
+
 	    vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> myDecompBlock(DEFAULT_BATCH_SIZE, 0);
         //unsigned int lastId = lastAdded;
         if(PREDICT_FALSE(totalDocIdNum==0))

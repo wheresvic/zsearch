@@ -28,5 +28,7 @@ public:
 	virtual ~Set() {}
 	virtual void write(std::ostream & out){}
 	virtual void read(std::istream & in){}
+	virtual void size(std::istream & in){}
+	virtual unsigned int size() const =0;
 };
 #endif  // ABSTRACT_SET_H__

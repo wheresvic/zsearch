@@ -34,7 +34,7 @@ class LazyOrSet : public Set
 	private:
 		const int INVALID = -1;
 		vector<shared_ptr<Set>> sets;
-		int _size = INVALID;
+		mutable int _size = INVALID;
 
 	public:
 	
@@ -43,7 +43,7 @@ class LazyOrSet : public Set
 		shared_ptr<Set::Iterator>  iterator()  const;
 	
 		//Override
-		int size();
+		unsigned int size() const;
 		
 		bool find(unsigned int val) const;
 };
