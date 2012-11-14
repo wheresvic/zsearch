@@ -22,3 +22,13 @@ const map<unsigned int, shared_ptr<IDocument>>& DocumentStoreSimple::getDocument
 	return documents;
 }
 
+int DocumentStoreSimple::Get(unsigned int docId, shared_ptr<IDocument>& doc) const {
+	auto iter = documents.find(docId);
+
+	if (iter != documents.end())
+	{
+		doc = iter->second;
+		return 1;
+	}
+	return 0;
+}

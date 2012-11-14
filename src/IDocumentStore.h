@@ -21,6 +21,7 @@ class IDocumentStore
 
 		// need to add iterator class instead of exposing the underlying implementation
 		virtual const map<unsigned int, shared_ptr<IDocument>>& getDocuments() = 0;
+		virtual	int Get(unsigned int docId, shared_ptr<IDocument>& doc) const = 0;
 };
 
 #endif

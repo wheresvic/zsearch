@@ -21,6 +21,7 @@ class LazyAndSet : Set {
 	vector<shared_ptr<Set> > sets_;
 	int nonNullSize;
 	mutable unsigned int setSize;
+	mutable bool init = false;
 	LazyAndSet();
 	
 	LazyAndSet(vector<shared_ptr<Set> >& sets);

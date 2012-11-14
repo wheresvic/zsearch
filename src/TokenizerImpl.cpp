@@ -18,40 +18,25 @@ void TokenizerImpl::setString(const std::string& str)
 
 bool TokenizerImpl::nextToken()
 {
-	size_t i = m_string.find_first_not_of(m_delimiters, m_offset);
-
-	if (string::npos == i)
-	{
-		m_offset = m_string.length();
-		return false;
+	m_token.resize(0);
+	for (;;){
+		if (m_offset == m_string.size()) break;
+		char c = m_string[m_offset++];
+		c = c | 0x20;	// lowercase
+		if (c >= 'a' ? c <= 'z' : (c >= '0' && c <= '9'))
+		{
+			m_token.append(&c,1);
+		} else {
+			if (m_token.size()>0)
+			  return true;
+		}
 	}
-
-	size_t j = m_string.find_first_of(m_delimiters, i);
-	if (string::npos == j)
-	{
-		m_token = m_string.substr(i);
-		m_offset = m_string.length();
-		return true;
-	}
-
-	m_token = m_string.substr(i, j - i);
-	m_offset = j;
-	return true;
+	return m_token.size()>0;
 }
 
 
 
 const std::string TokenizerImpl::getToken() const
-{
-	std::string out(m_token.length(), 'X');
-	locale loc;
-	
-	// std::transform(m_token.begin(), m_token.end(), std::back_inserter(out) /* m_token.begin() */, std::tolower);
-	
-	for (size_t i=0; i < m_token.length(); ++i)
-	{
-		out[i] = tolower(m_token[i], loc);
-	}
-	
-	return out;
+{	
+	return m_token;
 }

@@ -7,14 +7,16 @@ LazyAndSet::LazyAndSet()
 {
 	sets_ = vector<shared_ptr<Set> >();
 	nonNullSize = 0;
-	setSize = -1;
+	setSize = 0;
+    init = false;
 }
 
 LazyAndSet::LazyAndSet(vector<shared_ptr<Set> >& sets)
 {
 	sets_ = sets;
 	nonNullSize = sets.size();
-	setSize = -1;
+	setSize = 0;
+	init = false;
 }
 
 inline bool LazyAndSet::find(unsigned int val) const 
@@ -27,12 +29,13 @@ inline bool LazyAndSet::find(unsigned int val) const
 unsigned int LazyAndSet::size() const
 {
 	// Do the size if we haven't done it so far.
-	if(setSize < 0) {
+	if(!init) {
 	  LazyAndSetIterator dcit(this);
 	  setSize = 0;
 	  while(dcit.nextDoc() != NO_MORE_DOCS)
 		 setSize++;
 	}
+	init = true;
 	return setSize;
 }
 
@@ -43,7 +46,7 @@ shared_ptr<Set::Iterator> LazyAndSet::iterator() const
 }	
 
 LazyAndSetIterator::LazyAndSetIterator(const LazyAndSet* parent) : set(*parent){
-	lastReturn = -1;
+	lastReturn = 0;
 	if (set.nonNullSize < 1)
 	    throw string("Minimum one iterator required");
 	
@@ -52,7 +55,7 @@ LazyAndSetIterator::LazyAndSetIterator(const LazyAndSet* parent) : set(*parent){
 		shared_ptr<Set::Iterator>  dcit = set->iterator();
 		iterators.push_back(dcit);
 	}
-	lastReturn = (iterators.size() > 0 ? -1 : NO_MORE_DOCS);
+	lastReturn = (iterators.size() > 0 ? 0 : NO_MORE_DOCS);
 }
 
 unsigned int  LazyAndSetIterator::docID() {

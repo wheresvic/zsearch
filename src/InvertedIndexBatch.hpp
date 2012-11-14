@@ -12,24 +12,22 @@
 #include "../varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
-
+#include "varint/SetFactory.h"
 
 using google::dense_hash_map;
 // TODO implement ConcurrentMerge
 
-template <class SET> 
-
-class InvertedIndexBatch : public IInvertedIndex<SET>
+class InvertedIndexBatch : public IInvertedIndex
 {
 private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
 	dense_hash_map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
-
+	shared_ptr<SetFactory> setFactory;
 	int maxbatchsize;
 	int batchsize;
 
-	int storePut(unsigned int wordId, const shared_ptr<SET>& set)
+	int storePut(unsigned int wordId, const shared_ptr<Set>& set)
 	{
 		stringstream ss;
 		set->write(ss);
@@ -43,14 +41,17 @@ private:
 		return 0;
 	}
 	
-	int put(unsigned int wordId, const shared_ptr<SET>& set)
+	int put(unsigned int wordId, const shared_ptr<Set>& set)
 	{
 		return 1;
 	}
 
 public:
 	
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store)  : store(store), buffer(656538)
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory)  :
+	 store(store), 
+	 buffer(656538),
+	 setFactory(setFactory)
 	{
 		maxbatchsize = 200000000;
 		batchsize = 0;
@@ -63,13 +64,13 @@ public:
 	}
 	
 
-	int get(unsigned int wordId, shared_ptr<SET>& inset)
+	int get(unsigned int wordId, shared_ptr<Set>& inset)
 	{		
 		string bitmap;
 		if(store->Get(wordId,bitmap).ok())
 		{
 			stringstream bitmapStream(bitmap);
-			inset = make_shared<SET>();
+			inset = setFactory->createSparseSet();
 			inset->read(bitmapStream);
 			return 1;
 		}
@@ -77,7 +78,7 @@ public:
 		auto iter = buffer.find(wordId);
 		if (iter != buffer.end())
 		{
-			inset = make_shared<SET>();
+			inset = setFactory->createSparseSet();
 			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){	
 			   inset->addDoc(*docid);
 			}
@@ -99,14 +100,14 @@ public:
 	{
 		for (auto iter = buffer.begin(); iter != buffer.end(); ++iter)
         {
-            shared_ptr<SET> docSet;
+            shared_ptr<Set> docSet;
 			if(!get(iter->first,docSet)){
-			    docSet = make_shared<SET>();	
+			    docSet = setFactory->createSparseSet();	
 			}
 			//use a normal set to remove duplicate document
 			set<unsigned int> docBatch;
-			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){
-				docBatch.insert(*docid);	
+			for (auto docid : *(iter->second)){
+				docBatch.insert(docid);	
 			}
 			//add all elements of the set to our compressed Set
 			for (auto docid : docBatch) {

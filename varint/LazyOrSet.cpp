@@ -32,7 +32,7 @@ bool LazyOrSet::find(unsigned int val) const
 
 		
 LazyOrSetIterator::LazyOrSetIterator(vector<shared_ptr<Set>> sets){
-	_curDoc = -1;
+	_curDoc = 0;
 	_size = sets.size();
 	for (auto set : sets) {
 		_heap.push_back(shared_ptr<Item>(new Item(set->iterator())));

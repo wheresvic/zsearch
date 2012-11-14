@@ -56,7 +56,6 @@ class InvertedIndexImpl : public IInvertedIndex
 			stringstream ss;
 			set->write(ss);
 			string bitmap = ss.str();
-
 			if (store->Put(wordId,bitmap).ok())
 			{
 				return 1;
@@ -83,6 +82,11 @@ class InvertedIndexImpl : public IInvertedIndex
 				put(wordId,set);
 			}
 
+			return 1;
+		}
+		
+		int flushBatch()
+		{
 			return 1;
 		}
 	

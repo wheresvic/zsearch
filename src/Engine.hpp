@@ -8,7 +8,9 @@
 #include <set>
 #include <vector>
 #include "Word.hpp"
+
 #include "InvertedIndexBatch.hpp"
+#include "InvertedIndexImpl.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
 #include "varint/LazyAndSet.h"
@@ -41,11 +43,11 @@ class Engine
 			flushBatch();
         }
 
-		unsigned int addDocument(shared_ptr<IDocument> document)
+		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
 			documentStore->addDoc(docId, document);
 
-			auto entries = document->getEntries();
+			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
 			{
@@ -58,7 +60,7 @@ class Engine
 				while (tokenizer->nextToken())
 				{
 				    unsigned int id = 0;
-				    string token = tokenizer->getToken();
+				    const string& token = tokenizer->getToken();
                     if(wordIndex.Get(field,token,id)){
 					    invertedIndex.add(id,docId);
 					} else {
@@ -69,7 +71,6 @@ class Engine
 				}
 
 			} // end looping through entries
-
 			return docId++;
 		}
 
@@ -104,15 +105,16 @@ class Engine
 						unionSet.push_back(docSet);
 					}
 				}
-				intersectionSet.push_back(shared_ptr<Set>(new LazyOrSet(unionSet)));
+				shared_ptr<Set> orset = make_shared<LazyOrSet>(unionSet);
+				intersectionSet.push_back(orset);
 			}
 			LazyAndSet andSet(intersectionSet);
-			auto documents = documentStore->getDocuments();
-
-
 			shared_ptr<Set::Iterator> it = andSet.iterator();
 			while(it->nextDoc()!= NO_MORE_DOCS) {
-				documentSet.insert(documents[it->docID()]);
+				shared_ptr<IDocument> doc;
+				if (documentStore->Get(it->docID(),doc)){
+					documentSet.insert(doc);
+				}
 			}
 
 			return documentSet;
