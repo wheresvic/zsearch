@@ -65,7 +65,7 @@
 #include "KVStoreLevelDb.h"
 #include "Constants.hpp"
 #include "Engine.hpp"
-
+#include "varint/BasicSet.h"
 
 static const std::string POST_HTM = "/post.htm";
 static const std::string SEARCH_PATH = "/search";
@@ -446,12 +446,13 @@ int main(int argc, char **argv)
 	struct event_base *base;
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
-
+	
+    std::shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine(tokenizer, documentStore, invertedIndexStore);
+	engine = new Engine(tokenizer, documentStore, invertedIndexStore,setFactory);
 
 	unsigned short port = 8080;
 #ifdef _WIN32

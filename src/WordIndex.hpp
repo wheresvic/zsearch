@@ -5,8 +5,11 @@
 #include <tr1/functional> // for std::tr1::hash
 #include <sparsehash/dense_hash_map>
 #include "Word.hpp"
+#include <stdlib.h>
+#include <stdio.h>
 
 using google::dense_hash_map;
+
 
 struct hashstr
 {
@@ -14,7 +17,7 @@ struct hashstr
   long operator()(const string& s1) const
   { 
 	return hasher(s1);
-//	return CityHash64(s1.data(),s1.size());
+    //return CityHash64(s1.data(),s1.size());
   }
 };
 
@@ -23,12 +26,11 @@ struct hashstr
 class WordIndex
 {
 private:
-  // dense_hash_map<string, unsigned int> map;
-	std::map<string, unsigned int> map;
+    dense_hash_map<string, unsigned int,hashstr> map;
 public:
-  WordIndex() // : map(656538)
+  WordIndex()  : map(656538)
   {
-    // map.set_empty_key("");
+     map.set_empty_key("");
 
   }
 
@@ -37,16 +39,16 @@ public:
 	return Put(word, value);
   }
 
-  int Put(const Word& word, unsigned int value) {
-	map.insert(make_pair(word.toString(),value));
-	return 1;
-  }
-
   int Get(const std::string& field, const std::string& token, unsigned int& value) {
 	Word word(field, token);
     return Get(word, value);
   }
 
+
+  int Put(const Word& word, unsigned int value) {
+	map.insert(make_pair(word.toString(),value));
+	return 1;
+  }
 
   int Get(const Word& word, unsigned int& value) {
 	auto found = map.find(word.toString());

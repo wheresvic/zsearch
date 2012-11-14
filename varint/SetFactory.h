@@ -4,18 +4,19 @@
 #include "CompressedSet.h"
 #include <memory>
 class SetFactory {
+public:
 	SetFactory(){
 		
 	}
 	
-	~SetFactory{
+	~SetFactory(){
 		
 	}
 	
-	virtual const shared_ptr<Set>&& createSparseSet(){
+	virtual const shared_ptr<Set> createSparseSet(){
 		return make_shared<CompressedSet>();
 	}
 	
-}
+};
 
 #endif //SET_FACTORY_H__

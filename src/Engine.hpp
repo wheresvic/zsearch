@@ -14,20 +14,21 @@
 #include "varint/LazyAndSet.h"
 #include "IKVStore.h"
 #include "WordIndex.hpp"
-
+#include "varint/SetFactory.h"
 using namespace std;
 
-template <class SET>
 class Engine
 {
 	public:
 
 		Engine(shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore,
-				shared_ptr<KVStore::IKVStore> invertedIndexStore) :
+				shared_ptr<KVStore::IKVStore> invertedIndexStore,
+				shared_ptr<SetFactory> setFactory) :
 			tokenizer(tokenizer),
 			documentStore(documentStore),
-			invertedIndex(invertedIndexStore)
+			invertedIndex(invertedIndexStore,setFactory),
+			setFactory(setFactory)
 		{ 
 			
 		}
@@ -98,7 +99,7 @@ class Engine
 				for (auto field : fields) {					
 					unsigned int wordId = 0;
                     if(wordIndex.Get(field,token,wordId)){
-					    shared_ptr<SET> docSet;
+						shared_ptr<Set> docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(docSet);
 					}
@@ -137,6 +138,7 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch<SET> invertedIndex;
-
+		InvertedIndexBatch invertedIndex;
+		
+		shared_ptr<SetFactory> setFactory;
 };

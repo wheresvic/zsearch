@@ -32,8 +32,8 @@ class BasicSet : public Set
 				BasicSet::Iterator& operator=(const BasicSet::Iterator& rhs);
 				~Iterator();
 
-				__inline__ unsigned int docID();
-				__inline__ unsigned int nextDoc();
+			    unsigned int docID();
+			    unsigned int nextDoc();
 				unsigned int Advance(unsigned int target);
 			
 		};
@@ -86,7 +86,7 @@ class BasicSet : public Set
 		 * Gets the number of ids in the set
 		 * @return docset size
 		 */
-		int size() const;
+		unsigned int size() const;
 
 		//This method will not work after a call to flush()
 		bool find(unsigned int target) const;

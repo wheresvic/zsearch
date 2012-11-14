@@ -258,7 +258,7 @@
      * Gets the number of ids in the set
      * @return docset size
      */
-    int CompressedSet::size() const {
+    unsigned int CompressedSet::size() const {
       return totalDocIdNum;
     }
 

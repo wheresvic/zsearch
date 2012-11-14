@@ -6,32 +6,35 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "varint/SetFactory.h"
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
+
 #include "IKVStore.h"
 #include "IInvertedIndex.h"
 
-template <class SET>
-class InvertedIndexImpl : public IInvertedIndex<SET>
+class InvertedIndexImpl : public IInvertedIndex
 {
 	private:
 
 		std::shared_ptr<KVStore::IKVStore> store;		
-	
+	    shared_ptr<SetFactory> setFactory;
 	public:
 
-		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store) : store(store)
+		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory) :
+		 store(store),
+		 setFactory(setFactory)
 		{
 			store->Open();
 		}
 
-		int get(unsigned int wordId, shared_ptr<SET>& outset)
+		int get(unsigned int wordId, shared_ptr<Set>& outset)
 		{
 			string bitmap;
 			if(store->Get(wordId,bitmap).ok())
 			{ 
-				outset = make_shared<SET>();
+				outset = setFactory->createSparseSet();
 				stringstream bitmapStream(bitmap);
 				outset->read(bitmapStream);
 				return 1;
@@ -48,10 +51,10 @@ class InvertedIndexImpl : public IInvertedIndex<SET>
 		}
 
 
-		int put(unsigned int wordId, SET& set)
+		int put(unsigned int wordId, const shared_ptr<Set>& set)
 		{
 			stringstream ss;
-			set.write(ss);
+			set->write(ss);
 			string bitmap = ss.str();
 
 			if (store->Put(wordId,bitmap).ok())
@@ -66,17 +69,17 @@ class InvertedIndexImpl : public IInvertedIndex<SET>
 		{
 			if (exist(wordId))
 			{
-				shared_ptr<SET> set;
+				shared_ptr<Set> set;
 				get(wordId,set);
 				if (!set->find(docid)){
 					set->addDoc(docid);
-					put(wordId,*set);
+					put(wordId,set);
 				}
 			}
 			else
 			{
-				SET set;
-				set.addDoc(docid);
+				shared_ptr<Set> set = setFactory->createSparseSet();
+				set->addDoc(docid);
 				put(wordId,set);
 			}
 

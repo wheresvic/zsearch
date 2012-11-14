@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <limits>
-
+#include <iostream>
 const unsigned int NO_MORE_DOCS = std::numeric_limits<unsigned int>::max();
 
 class Set 
@@ -26,5 +26,7 @@ public:
 	virtual void flush() {};
 	virtual bool find(unsigned int target) const = 0;
 	virtual ~Set() {}
+	virtual void write(std::ostream & out){}
+	virtual void read(std::istream & in){}
 };
 #endif  // ABSTRACT_SET_H__

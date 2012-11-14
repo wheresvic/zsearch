@@ -1,7 +1,8 @@
 
-#include "src/InvertedIndexImpl.h"
+#include "src/InvertedIndexImpl.hpp"
 #include "lib/tpunit++.hpp"
 #include "src/KVStoreInMemory.h"
+#include "varint/SetFactory.h"
 #include <memory>
 
 using namespace std;
@@ -19,8 +20,9 @@ struct InvertedIndexImplTest : tpunit::TestFixture
 
 	void testBasic()
 	{
+		shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/TestInvertedIndex");
-		InvertedIndexImpl invertedIndex(invertedIndexStore);
+		InvertedIndexImpl invertedIndex(invertedIndexStore,setFactory);
 		invertedIndex.add(1, 44);
 		ASSERT_TRUE(invertedIndex.exist(1));
 	}

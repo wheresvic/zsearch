@@ -35,11 +35,12 @@ int main()
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
+	shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 	
-	Engine<BasicSet> engine(tokenizer, documentStore, invertedIndexStore);
+	Engine engine(tokenizer, documentStore, invertedIndexStore,setFactory);
 
 	cout << "Made engine!" << endl;
 	

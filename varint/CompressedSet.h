@@ -47,8 +47,8 @@ public:
         CompressedSet::Iterator& operator=(const CompressedSet::Iterator& rhs);
         ~Iterator();
 
-        __inline__ unsigned int docID();
-        __inline__ unsigned int nextDoc();
+        unsigned int docID();
+        unsigned int nextDoc();
         unsigned  int Advance(unsigned int target);
     };
 private:
@@ -133,7 +133,7 @@ public:
      * Gets the number of ids in the set
      * @return docset size
      */
-	int size() const;
+	unsigned int size() const;
 
     /**
      * if more then 1/8 of bit are set to 1 in range [minSetValue,maxSetvalue]
