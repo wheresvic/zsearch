@@ -76,7 +76,8 @@ int main()
 	string query = "some  more text";
 	cout << "searching for: " << query << endl;
 
-	auto docSet = engine.search(query);
+	auto docIdSet = engine.search(query);
+	auto docSet = engine.getDocs(docIdSet);
 
 	for (auto document : docSet)
 	{
@@ -90,8 +91,9 @@ int main()
 	query = "bandes";
 	cout << "searching for: " << query << endl;
 
-	docSet = engine.search(query);
-
+	docIdSet = engine.search(query);
+	docSet = engine.getDocs(docIdSet);
+	
 	for (auto document : docSet)
 	{
 		string title;

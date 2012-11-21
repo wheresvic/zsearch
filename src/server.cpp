@@ -145,6 +145,8 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 			
 				auto docSet = engine->search(value);
 	            
+				evbuffer_add_printf(evb, "%d", docSet.size());
+				
 				for (auto document : docSet)
 				{
 					std::string title;
@@ -288,8 +290,9 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			try
 			{
 				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
-				std::cout << "Added document: " << engine->addDocument(document) << std::endl;
-				evbuffer_add_printf(evb, "Ok");
+				unsigned int docId = engine->addDocument(document);
+				std::cout << "Added document: " << docId << std::endl;
+				evbuffer_add_printf(evb, "%d", docId);
 			}
 			catch (const std::string& e)
 			{
@@ -447,14 +450,15 @@ int main(int argc, char **argv)
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
 	
-    std::shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
+    SetType setType = CompressedSet_t;
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine(tokenizer, documentStore, invertedIndexStore,setFactory);
+	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setType);
 
 	unsigned short port = 8080;
+	
 #ifdef _WIN32
 	WSADATA WSAData;
 	WSAStartup(0x101, &WSAData);

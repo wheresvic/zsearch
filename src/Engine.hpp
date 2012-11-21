@@ -77,15 +77,14 @@ class Engine
 		/**
 		 * Return documents that contain all the words in the query
 		 */
-		set<shared_ptr<IDocument>> search(const string& query)
+		set<unsigned int> search(const string& query)
 		{
 			// q = "", field1="some more text" = input1/some input1/more input1/text
 			// q = "some more text" = (input1/some OR input2/some ) AND (input1/more or input2/more)
 
-			set<shared_ptr<IDocument>> documentSet;
+			set<unsigned int> documentIdSet;
 
 			set<string> queryTokens;
-
 
 			tokenizer->setString(query);
 			while (tokenizer->nextToken())
@@ -94,31 +93,57 @@ class Engine
 			}
 
 			vector<shared_ptr<Set>> intersectionSet;
-			for (auto token : queryTokens) {
+
+			for (auto token : queryTokens) 
+			{
 				vector<shared_ptr<Set>> unionSet;
-				for (auto field : fields) {					
+				
+				for (auto field : fields) 
+				{					
 					unsigned int wordId = 0;
-                    if(wordIndex.Get(field,token,wordId)){
+                    
+					if(wordIndex.Get(field,token,wordId))
+					{
 						shared_ptr<Set> docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(docSet);
 					}
 				}
+				
 				shared_ptr<Set> orset = make_shared<LazyOrSet>(unionSet);
 				intersectionSet.push_back(orset);
 			}
+			
 			LazyAndSet andSet(intersectionSet);
 			shared_ptr<Set::Iterator> it = andSet.iterator();
-			while(it->nextDoc()!= NO_MORE_DOCS) {
+			
+			while(it->nextDoc() != NO_MORE_DOCS) 
+			{
+				documentIdSet.insert(it->docID());
+			}
+
+			return documentIdSet;
+		}
+
+		/**
+		 * Return documents given their docIds
+		 */
+		set<shared_ptr<IDocument>> getDocs(const set<unsigned int>& docIds)
+		{
+			set<shared_ptr<IDocument>> documentSet;
+		
+			for (auto docId : docIds)
+			{
 				shared_ptr<IDocument> doc;
-				if (documentStore->Get(it->docID(),doc)){
+				
+				if (documentStore->Get(docId, doc)){
 					documentSet.insert(doc);
 				}
 			}
-
+			
 			return documentSet;
 		}
-
+		
 	private:
 
 		unsigned long docId = 1;
