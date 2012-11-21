@@ -8,8 +8,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "../varint/Set.h"
-#include "../varint/CompressedSet.h"
+#include "varint/Set.h"
+#include "varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
 #include "varint/SetFactory.h"
@@ -23,7 +23,9 @@ private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
 	dense_hash_map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
-	shared_ptr<SetFactory> setFactory;
+	SetFactory setFactory;
+	const SetType setType;
+	
 	int maxbatchsize;
 	int batchsize;
 
@@ -48,10 +50,10 @@ private:
 
 public:
 	
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory)  :
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, SetType setType) :
 	 store(store), 
 	 buffer(656538),
-	 setFactory(setFactory)
+	 setType(setType)
 	{
 		maxbatchsize = 200000000;
 		batchsize = 0;
@@ -70,7 +72,7 @@ public:
 		if(store->Get(wordId,bitmap).ok())
 		{
 			stringstream bitmapStream(bitmap);
-			inset = setFactory->createSparseSet();
+			inset = setFactory.createSet(setType);
 			inset->read(bitmapStream);
 			return 1;
 		}
@@ -78,7 +80,7 @@ public:
 		auto iter = buffer.find(wordId);
 		if (iter != buffer.end())
 		{
-			inset = setFactory->createSparseSet();
+			inset = setFactory.createSet(setType);
 			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){	
 			   inset->addDoc(*docid);
 			}
@@ -102,7 +104,7 @@ public:
         {
             shared_ptr<Set> docSet;
 			if(!get(iter->first,docSet)){
-			    docSet = setFactory->createSparseSet();	
+			    docSet = setFactory.createSet(setType);	
 			}
 			//use a normal set to remove duplicate document
 			set<unsigned int> docBatch;

@@ -2,19 +2,43 @@
 #define SET_FACTORY_H__
 #include "Set.h"
 #include "CompressedSet.h"
+#include "BasicSet.h"
 #include <memory>
-class SetFactory {
+
+enum SetType
+{ 
+	CompressedSet_t,
+	BasicSet_t
+};
+
+
+class SetFactory 
+{
 public:
-	SetFactory(){
+
+	SetFactory()
+	{
 		
 	}
 	
-	~SetFactory(){
+	~SetFactory()
+	{
 		
 	}
 	
-	virtual const shared_ptr<Set> createSparseSet(){
+	/*
+	virtual const shared_ptr<Set> createSparseSet()
+	{
 		return make_shared<CompressedSet>();
+	}
+	*/
+	
+	virtual const shared_ptr<Set> createSet(const SetType setType)
+	{
+		if (setType == CompressedSet_t)
+			return std::make_shared<CompressedSet>();
+		
+		return make_shared<BasicSet>();
 	}
 	
 };

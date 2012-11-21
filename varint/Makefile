@@ -38,7 +38,7 @@ CompressedSet.a : $(LIBOBJECTS)
 # Classes
 ##
 
-$(BUILD_DIR)/varint_CompressedSet.o : CompressedSet.cpp 
+$(BUILD_DIR)/varint_CompressedSet.o : CompressedSet.cpp CompressedSet.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/varint_BasicSet.o : BasicSet.cpp 
