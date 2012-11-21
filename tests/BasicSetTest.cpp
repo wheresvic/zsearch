@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -69,7 +70,30 @@ void test(){
 	cout << "All test passed succesfully!!" << endl;
 }
 
+void binarySearch()
+{
+	set<int> basic;
+	
+	for (int i = 1; i <= 10; ++i)
+		basic.insert(i);
+	
+	/*
+	int search = 11;
+	
+	set<int>::iterator upper;
+	
+	if (basic.find(search) == basic.end())
+	{
+		upper = upper_bound(basic.begin(), basic.end(), search);
+	}
+	
+	cout << "upper " << upper - basic.begin() << endl;
+	*/
+}
 
-int main() {
+
+int main() 
+{
 	test();
+	// binarySearch();
 }

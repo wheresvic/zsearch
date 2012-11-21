@@ -39,7 +39,7 @@ int main()
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
-	SetType setType = BasicSet_t;
+	SetType setType = CompressedSet_t;
 	
 	Engine engine(tokenizer, documentStore, invertedIndexStore, setType);
 
