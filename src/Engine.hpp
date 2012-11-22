@@ -26,10 +26,11 @@ class Engine
 		Engine(shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore,
-				SetType setType) :
+				shared_ptr<SetFactory> setFactory) :
 			tokenizer(tokenizer),
 			documentStore(documentStore),
-			invertedIndex(invertedIndexStore, setType)			
+			invertedIndex(invertedIndexStore,setFactory),
+			setFactory(setFactory)
 		{ 
 			
 		}
@@ -165,4 +166,6 @@ class Engine
 
 		// inverted index that maps words(wordId) to documents that contain it
 		InvertedIndexBatch invertedIndex;
+		
+		shared_ptr<SetFactory> setFactory;
 };

@@ -20,8 +20,9 @@ struct InvertedIndexImplTest : tpunit::TestFixture
 
 	void testBasic()
 	{
+		shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/TestInvertedIndex");
-		InvertedIndexImpl invertedIndex(invertedIndexStore, BasicSet_t);
+		InvertedIndexImpl invertedIndex(invertedIndexStore,setFactory);
 		invertedIndex.add(1, 44);
 		ASSERT_TRUE(invertedIndex.exist(1));
 	}

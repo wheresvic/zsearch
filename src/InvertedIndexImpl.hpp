@@ -19,14 +19,12 @@ class InvertedIndexImpl : public IInvertedIndex
 	private:
 
 		std::shared_ptr<KVStore::IKVStore> store;		
-	    SetFactory setFactory;
-		SetType setType;
-		
+	    shared_ptr<SetFactory> setFactory;
 	public:
 
-		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store, SetType setType) :
+		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory) :
 		 store(store),
-		 setType(setType)
+		 setFactory(setFactory)
 		{
 			store->Open();
 		}
@@ -36,7 +34,7 @@ class InvertedIndexImpl : public IInvertedIndex
 			string bitmap;
 			if(store->Get(wordId,bitmap).ok())
 			{ 
-				outset = setFactory.createSet(setType);
+				outset = setFactory->createSparseSet();
 				stringstream bitmapStream(bitmap);
 				outset->read(bitmapStream);
 				return 1;
@@ -79,7 +77,7 @@ class InvertedIndexImpl : public IInvertedIndex
 			}
 			else
 			{
-				shared_ptr<Set> set = setFactory.createSet(setType);
+				shared_ptr<Set> set = setFactory->createSparseSet();
 				set->addDoc(docid);
 				put(wordId,set);
 			}

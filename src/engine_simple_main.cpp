@@ -18,7 +18,6 @@
 #include "Word.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
-#include "varint/SetFactory.h"
 
 using namespace std;
 
@@ -36,12 +35,12 @@ int main()
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
+	shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
-	SetType setType = CompressedSet_t;
 	
-	Engine engine(tokenizer, documentStore, invertedIndexStore, setType);
+	Engine engine(tokenizer, documentStore, invertedIndexStore,setFactory);
 
 	cout << "Made engine!" << endl;
 	
