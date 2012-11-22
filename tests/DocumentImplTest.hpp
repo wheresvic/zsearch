@@ -6,6 +6,7 @@
 #include <exception>
 #include <iostream>
 #include <iterator>
+#include <sstream>
 
 #include "lib/tpunit++.hpp"
 #include "src/DocumentImpl.h"
@@ -27,7 +28,8 @@ struct DocumentImplTest : tpunit::TestFixture
 		TEST(DocumentImplTest::testParsingDocumentBad),
 		TEST(DocumentImplTest::testParsingDocumentEmptyField),
 		TEST(DocumentImplTest::testParsingEmptyString),
-		TEST(DocumentImplTest::testParsingDocumentCDATA)
+		TEST(DocumentImplTest::testParsingDocumentCDATA),
+		TEST(DocumentImplTest::testDocumentWrite)
 	)
 	{ }
 
@@ -36,7 +38,7 @@ struct DocumentImplTest : tpunit::TestFixture
 		string docStr;
 		try
 		{
-			docStr = readFile("document01.xml");
+			docStr = readFile("../data/document01.xml");
 		}
 		catch (const string& e)
 		{
@@ -75,7 +77,7 @@ struct DocumentImplTest : tpunit::TestFixture
 		string docStr;
 		try
 		{
-			docStr = readFile("document02.xml");
+			docStr = readFile("../data/document02.xml");
 		}
 		catch (const string& e)
 		{
@@ -94,6 +96,23 @@ struct DocumentImplTest : tpunit::TestFixture
 			cout << e << endl;
 		}
 		*/
+	}
+	
+	void testDocumentWrite()
+	{
+		string docStr = "<document><input1> some text</input1><input2> some more text</input2></document>";
+		
+		shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr);
+		
+		stringstream ss;
+		document->write(ss);
+		
+		string docStrExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + docStr;
+		string docStrActual = ss.str();
+		
+		// cout << docStrExpected << endl << docStrActual << endl;
+		
+		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);		
 	}
 
 };

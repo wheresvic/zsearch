@@ -89,7 +89,7 @@ int main()
 
 	cout << endl;
 
-	query = "bandes";
+	query = "série";
 	cout << "searching for: " << query << endl;
 
 	docIdSet = engine.search(query);

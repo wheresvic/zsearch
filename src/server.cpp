@@ -78,6 +78,123 @@ static Engine *engine;
 
 char uri_root[512];
 
+static unsigned int getDocIdFromString(const std::string& strDocId)
+{
+	unsigned int docId;
+	stringstream ss(strDocId);
+	ss >> docId;
+	return docId;
+}
+
+
+/**
+ * Callback used for doc request
+ */
+static void doc_request_cb(struct evhttp_request *req, void *arg)
+{
+	struct evbuffer *evb = NULL;
+	const char *uri = evhttp_request_get_uri(req);
+	struct evhttp_uri *decoded = NULL;
+	const char *path = NULL;
+	const char *query = NULL;
+	
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET)
+	{
+		std::cout << "Invalid query request! Needs to be GET" << std::endl;
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		return;
+	}
+
+	printf("Got a GET request for %s\n",  uri);
+
+	// Decode the URI
+	decoded = evhttp_uri_parse(uri);
+	
+	if (!decoded) 
+	{
+		printf("It's not a good URI. Sending BADREQUEST\n");
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		return;
+	}
+
+	path = evhttp_uri_get_path(decoded);
+	std::cout << path << std::endl;
+
+	query = evhttp_uri_get_query(decoded);
+	std::cout << query << std::endl;
+
+	// This holds the content we're sending
+	evb = evbuffer_new();
+
+	struct evkeyvalq params;	// create storage for your key->value pairs
+	struct evkeyval *param;		// iterator
+
+	int result = evhttp_parse_query_str(query, &params);
+
+	if (result == 0)
+	{
+		bool found = false;
+	
+		for (param = params.tqh_first; param; param = param->next.tqe_next)
+	    {
+			std::string key(param->key);
+			std::string value(param->value);
+
+			printf("%s\n%s\n", key.c_str(), value.c_str());
+
+			if (key.compare(zsearch::DOC_ID_KEY) == 0)
+			{
+				std::cout << "retrieving document " << value << std::endl;
+				
+				unsigned int docId = getDocIdFromString(value);
+			
+				std::shared_ptr<IDocument> document;
+				
+				if (engine->getDoc(docId, document))
+				{
+					std::stringstream ss;
+					document->write(ss);
+					std::string docStr = ss.str();
+					std::cout << docStr << std::endl;
+					
+					evbuffer_add_printf(evb, docStr.c_str());
+					found = true;
+				}
+				
+				break;
+			}
+		}
+
+		if (found)
+		{
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/xml");
+		}
+		else
+		{
+			evbuffer_add_printf(evb, "Document not found or invalid docId");
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+		}
+		
+		evhttp_send_reply(req, 200, "OK", evb);
+	}
+	else
+	{
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+	}
+
+	evhttp_clear_headers(&params);
+
+
+	if (decoded)
+	{
+		evhttp_uri_free(decoded);
+	}
+
+	if (evb)
+	{
+		evbuffer_free(evb);
+	}
+}
 
 /**
  * Callback used for search request
@@ -162,6 +279,8 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 						evbuffer_add_printf(evb, "\n");
 					}
 				}
+				
+				break;
 			}
 		}
 
@@ -497,6 +616,7 @@ int main(int argc, char **argv)
 	// evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
 
 	evhttp_set_cb(http, "/search", search_request_cb, NULL);
+	evhttp_set_cb(http, "/doc", doc_request_cb, NULL);
 
 	// We want to accept arbitrary requests, so we need to set a "generic"
 	evhttp_set_gencb(http, generic_request_cb, argv[1]);

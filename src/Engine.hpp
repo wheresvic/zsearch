@@ -138,12 +138,24 @@ class Engine
 			{
 				shared_ptr<IDocument> doc;
 				
-				if (documentStore->Get(docId, doc)){
+				// if (documentStore->Get(docId, doc))
+				if (getDoc(docId, doc))
+				{
 					documentSet.insert(doc);
 				}
 			}
 			
 			return documentSet;
+		}
+		
+		bool getDoc(const unsigned int docId, shared_ptr<IDocument>& doc)
+		{
+			if (documentStore->Get(docId, doc))
+			{
+				return true;
+			}
+		
+			return false;
 		}
 		
 	private:
