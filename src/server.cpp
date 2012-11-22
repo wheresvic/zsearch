@@ -66,6 +66,8 @@
 #include "Constants.hpp"
 #include "Engine.hpp"
 #include "varint/BasicSet.h"
+#include "varint/SetFactory.h"
+#include "varint/BasicSetFactory.h"
 
 static const std::string POST_HTM = "/post.htm";
 static const std::string SEARCH_PATH = "/search";
@@ -143,19 +145,23 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 			{
 				std::cout << "searching for " << value << std::endl;
 			
-				auto docSet = engine->search(value);
+				auto docIdSet = engine->search(value);
 	            
-				evbuffer_add_printf(evb, "%d", docSet.size());
+				evbuffer_add_printf(evb, "%ld", docIdSet.size());
 				
-				for (auto document : docSet)
+				if (docIdSet.size())
 				{
-					std::string title;
-					document->getEntry("title", title);
-					std::cout << title << " ";
-					evbuffer_add_printf(evb, title.c_str());
-					evbuffer_add_printf(evb, "\n");
-				}
+					auto docSet = engine->getDocs(docIdSet);
 				
+					for (auto document : docSet)
+					{
+						std::string title;
+						document->getEntry("title", title);
+						std::cout << title << " ";
+						evbuffer_add_printf(evb, title.c_str());
+						evbuffer_add_printf(evb, "\n");
+					}
+				}
 			}
 		}
 
@@ -450,12 +456,12 @@ int main(int argc, char **argv)
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
 	
-    SetType setType = CompressedSet_t;
+    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setType);
+	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);
 
 	unsigned short port = 8080;
 	

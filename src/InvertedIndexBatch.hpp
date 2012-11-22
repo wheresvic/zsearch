@@ -8,11 +8,11 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "../varint/Set.h"
-#include "../varint/CompressedSet.h"
+#include "varint/Set.h"
+#include "varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
-#include "varint/SetFactory.h"
+#include "varint/ISetFactory.h"
 
 using google::dense_hash_map;
 // TODO implement ConcurrentMerge
@@ -23,7 +23,8 @@ private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
 	dense_hash_map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
-	shared_ptr<SetFactory> setFactory;
+	std::shared_ptr<ISetFactory> setFactory;
+	
 	int maxbatchsize;
 	int batchsize;
 
@@ -48,16 +49,14 @@ private:
 
 public:
 	
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory)  :
-	 store(store), 
-	 buffer(656538),
-	 setFactory(setFactory)
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), buffer(656538), setFactory(setFactory)
 	{
 		maxbatchsize = 200000000;
 		batchsize = 0;
 		store->Open();
 		buffer.set_empty_key(0);
 	}
+	
 	~InvertedIndexBatch()
 	{
 
@@ -84,8 +83,7 @@ public:
 			}
 			return 1;
 		}
-
-        
+    
 		return 0;
 	}
 
@@ -144,6 +142,7 @@ public:
 	//	store.Compact();
 		return 1;
 	}
+	
 };
 
 #endif

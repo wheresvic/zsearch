@@ -1,19 +1,18 @@
 #ifndef SET_FACTORY_H__
 #define SET_FACTORY_H__
+
 #include "Set.h"
 #include "CompressedSet.h"
+#include "ISetFactory.h"
 #include <memory>
-class SetFactory {
+
+class SetFactory : public ISetFactory 
+{
+
 public:
-	SetFactory(){
-		
-	}
 	
-	~SetFactory(){
-		
-	}
-	
-	virtual const shared_ptr<Set> createSparseSet(){
+	virtual const shared_ptr<Set> createSparseSet()
+	{
 		return make_shared<CompressedSet>();
 	}
 	
