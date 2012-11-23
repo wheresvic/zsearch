@@ -6,7 +6,9 @@
 #include <string>
 #include <map>
 #include <set>
+#include <vector>
 #include <unordered_map>
+#include <chrono>
 
 using namespace std;
 
@@ -18,6 +20,10 @@ struct classcomp
 	}
 };
 
+/**
+ * TODO: Make thread-safe, consider singleton (will need to split into cpp and enforce correct linking order)
+ * 
+ */
 class Statistics
 {
 
@@ -30,6 +36,36 @@ class Statistics
 			return instance;
 		}
 		*/
+		
+		void logRequestTime(const string& request, const chrono::nanoseconds& timeTaken)
+		{
+			auto it = requestTimes.find(request);
+			
+			if (it != requestTimes.end())
+			{
+				(it->second).push_back(timeTaken);
+			}
+			else
+			{
+				vector<chrono::nanoseconds> times;
+				times.push_back(timeTaken);
+				requestTimes.insert(make_pair(request, times));
+			}
+		}
+		
+		vector<chrono::nanoseconds> getRequestTimes(const string& request)
+		{
+			vector<chrono::nanoseconds> times;
+			
+			auto it = requestTimes.find(request);
+			
+			if (it != requestTimes.end())
+			{
+				return it->second;
+			}
+			
+			return times;
+		}
 		
 		void addQuery(const string& query)
 		{
@@ -45,6 +81,9 @@ class Statistics
 			}
 		}
 		
+		/**
+		 * TODO: consider sorting queries manually in one pass
+		 */
 		map<unsigned int, set<string>, classcomp> getTopQueries(unsigned int count)
 		{
 			map<unsigned int, set<string>, classcomp> topQueries;
@@ -90,6 +129,7 @@ class Statistics
 		*/
 		
 		unordered_map<string, unsigned int> queries;
+		unordered_map<string, vector<chrono::nanoseconds>> requestTimes;
 		
 };
 

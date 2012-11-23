@@ -3,6 +3,7 @@
 #include "lib/tpunit++.hpp"
 #include <memory>
 #include <iostream>
+#include <chrono>
 #include <unordered_map>
 
 using namespace std;
@@ -14,7 +15,8 @@ struct StatisticsTest : tpunit::TestFixture
 {
 	StatisticsTest() : tpunit::TestFixture
 	(
-		TEST(StatisticsTest::testQueries)
+		TEST(StatisticsTest::testQueries),
+		TEST(StatisticsTest::testRequestTimes)
 	)
 	{ }
 
@@ -65,5 +67,24 @@ struct StatisticsTest : tpunit::TestFixture
 
 	}
 
+	void testRequestTimes()
+	{
+		chrono::high_resolution_clock::time_point t0 = chrono::high_resolution_clock::now();
+		Statistics s;
+		chrono::high_resolution_clock::time_point t1 = chrono::high_resolution_clock::now();
+		
+		chrono::nanoseconds timeTaken = chrono::duration_cast<chrono::nanoseconds>(t1 - t0);
+		
+		string req = "creating statistics";
+		s.logRequestTime(req, timeTaken);
+		
+		auto requestTimes = s.getRequestTimes(req);
+		cout << req << " took ";
+		for (auto ms : requestTimes)
+		{
+			cout << ms.count() << "ns ";
+		}
+		cout << endl;
+	}
 	
 };
