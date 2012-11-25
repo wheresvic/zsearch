@@ -14,7 +14,7 @@ inputs = list()
 httpServ = httplib.HTTPConnection("localhost", 8080)
 httpServ.connect()
 
-path = '/home/vic/dev_prog/git/zsearch/data/load/'
+path = '../data/load/'
 
 listing = os.listdir(path)
 
@@ -27,7 +27,7 @@ for file in listing:
 		print filename
 		linestring = open(filename, 'r').read()
 		params = urllib.urlencode({'data': linestring})
-		httpServ.request('POST', '/post.htm', params)
+		httpServ.request('POST', '/index', params)
 		# inputs.append(linestring)
 		
 		response = httpServ.getresponse()
