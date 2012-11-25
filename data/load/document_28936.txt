@@ -1,0 +1,102 @@
+<document>
+<title>Posttraumatic_stress_disorder</title>
+<text>
+
+Posttraumatic stress disorder This event may involve the threat of death to oneself or to someone else, or to one&apos;s own or someone else&apos;s physical, sexual, or psychological integrity,
+
+PTSD is a less frequent and more enduring consequence of [[psychological trauma]] than the more frequently seen [[acute stress reaction|acute stress response]].
+PTSD has also been recognized in the past as [[railway spine]], [[stress syndrome]], [[shell shock]], battle fatigue, traumatic war neurosis, or post-traumatic stress syndrome.
+
+Diagnostic symptoms include re-experiencing original trauma(s), by means of flashbacks or nightmares; avoidance of stimuli associated with the trauma; and increased arousal, such as difficulty falling or staying asleep, anger, and [[hypervigilance]]. Formal diagnostic criteria (both [[DSM-IV]] and [[International Statistical Classification of Diseases and Related Health Problems|ICD-9]]) require that the symptoms last more than one month and cause significant impairment in social, occupational, or other important areas of functioning (e.g. problems with work and/or relationships). Furthermore, FKBP5 may be less [[gene expression|expressed]] in those with current PTSD.
+
+Although most people (50-90%) encounter trauma over a lifetime, only about 8% develop full PTSD. Other research also indicates the protective effects of social support in averting and recovery from PTSD.
+A. Exposure to a traumatic event
+B. Persistent reexperience (e.g. [[flashback (psychological phenomenon)|flashbacks]], nightmares)
+C. Persistent avoidance of stimuli associated with the trauma (e.g. avoidance of experiences that they fear will trigger flashbacks and reexperiencing of symptoms fear of losing control)
+D. Persistent symptoms of increased arousal (e.g. difficulty falling or staying asleep, anger and [[hypervigilance]])
+E. Duration of symptoms for more than 1 month
+F. Significant impairment in social, occupational, or other important areas of functioning (e.g. problems with work and relationships.)
+
+Notably, criterion A requires that &quot;the person’s response involved intense fear, helplessness, or horror.&quot; The [[DSM-IV]]-TR criterion differs substantially from the previous DSM-III-R stressor criterion, which specified the traumatic event should be of a type that would cause &quot;significant symptoms of distress in almost anyone,&quot; and that the event was &quot;outside the range of usual human experience.&quot;
+
+Since the introduction of [[DSM-IV]], the number of possible PTSD traumas has increased and one study suggests that the increase is around 50%.
+Various scales exist to measure the severity and frequency of PTSD symptoms.
+
+In recent history, catastrophes (by human means or not) such as the [[2004 Indian Ocean earthquake|Indian Ocean Tsunami Disaster]] may have caused PTSD in many survivors and rescue workers. Today relief workers from organizations such as the [[International Red Cross and Red Crescent Movement|Red Cross]] and the [[Salvation Army]] provide counseling after major disasters as part of their standard procedures to curb severe cases of post-traumatic stress disorder.
+
+In part through the efforts of anti Vietnam war activists and the anti war group [[Vietnam Veterans Against the War]] and [[Chaim F. Shatan]], who worked with them and coined the term post-Vietnam Syndrome, the condition was added to the DSM-III as posttraumatic stress disorder.
+
+A review of the provision of compensation to veterans for PTSD by the [[United States Department of Veterans Affairs]] began in 2005 after the VA had noted a 30% increase in PTSD claims in recent years.  This led to a backlash from veterans&apos;-rights groups, and to some highly-publicized suicides by veterans who feared losing their benefits, which in some cases constituted their only income. In response, on November 10, 2005, the Secretary of Veterans Affairs announced that &quot;the Department of Veterans Affairs (VA) will not review the files of 72,000 veterans currently receiving disability compensation for post-traumatic stress disorder...&quot;
+
+The diagnosis of PTSD has been a subject of some controversy due to uncertainties in objectively diagnosing PTSD in those who may have been exposed to [[psychological trauma|trauma]], and due to this diagnosis&apos; association with some [[incidence (epidemiology)|incidence]] of compensation-seeking behavior.
+
+Many veterans of the wars in [[Iraq War|Iraq]] and [[War in Afghanistan (2001–present)|Afghanistan]] returning home have faced significant physical, emotional and relational disruptions. In response the [[United States Marine Corps]] has instituted programs to assist them in re-adjusting to civilian life - especially in their relationships with spouses and loved ones - to help them communicate better and understand what the other has gone through. Similarly, [[Walter Reed Army Institute of Research]] (WRAIR) developed the [[Battlemind]] program to assist service members avoid or ameliorate PTSD and related problems. In the UK there has been some controversy that National Health Service is dumping veterans on service charities like [[Combat Stress]].
+
+[[Veterans Affairs Canada]] offers a new program that includes rehabilitation, financial benefits, job placement, health benefits program, disability awards and family support.
+
+Some benefit has been found from early access to cognitive behavioral therapy, as well as from some medications such as [[propranolol]]. Effects of all these prevention strategies is modest.
+
+[[Critical incident stress management]] (CISM) has been used to attempt to reduce effects of a potentially traumatic incident, and to attempt to prevent a full-blown occurrence of PTSD. However, recent studies regarding CISM seem to indicate [[iatrogenesis|iatrogenic]] effects.
+Six studies have formally looked at the effect of CISM, four finding no benefit for preventing PTSD, and the other two studies indicating that CISM actually made things worse. Hence this is not a recommended treatment.
+
+Many forms of psychotherapy have been advocated for trauma-related problems such as PTSD. Basic counseling practices common to many treatment responses for PTSD include education about the condition and provision of safety and support.
+
+The psychotherapy programs with the strongest demonstrated efficacy include cognitive behavioral programs, variants of [[exposure therapy]], stress inoculation training (SIT), variants of cognitive therapy (CT), [[eye Movement Desensitization and Reprocessing|eye movement desensitization and reprocessing]] (EMDR), and many combinations of these procedures.
+
+The [[British Journal of Psychiatry]] has recommended EMDR or trauma-specific [[cognitive behavioral therapy]] as first-line treatments for trauma victims. A [[meta-analysis|meta-analytic]] comparison of EMDR and [[cognitive behavioral therapy]] found both protocols indistinguishable in terms of effectiveness in treating PTSD.
+
+[[Cognitive Behavioral Therapy]] (CBT) is a psychotherapeutic approach that aims to change the patterns of thinking and/or behavior that are responsible for a trauma victim’s negative emotions and, in doing so, change the way they feel and act. CBT has been proven to be an effective treatment for [[PTSD]], and is currently considered the standard of care for PTSD by the [[United States Department of Defense|Department of Defense]]. In CBT, individuals learn to identify thoughts that make them feel afraid or upset, and replace them with less distressing thoughts. The goal is to understand how certain thoughts about trauma cause stress and make symptoms worse.
+
+[[Eye Movement Desensitization and Reprocessing]] (EMDR) is specifically targeted as a treatment for PTSD. Based on the evidence of controlled research, the [[American Psychiatric Association]] and the U.S. [[Department of Veterans Affairs]] and [[United States Department of Defense|Department of Defense]], have placed EMDR in the highest category of effectiveness and research support in the treatment of trauma. Several international bodies have made similar recommendations.
+
+Exposure involves assisting trauma survivors to therapeutically confront distressing trauma-related memories and reminders in order to facilitate habituation and successful emotional processing of the trauma memory. Most exposure therapy programs include both imaginal confrontation with the traumatic memories and real-life exposure to trauma reminders.
+
+Indeed, the success of exposure-based therapies has raised the question of whether exposure is a necessary ingredient in the treatment of PTSD. Some organizations have endorsed the need for exposure.
+
+Other approaches, particularly involving social supports, may also be important. An open trial of interpersonal psychotherapy reported high rates of remission from PTSD symptoms without using exposure. A current, NIMH-funded trial in New York City is now comparing interpersonal psychotherapy, [[prolonged exposure therapy]], and relaxation therapy .
+
+Medications have shown benefit in reducing PTSD symptoms, but &quot;there is no clear drug treatment for PTSD&quot;.
+ Standard medication therapy useful in treating PTSD includes [[Selective serotonin reuptake inhibitor|SSRIs]] (selective serotonin reuptake inhibitors) and [[Tricyclic antidepressant|TCAs]] (tricyclic antidepressants). Positive symptoms (re-experiencing, hypervigilance, increased arousal) generally respond better to medication than negative symptoms (avoidance, withdrawal). or they may simply demonstrate to an individual that the symptoms can be controlled thereby assisting with &quot;self efficacy&quot; and helping the person remain calmer.
+
+There are also data to support the use of mood-stabilizers such [[lithium pharmacology|lithium carbonate]] and [[carbamazepine]] if there is significant uncontrolled mood or aggression. [[Risperidone]] is used to help with dissociation, mood and aggression, and [[benzodiazepines]] are used for short-term anxiety relief.
+
+Recently the [[anticonvulsant]] [[lamotrigine]] has been reported to be useful in treating some people with PTSD.
+
+There is some evidence suggesting that administering [[glucocorticoid]]s immediately after a traumatic experience may help prevent PTSD. Several studies have shown that individuals who receive high doses of [[hydrocortisone]] for treatment of [[septic shock]] or following surgery have a lower incidence and fewer symptoms of PTSD. Additionally, post-stress high dose [[corticosterone]] administration was recently found to reduce &apos;PTSD-like&apos; behaviors in a rat model of PTSD. In this study, corticosterone impaired memory performance, suggesting that it may reduce risk for PTSD by interfering with consolidation of traumatic memories. The neurodegenerative effects of the glucocorticoids, however, may prove this treatment counterproductive.
+
+PTSD is commonly treated using a combination of [[psychotherapy]] and medications.
+
+[[Clinical trial]]s evaluating [[methylenedioxymethamphetamine]] (MDMA, &quot;Ecstasy&quot;) in conjunction with psychotherapy are being conducted in Switzerland and Israel. A clinical trial is also examining the efficacy of [[hydrocortisone]] in conjunction with exposure therapy for PTSD symptoms.
+
+Recovery from posttraumatic stress disorder or other [[anxiety disorders]] may be hindered, or the conditions worsened, by alcohol or [[benzodiazepine dependence]]. Treating co-morbid substance dependences particularly alcohol or benzodiazepine dependence can bring about a marked improvement in an individuals mental health status and anxiety levels. Recovery from benzodiazepines tends to take a lot longer than recovery from alcohol but people can regain their previous good health. Symptoms may temporarily worsen however, during [[alcohol withdrawal]] or [[benzodiazepine withdrawal]].
+
+There is debate over the rates of PTSD found in populations, but despite changes in diagnosis and the criteria used to define PTSD between 1997 and 2007, [[epidemiology|epidemiological]] rates have not changed significantly.
+
+The  has estimated that the [[lifetime prevalence]] of PTSD among adult Americans is 7.8%, with women (10.4%) twice as likely as men (5%) to have PTSD at some point in their lives.,ranked by overall [[Age adjustment|age-standardized]] [[Disability-adjusted life year]] (DALY) rate, the top half of the ranked list is dominated by Asian/Pacific countries, the USA, and Egypt. Ranking the countries by the male-only or female-only rates produces much the same result, but with less meaningfulness, as the score range in the single sex rankings is much reduced (4 for women, 3 for men, as compared with 14 for the overall score range), suggesting that the differences between female and male rates, within each country, is what drives the distinctions between the countries.
+
+Reports of battle-associated stress reactions appear as early as the 6th century BCE. One of the first descriptions of PTSD was made by the Greek historian [[Herodotus]]. In 490 BCE he described, during the [[Battle of Marathon]], an Athenian soldier who suffered no injury from war but became permanently blind after witnessing the death of a fellow soldier.
+
+In the early 1800s military medical doctors started diagnosing soldiers with &quot;exhaustion&quot; after the stress of battle. This &quot;exhaustion&quot; was characterized by mental shutdown due to individual or group trauma. As in the present time, soldiers during the 1800s were not supposed to be scared or show any fear in the midst of battle. The only treatment for this &quot;exhaustion&quot; was to bring the afflicted to the back for a bit then send them back into battle. During the intense and frequently repeated stress, the soldiers became fatigued as a part of their body&apos;s natural shock reaction.
+
+One-tenth of mobilized American men were hospitalised for mental disturbances between 1942 and 1945, and after thirty-five days of uninterrupted combat, 98% of them manifested psychiatric disturbances in varying degrees.
+
+Although PTSD-like symptoms have also been recognized in combat veterans of many [[military conflict]]s since, the modern understanding of PTSD dates from the 1970s, largely as a result of the problems that were still being experienced by US military veterans of the war in Vietnam.
+
+The term post-traumatic stress disorder or PTSD was coined in the mid 1970s. Early in 1978, the term was used in a working group finding presented to the Committee of Reactive Disorders. The term was formally recognized in 1980. (In the authoritative [[DSM-IV]], the spelling &quot;posttraumatic stress disorder&quot; is used. Elsewhere, &quot;posttraumatic&quot; is often rendered as two words — &quot;post-traumatic stress disorder&quot; or &quot;post traumatic stress disorder&quot; — especially in less formal writing on the subject.)
+
+In recent decades, with the concept of trauma and PTSD in particular becoming just as much a cultural phenomenon as a medical or legal one, artists have engaged the issue in their work. Many [[movie]]s, such as [[bourne (film series)|the Bourne films]], [[First Blood (film)|First Blood]], [[Birdy (film)|Birdy]], [[Born on the Fourth of July (film)|Born on the Fourth of July]], [[Brothers (2004 film)|Brothers]], [[Coming Home]], [[The Deer Hunter]], [[Heaven &amp; Earth (1993 film)|Heaven &amp; Earth]], [[In the Valley of Elah]], [[The War at Home (film)|The War at Home]], [[Gran Torino (film)|Gran Torino]] and [[Halloween II (2009) (film)|Halloween II (2009)]] deal with PTSD. It is an especially popular subject amongst &quot;war veteran&quot; films, often portraying Vietnam war veterans suffering from extreme PTSD and having difficulties adjusting to civilian life. Military-themed videogames have also begun touching on the subject; [[Metal Gear Solid 4: Guns of the Patriots]] presents the idea of a quick-fix technology that stops soldiers from experiencing an emotional reaction to combat, thus negating PTSD, and the ensuing trauma soldiers under this system suddenly find themselves with when the technology fails and leaves them without any built-up tolerance. Several characters in the game are revealed to have experienced extreme trauma at a young age, and PTSD over these events influences them into their adult lives.
+
+In more  recent work, an example is that of [[Krzysztof Wodiczko]] who teaches at [[MIT]] and who is known for interviewing people and then projecting these interviews onto large public buildings. Wodiczko aims to bring trauma not merely into public discourse but to have it contest the presumed stability of cherished urban monuments. His work has brought to life issues such as homelessness, rape, and violence. Other artists who engage the issue of trauma are [[Everlyn Nicodemus]] of [[Tanzania]] and [[Milica Tomic]] of [[Serbia]].
+
+General [[Romeo Dallaire]] mentions his PTSD in his book, [[Shake hands with the Devil]], which was adapted into a film.
+
+Targets: Reporters in Iraq is a film made by [[Maziar Bahari]] that deals with journalists suffering PTSD in Iraq.
+
+Posttraumatic stress disorder is the central subject of the Israeli film [[Waltz with Bashir]], in which a former soldier struggles to [[Coping (psychology)|cope]] with his traumatic memories of the 1982 Lebanon War twenty years later. The narrative of the film itself becomes structured entirely around the nature of PTSD recollection. In one scene, a specialist on post-traumatic stress disorder directly addresses his trauma.
+
+There have been reports of [[elephant]]s suffering from posttraumatic stress disorder:
+http://www.elephants.com/ptsd/Bradshaw&amp;Lindner_PTSD-rev.pdf , in captive elephants
+http://www.elephants.com/media/Elephant_breakdown_2005.pdf , in wild elephants, from seeing herd fellows shot by hunters
+
+</text>
+</document>

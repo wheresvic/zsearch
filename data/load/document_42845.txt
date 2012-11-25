@@ -1,0 +1,19 @@
+<document>
+<title>Webb,_Iowa</title>
+<text>
+Webb is a city in [[Clay County, Iowa|Clay County]], [[Iowa]], [[United States]]. The population was 165 at the [[United States Census, 2000|2000 census]].
+
+Webb is located at  (42.948134, -95.012281).
+
+According to the [[United States Census Bureau]], the city has a total area of 0.5 square miles (1.3 km²), all of it land.
+
+As of the [[census]] of 2000, there were 165 people, 73 households, and 44 families residing in the city. The [[population density]] was 328.0 people per square mile (127.4/km²). There were 83 housing units at an average density of 165.0/sq mi (64.1/km²). The racial makeup of the city was 99.39% [[White (U.S. Census)|White]] and 0.61% [[Native American (U.S. Census)|Native American]]. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.61% of the population.
+
+There were 73 households out of which 26.0% had children under the age of 18 living with them, 50.7% were [[Marriage|married couples]] living together, 4.1% had a female householder with no husband present, and 38.4% were non-families. 34.2% of all households were made up of individuals and 20.5% had someone living alone who was 65 years of age or older. The average household size was 2.26 and the average family size was 2.84.
+
+In the city the population was spread out with 25.5% under the age of 18, 4.2% from 18 to 24, 24.2% from 25 to 44, 23.6% from 45 to 64, and 22.4% who were 65 years of age or older. The median age was 42 years. For every 100 females there were 96.4 males. For every 100 females age 18 and over, there were 86.4 males.
+
+The median income for a household in the city was $27,500, and the median income for a family was $31,500. Males had a median income of $30,000 versus $21,528 for females. The [[per capita income]] for the city was $13,087. About 10.4% of families and 9.8% of the population were below the [[poverty line]], including 18.8% of those under the age of eighteen and none of those sixty five or over.
+
+</text>
+</document>

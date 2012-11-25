@@ -1,0 +1,19 @@
+<document>
+<title>Blue_Ridge,_Alabama</title>
+<text>
+Blue Ridge is a [[census-designated place]] (CDP) in [[Elmore County, Alabama|Elmore County]], [[Alabama]], [[United States]]. At the 2000 census the population was 1,331. It is part of the [[Montgomery, Alabama|Montgomery]] [[Montgomery Metropolitan Area|Metropolitan Statistical Area]].
+
+Blue Ridge is located at  (32.486744, -86.190823).
+
+According to the [[U.S. Census Bureau]], the CDP has a total area of 7.9 square miles (20.5 km²), of which, 7.9 square miles (20.4 km²) of it is land and 0.1 square miles (0.2 km²) of it (0.88%) is water.
+
+As of the [[census]] of 2000, there were 1,331 people, 511 households, and 436 families residing in the CDP. The [[population density]] was 169.3 people per square mile (65.4/km²). There were 526 housing units at an average density of 66.9/sq mi (25.8/km²). The racial makeup of the CDP was 95.79% [[Race (United States Census)|White]], 3.08% [[Race (United States Census)|Black]] or [[Race (United States Census)|African American]], 0.38% [[Race (United States Census)|Native American]], 0.30% [[Race (United States Census)|Asian]], 0.08% [[Race (United States Census)|Pacific Islander]], and 0.38% from two or more races. 0.53% of the population were [[Race (United States Census)|Hispanic]] or [[Race (United States Census)|Latino]] of any race.
+
+There were 511 households out of which 30.7% had children under the age of 18 living with them, 0.0% were [[Marriage|married couples]] living together, 6.5% had a female householder with no husband present, and 14.5% were non-families. 13.1% of all households were made up of individuals and 5.3% had someone living alone who was 65 years of age or older. The average household size was 2.60 and the average family size was 2.84.
+
+In the CDP the population was spread out with 22.2% under the age of 18, 4.7% from 18 to 24, 21.0% from 25 to 44, 37.6% from 45 to 64, and 14.6% who were 65 years of age or older. The median age was 46 years. For every 100 females there were 101.4 males. For every 100 females age 18 and over, there were 94.4 males.
+
+The median income for a household in the CDP was $73,162, and the median income for a family was $83,320. Males had a median income of $60,625 versus $37,875 for females. The [[per capita income]] for the CDP was $32,774. None of the families and 1.1% of the population were living below the [[poverty line]], including no under eighteens and none of those over 64.
+
+</text>
+</document>

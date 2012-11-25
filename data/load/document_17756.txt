@@ -1,0 +1,19 @@
+<document>
+<title>Lower_Canada</title>
+<text>
+
+The Province of Lower Canada (French: Province du Bas-Canada) was a [[British colonization of the Americas|British colony]] on the lower [[Saint Lawrence River]] and the shores of the [[Gulf of Saint Lawrence]] (1791–1841). It covered the southern portion of the modern-day Province of [[Quebec]], [[Canada]], and the [[Labrador]] region of the modern-day Province of [[Newfoundland and Labrador]].
+ 
+
+The Province of Lower Canada was created by the [[Constitutional Act of 1791]] from the partition of the British colony of the [[Province of Quebec (1763–1791)|Province of Quebec]] (1763–1791) into the Province of Lower Canada and the Province of [[Upper Canada]].
+
+Lower Canada consisted of part of  former [[French colonization of the Americas|French colony]] of [[New France]], populated mainly by French Canadians, which was ceded to Great Britain after that empire&apos;s victory in the [[Seven Years&apos; War]], also called the [[French and Indian Wars]] in the United States. Other parts of New France ceded to Britain became the Colonies of [[Nova Scotia]], [[New Brunswick]] and [[Prince Edward Island]].
+
+Like Upper Canada, there was political unrest and a rebellion challenged the [[United Kingdom|British]] rule of the predominantly [[French people|French]] population. After the [[Lower Canada Rebellion|Patriote Rebellion]] was crushed by the British army and [[Loyal (Lower Canada)|Loyal]] volunteers, the 1791 Constitution was suspended on March 27, 1838 and a [[Special Council of Lower Canada|special council]] was appointed to administer the colony.
+
+The provinces of Lower Canada and Upper Canada were combined as the United Province of Canada in 1841, when the [[Act of Union (1840)|The Union Act]] came into force. Their separate legislatures were combined into a single parliament with equal representation for both constituent parts, even if Lower Canada had more population.
+
+[[File:Constitution-of-lower-canada.png|thumb|left|Constitution of Lower Canada in 1791]]The Province of Lower Canada inherited the mixed set of French and English institutions that existed in the Province of Quebec during the 1763–1791 period and which continued to exist later in Canada-East (1841–1867) and ultimately in the current Province of Quebec (1867–).
+
+</text>
+</document>

@@ -1,0 +1,26 @@
+<document>
+<title>QRP_operation</title>
+<text>[[File:Trevqrp.png|thumb|right|QRP rig that fits inside an [[Altoids]] tin.]]
+
+In [[amateur radio]], QRP operation means transmitting at reduced power levels while aiming to maximize one&apos;s effective range while doing so.  The term QRP derives from the standard [[Q code]] used in radio communications, where &quot;QRP&quot; and &quot;QRP?&quot; are used to request, &quot;Reduce power,&quot; and ask &quot;Should I reduce power?&quot; respectively.  The opposite of QRP is [[QRO]], or high-power operation.
+
+Most amateur radio operators use between 50 and 150 watts of power. QRP enthusiasts contend that this isn&apos;t always necessary, and doing so wastes power, increases the likelihood of causing [[electromagnetic interference|interference]] to nearby [[televisions]], [[receiver (radio)|radios]], and [[telephones]] and, for [[United States]]&apos; amateurs is incompatible with [[Federal Communications Commission|FCC]] Part 97 rule, which states that one must use &quot;the minimum power necessary to carry out the desired communications.&quot;
+
+There is not complete agreement on what constitutes QRP power.  While most QRP enthusiasts agree that for [[Morse code|CW]], [[Amplitude Modulation|AM]], [[Frequency modulation|FM]], and [[data]] [[Modulation|modes]], the [[transmitter]] [[transmitter power output|output power]] should be 5 [[watt]]s (or less), the maximum output power for [[single-sideband modulation|SSB]] (single sideband) is not always agreed upon.  Some believe that the power should be no more than 10 watts [[peak envelope power]] (PEP), while others strongly hold that the power limit should be 5 watts.  QRPers are known to use even less than five watts, sometimes operating with as little as 100 milliwatts or even less.  Extremely low power—1 watt and below—is often referred to by hobbyists as QRPp. 
+
+Communicating using QRP can be difficult since the QRPer must face the same challenges of [[radio propagation]] faced by amateurs using higher power levels, but with the inherent disadvantages associated with having a weaker signal on the receiving end, all other things being equal. QRP aficionados try to make up for this through more efficient [[antenna (radio)|antenna]] systems and enhanced operating skills.
+
+QRP is especially popular with [[Morse code|CW]] operators and those using the newer digital modes.  [[PSK31]] is a highly efficient, narrow-band mode that is very suitable to QRP operation.
+
+Many of the larger, more powerful commercial transceivers permit the operator to lower their output level to QRP levels. Commercial [[two-way radio|transceivers]] specially designed to operate at or near QRP power levels have been commercially available since the late 1960s.  In 1969, American manufacturer, , produced the  (PM-1).  This radio was one of Ten-Tec&apos;s first assembled transceivers.  (The  was available, and it was essentially the same radio, albeit in kit form.) This radio featured modular construction (all stages of the transceiver were on individual [[printed circuit board|circuit boards]]): the transmitter was capable of about one or two watts of RF, and the receiver was a [[direct-conversion receiver|direct-conversion]] unit, similar to that found in the [[Heathkit]] HW-7 and HW-8 lines.  Many amateurs became quite adept at QRP&apos;ing through their use of these early, trend-setting radios. As QRP has become more popular in recent years, radio manufacturers have introduced radios specifically intended for the QRP enthusiast.  Popular US models include ,  the [[Yaesu (brand)|Yaesu]] [[FT-817]], the [[Icom Incorporated|Icom]] [[IC-703]], and the  from TenTec. Popular German QRP transceiver kits include the Moskita, Sparrow, Hegau, Hohentwiel, Tramp-8 CW and others.  Another popular source is , which offers a variety of popular kits.  enthusiasts operate QRP radios on the [[high frequency|HF]] [[band (radio)|bands]] in [[amateur radio station#Portable stations|portable modes]], usually carrying the radios in [[backpacks]], with [[whip antenna]]s.
+
+Some QRPers prefer to construct their equipment from kits or [[Amateur radio homebrew|homebrew]] it from scratch.
+
+There are specific operating [[awards]], [[contesting|contests]], [[clubs]], and [[convention (meeting)|conventions]] devoted to QRP enthusiasts. 
+
+In the [[USA]], the November Sweepstakes, June and September VHF QSO Parties, January VHF Sweepstakes, and the [[ARRL]] International DX Contest, as well as many major international contests have designated special QRP categories. For example, during the annual [[ARRL]]&apos;s [[Field Day]] contest, making a QSO (ham-to-ham contact) using &quot;QRP battery power&quot; is worth five times as many points as a contact made by conventional means. 
+
+Typical awards include the QRP ARCI club&apos;s &quot;thousand-miles-per-watt&quot; award, available to anyone presenting evidence of a qualifying contact.  QRP ARCI also offers special awards for achieving the ARRL&apos;s [[Worked All States]], [[Worked All Continents]], and [[DX Century Club]] awards under QRP conditions. Other QRP clubs also offer similar versions of these awards, as well as general QRP operating achievement awards.
+
+</text>
+</document>

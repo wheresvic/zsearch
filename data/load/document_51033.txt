@@ -1,0 +1,21 @@
+<document>
+<title>Bosworth,_Missouri</title>
+<text>
+Bosworth is a city in [[Carroll County, Missouri|Carroll County]], [[Missouri]], [[United States]]. The population was 382 at the 2000 census.
+
+Bosworth is located at  (39.470448, -93.334797).
+
+According to the [[United States Census Bureau]], the city has a total area of 0.6 square miles (1.4 km²), all of it land.
+
+As of the [[census]] of 2000, there were 382 people, 153 households, and 102 families residing in the city. The [[population density]] was 691.0 people per square mile (268.2/km²). There were 195 housing units at an average density of 352.7/sq mi (136.9/km²). The racial makeup of the city was 100.00% [[White (U.S. Census)|White]].
+
+There were 153 households out of which 30.7% had children under the age of 18 living with them, 56.9% were [[Marriage|married couples]] living together, 6.5% had a female householder with no husband present, and 32.7% were non-families. 26.8% of all households were made up of individuals and 16.3% had someone living alone who was 65 years of age or older. The average household size was 2.50 and the average family size was 3.09.
+
+In the city the population was spread out with 29.1% under the age of 18, 6.8% from 18 to 24, 24.6% from 25 to 44, 20.2% from 45 to 64, and 19.4% who were 65 years of age or older. The median age was 37 years. For every 100 females there were 101.1 males. For every 100 females age 18 and over, there were 97.8 males.
+
+The median income for a household in the city was $25,357, and the median income for a family was $28,750. Males had a median income of $23,250 versus $17,292 for females. The [[per capita income]] for the city was $11,526. About 11.7% of families and 15.4% of the population were below the [[poverty line]], including 23.5% of those under age 18 and 6.3% of those age 65 or over.
+
+[[Barbara Marx]], who was first married to [[Zeppo Marx]], one of the [[Marx Brothers]] (from 1959 until their divorce in 1973), then to [[Frank Sinatra]] (from 1976 until his death in 1998), was born in Bosworth.
+
+</text>
+</document>

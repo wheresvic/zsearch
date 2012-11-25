@@ -1,0 +1,19 @@
+<document>
+<title>Newtown,_Missouri</title>
+<text>
+Newtown is a city in [[Sullivan County, Missouri|Sullivan County]], [[Missouri]], [[United States]]. The population was 209 at the [[United States Census, 2000|2000 census]], at which time it was a town.
+
+Newtown is located at  (40.375879, -93.334578).
+
+According to the [[United States Census Bureau]], the town has a total area of 0.2 square miles (0.6 km²), all of it land.
+
+As of the [[census]] of 2000, there were 209 people, 86 households, and 55 families residing in the town. The [[population density]] was 826.0 people per square mile (322.8/km²). There were 93 housing units at an average density of 367.5/sq mi (143.6/km²). The racial makeup of the town was 98.56% [[White (U.S. Census)|White]], 0.48% [[Native American (U.S. Census)|Native American]], 0.48% from [[Race (United States Census)|other races]], and 0.48% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 4.31% of the population.
+
+There were 86 households out of which 36.0% had children under the age of 18 living with them, 50.0% were [[Marriage|married couples]] living together, 9.3% had a female householder with no husband present, and 36.0% were non-families. 33.7% of all households were made up of individuals and 14.0% had someone living alone who was 65 years of age or older. The average household size was 2.43 and the average family size was 3.16.
+
+In the town the population was spread out with 32.1% under the age of 18, 9.1% from 18 to 24, 26.3% from 25 to 44, 17.7% from 45 to 64, and 14.8% who were 65 years of age or older. The median age was 32 years. For every 100 females there were 91.7 males. For every 100 females age 18 and over, there were 86.8 males.
+
+The median income for a household in the town was $21,250, and the median income for a family was $43,125. Males had a median income of $23,000 versus $19,625 for females. The [[per capita income]] for the town was $13,561. About 3.2% of families and 10.6% of the population were below the [[poverty line]], including 7.8% of those under the age of eighteen and 25.5% of those sixty five or over.
+
+</text>
+</document>

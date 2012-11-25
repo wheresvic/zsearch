@@ -1,0 +1,19 @@
+<document>
+<title>Skidaway_Island,_Georgia</title>
+<text>
+Skidaway Island is a [[census-designated place]] (CDP) in [[Chatham County, Georgia|Chatham County]], [[Georgia (U.S. state)|Georgia]], [[United States]]. The population was 6,914 at the 2000 census. It is part of the [[Savannah, Georgia|Savannah]] [[Savannah metropolitan area|Metropolitan Statistical Area]].
+
+Skidaway Island is located at  (31.927434, -81.042505).
+
+According to the [[United States Census Bureau]], the CDP has a total area of 17.9 [[square mile]]s (46.3 [[km²]]), of which, 16.4 square miles (42.4 km²) of it is land and 1.5 square miles (3.9 km²) of it (8.45%) is water.
+
+As of the [[census]] of 2000, there were 6,914 people, 3,193 households, and 2,701 families residing in the CDP.  The [[population density]] was 422.7 people per square mile (163.2/km²).  There were 3,491 housing units at an average density of 213.4/sq mi (82.4/km²).  The racial makeup of the CDP was 97.57% [[White (U.S. Census)|White]], 0.48% [[African American (U.S. Census)|African American]], 0.01% [[Native American (U.S. Census)|Native American]], 1.37% [[Asian (U.S. Census)|Asian]], 0.16% from [[Race (United States Census)|other races]], and 0.40% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.77% of the population.
+
+There were 3,193 households out of which 13.2% had children under the age of 18 living with them, 82.8% were [[Marriage|married couples]] living together, 1.3% had a female householder with no husband present, and 15.4% were non-families. 14.2% of all households were made up of individuals and 9.4% had someone living alone who was 65 years of age or older.  The average household size was 2.16 and the average family size was 2.35.
+
+In the CDP the population was spread out with 11.2% under the age of 18, 2.0% from 18 to 24, 9.3% from 25 to 44, 38.1% from 45 to 64, and 39.3% who were 65 years of age or older.  The median age was 61 years. For every 100 females there were 94.7 males.  For every 100 females age 18 and over, there were 93.6 males.
+
+The median income for a household in the CDP was $96,395, and the median income for a family was $107,013. Males had a median income of $80,486 versus $42,188 for females. The [[per capita income]] for the CDP was $63,851 (the highest in the state).  About 0.7% of families and 1.3% of the population were below the [[poverty line]], including none of those under age 18 and 0.3% of those age 65 or over.
+
+</text>
+</document>

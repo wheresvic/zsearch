@@ -1,0 +1,19 @@
+<document>
+<title>Cornville,_Maine</title>
+<text>
+Cornville is a [[New England town|town]] in [[Somerset County, Maine|Somerset County]], [[Maine]], [[United States]]. The population was 1,208 at the [[2000 United States Census|2000 census]].
+
+Settled in 1794, Cornville was incorporated on 24 February 1798 as the 116th town in Maine. 
+
+According to the [[United States Census Bureau]], the town has a total area of 40.7 square miles (105.3 km²), of which, 40.5 square miles (104.8 km²) of it is land and 0.2 square miles (0.5 km²) of it (0.52%) is water.
+
+As of the [[census]] of 2000, there were 1,208 people, 449 households, and 352 families residing in the town.  The [[population density]] was 29.9 people per square mile (11.5/km²).  There were 515 housing units at an average density of 12.7/sq mi (4.9/km²).  The racial makeup of the town was 99.01% [[White (U.S. Census)|White]], 0.08% [[African American (U.S. Census)|African American]], 0.17% [[Native American (U.S. Census)|Native American]], 0.25% [[Asian (U.S. Census)|Asian]], and 0.50% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.33% of the population.
+
+There were 449 households out of which 34.3% had children under the age of 18 living with them, 67.5% were [[Marriage|married couples]] living together, 6.7% had a female householder with no husband present, and 21.6% were non-families. 15.1% of all households were made up of individuals and 6.9% had someone living alone who was 65 years of age or older.  The average household size was 2.69 and the average family size was 2.97.
+
+In the town the population was spread out with 25.2% under the age of 18, 7.6% from 18 to 24, 28.0% from 25 to 44, 27.8% from 45 to 64, and 11.3% who were 65 years of age or older.  The median age was 39 years. For every 100 females there were 97.4 males.  For every 100 females age 18 and over, there were 97.6 males.
+
+The median income for a household in the town was $38,015, and the median income for a family was $41,875. Males had a median income of $30,543 versus $22,083 for females. The [[per capita income]] for the town was $16,184.  About 8.4% of families and 11.5% of the population were below the [[poverty line]], including 17.5% of those under age 18 and 11.3% of those age 65 or over.
+
+</text>
+</document>

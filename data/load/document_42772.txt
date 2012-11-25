@@ -1,0 +1,19 @@
+<document>
+<title>Somers,_Iowa</title>
+<text>
+Somers is a city in [[Calhoun County, Iowa|Calhoun County]], [[Iowa]], [[United States]]. The population was 165 at the 2000 census.
+
+Somers is located at  (42.377902, -94.431013).
+
+According to the [[United States Census Bureau]], the city has a total area of 0.3 [[square mile]]s (0.9 [[km²]]), all of it land.
+
+As of the [[census]] of 2000, there were 165 people, 61 households, and 51 families residing in the city. The [[population density]] was 473.1 people per square mile (182.0/km²). There were 66 housing units at an average density of 189.2/sq mi (72.8/km²). The racial makeup of the city was 97.58% [[White (U.S. Census)|White]], 0.61% [[African American (U.S. Census)|African American]], 1.82% from [[Race (United States Census)|other races]]. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 3.03% of the population.
+
+There were 61 households out of which 27.9% had children under the age of 18 living with them, 67.2% were [[Marriage|married couples]] living together, 13.1% had a female householder with no husband present, and 14.8% were non-families. 9.8% of all households were made up of individuals and 4.9% had someone living alone who was 65 years of age or older. The average household size was 2.70 and the average family size was 2.92.
+
+In the city the population was spread out with 24.8% under the age of 18, 8.5% from 18 to 24, 24.8% from 25 to 44, 22.4% from 45 to 64, and 19.4% who were 65 years of age or older. The median age was 40 years. For every 100 females there were 103.7 males. For every 100 females age 18 and over, there were 96.8 males.
+
+The median income for a household in the city was $31,250, and the median income for a family was $43,750. Males had a median income of $32,083 versus $21,250 for females. The [[per capita income]] for the city was $15,777. About 11.5% of families and 15.9% of the population were below the [[poverty line]], including 33.3% of those under the age of eighteen and 16.0% of those sixty five or over.
+
+</text>
+</document>

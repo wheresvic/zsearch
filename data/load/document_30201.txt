@@ -1,0 +1,33 @@
+<document>
+<title>Nucleobase</title>
+<text>
+
+Base pairing in RNA. Nucleobases in blue.
+
+Nucleobases (or nucleotide bases) are the parts of [[DNA]] and [[RNA]] that may be involved in pairing (see also [[base pairs]]). The main ones are [[cytosine]], [[guanine]], [[adenine]] ([[DNA]] and [[RNA]]), [[thymine]] ([[DNA]]) and [[uracil]] ([[RNA]]), abbreviated as C, G, A, T, and U, respectively. They are usually simply called bases in [[genetics]]. Because A, G, C, and T appear in the DNA, these molecules are called DNA-bases; A, G, C, and U are called RNA-bases.
+
+Uracil replaces thymine in RNA. These two bases are identical except that uracil lacks the 5&apos; methyl group. Adenine and guanine belong to the double-ringed class of molecules called [[purine]]s (abbreviated as R). Cytosine, thymine, and uracil are all [[pyrimidine]]s (abbreviated as Y).
+
+The system of a base [[covalent]]ly bound to the 1&apos; [[carbon]] of a [[ribose]] or [[deoxyribose]] is called a [[nucleoside]], and a nucleoside with one or more [[phosphate]] groups attached at the 5&apos; carbon is called a [[nucleotide]].
+
+Apart from adenosine (A), cytidine (C), guanosine (G), thymidine (T) and uridine (U), DNA and RNA also contain bases that have been modified after the nucleic acid chain has been formed. In DNA, the most common modified base is 5-methylcytidine (m5C). In RNA, there are many modified bases, including pseudouridine (Ψ), dihydrouridine (D), inosine (I), ribothymidine (rT) and 7-methylguanosine (m7G).
+
+[[Hypoxanthine]] and [[xanthine]] are two of the many bases created through [[mutagen]] presence, both of them through deamination (replacement of the amine-group with a carbonyl-group). Hypoxanthine is produced from [[adenine]], xanthine from [[guanine]]. Similarly, deamination of [[cytosine]] results in [[uracil]].
+
+The &quot;skeleton&quot; of adenine and guanine is [[purine]], hence the name purine-bases.
+The &quot;skeleton&quot; of cytosine, uracil and thymine is [[pyrimidine]], hence pyrimidine-bases.
+
+These are incorporated into the growing chain during RNA and/or DNA synthesis.
+
+These are examples of modified adenosine or guanosine.
+
+These are examples of modified cytidine, thymidine or uridine.
+
+A vast number of nucleobase analogues exist.
+The most common applications are used as fluorescent probes, either directly or indirectly, such as [[Aminoallyl nucleotide]], which are used to label cRNA or cDNA in [[microarrays]].
+Several groups are working on alternative &quot;extra&quot; base pairs to extend the genetic code, such as [[isoguanine]] and [[isocytosine]] or the fluorescent 2-amino-6-(2-thienyl)purine and pyrrole-2-carbaldehyde.
+
+In medicine, several [[nucleoside analogues]] are used as anticancer and antiviral agents. The viral polymerase incorporates these compounds with non-canon bases. These compounds are activated in the cells by being converted into nucleotides, they are administered as nuclosides as charged nucleotides cannot easily cross cell membranes.
+
+</text>
+</document>

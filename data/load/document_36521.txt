@@ -1,0 +1,28 @@
+<document>
+<title>Lake_Minchumina,_Alaska</title>
+<text>
+Lake Minchumina is a [[census-designated place]] (CDP) in [[Yukon-Koyukuk Census Area, Alaska|Yukon-Koyukuk Census Area]], [[Alaska]], [[United States]]. As of the [[United States Census, 2000|2000 census]], the population of the CDP is 32.
+
+Lake Minchumina is located at  (63.893902, -152.302012).
+
+&quot;If we were to cut out a map of Alaska from a piece of paper and balance the map on the point of a pencil, we would have found the center point of the physical structure of the state. That point is at 63°50’ N, 152° W. or near Lake Minchumina.&quot; 
+
+&quot;General Mitchell looked at Alaska on a globe. He saw that Alaska was approximately equal distance from all of the major urban-industrial centers of the world. Figure L.1 is a map of Alaska as seen from space. It is centered on Lake Minchumina in Interior Alaska. Note that we can see the major centers of Asia (Tokyo and [[Beijing]] are shown), Europe (Moscow, Berlin, Paris, and London are shown), and North America (New York, Toronto, and Los Angeles are shown). General Billy Mitchell viewed Alaska’s relative location and found that it was, indeed, central to the urban-industrial world.&quot;
+
+Footnote: http://www.akhistorycourse.org/articles/article.php?artID=121
+
+Figure L.1 - Alaska from Space. Orthographic projection.
+http://www.akhistorycourse.org/images/geography/large/l1.jpg
+  
+According to the [[United States Census Bureau]], the CDP has a total area of 244.1 square miles (632.2 km²), of which, 216.4 square miles (560.5 km²) of it is land and 27.7 square miles (71.7 km²) of it (11.34%) is water.
+
+As of the [[census]] of 2000, there were 32 people, 16 households, and 9 families residing in the CDP. The [[population density]] was 0.1 people per square mile (0.1/km²). There were 41 housing units at an average density of 0.2/sq mi (0.1/km²). The racial makeup of the CDP was 84.38% [[Race (United States Census)|White]], 3.12% [[Race (United States Census)|Native American]], and 12.50% from two or more races. 6.25% of the population were [[Race (United States Census)|Hispanic]] or [[Race (United States Census)|Latino]] of any race.
+
+There were 16 households out of which 25.0% had children under the age of 18 living with them, 50.0% were [[Marriage|married couples]] living together, 6.3% had a female householder with no husband present, and 43.8% were non-families. 37.5% of all households were made up of individuals and 6.3% had someone living alone who was 65 years of age or older. The average household size was 2.00 and the average family size was 2.67.
+
+In the CDP the population was spread out with 18.8% under the age of 18, 6.3% from 18 to 24, 40.6% from 25 to 44, 31.3% from 45 to 64, and 3.1% who were 65 years of age or older. The median age was 36 years. For every 100 females there were 113.3 males. For every 100 females age 18 and over, there were 116.7 males.
+
+The median income for a household in the CDP was $36,250, and the median income for a family was $33,750. Males had a median income of $26,250 versus $0 for females. The [[per capita income]] for the CDP was $26,781. None of the population and none of the families were below the [[poverty line]].
+
+</text>
+</document>

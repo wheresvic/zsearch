@@ -1,0 +1,51 @@
+<document>
+<title>Legend</title>
+<text>
+
+ 
+A legend ([[Latin]], legenda, &quot;things to be read&quot;) is a [[narrative]] of human actions that are perceived both by teller and listeners to take place within human history and to possess certain qualities that give the tale [[verisimilitude (literature)|verisimilitude]]. Legend, for its active and passive participants includes no happenings that are outside the realm of &quot;possibility&quot;, defined by a highly flexible set of parameters, which may include [[miracle]]s that are perceived as actually having happened, within the specific tradition of [[indoctrination]] where the legend arises, and within which it may be transformed over time, in order to keep it fresh and vital, and [[realism (arts)|realistic]]. The [[Brothers Grimm]] defined legend as [[folktale]] historically grounded.
+A modern [[folklore|folklorist]]&apos;s professional definition of legend was proposed by Timothy R. Tangherlini in 1990:
+ 
+Legend, typically, is a short (mono-) episodic, traditional, highly ecotypified historicized narrative performed in a conversational mode, reflecting on a psychological level a symbolic representation of folk belief and collective experiences and serving as a reaffirmation of commonly held values of the group to whose tradition it belongs.&quot;
+
+Before the invention of the [[printing press]], stories were passed on via [[Oral history|oral tradition]].  [[Storytelling|Storytellers]] learned their stock in trade: their stories, typically received from an older storyteller, who might, though more likely not, have claimed to have actually known a witness, rendered the narrative as &quot;history&quot;. Legend is distinguished from the [[genre]] of [[chronicle]] by the fact that legends apply structures that reveal a moral definition to events, providing meaning that lifts them above the repetitions and constraints of average human lives and giving them a universality that makes them worth repeating through  many generations. In German-speaking and northern European countries, &quot;legend&quot;, which involves Christian origins, is distinguished from &quot;[[Saga]]&quot;, being from any other (usually, but not necessarily older) origin.
+
+The modern characterisation of what may be termed a &quot;legend&quot; may be said to begin in 1865 with [[Jacob Grimm]]&apos;s observation, &quot;The [[fairy tale]] is poetic, legend, historic.&quot; Early scholars like [[Karl Wehrhahn]] [[Friedrich Ranke]] and [[Will-Erich Peukert]] followed Grimm&apos;s example in focussing solely on the literary narrative, an approach that was enriched particularly after the 1960s by addressing questions of performance and the anthropological and psychological insights provided in considering legends&apos; social context. Questions of categorizing legends, in hopes of compiling a content-based series of categories on the line of the [[Aarne-Thompson]] folktale index provoked a search for a broader new synthesis.
+
+In an early attempt at defining some basic questions operative in examining folk tales, [[Friedrich Ranke]] in 1925 characterised the folk legend as &quot;a popular narrative with an objectively untrue imaginary content&quot;  a dismissive position that was subsequently largely abandoned.
+
+Compared to the highly-structured folktale, legend is comparatively formless, Helmut de Boor noted in 1928. The narrative content of legend is in realistic mode, rather than the wry irony of folktale; Wilhelm Heiske remarked on the similarity of motifs in legend and folktale and concluded that, in spite of its realistic mode, legend is not more historical than folktale.
+
+Legend is often considered in connection with [[rumour]], also believable and concentrating on a single episode. Ernst Bernheim suggested that legend is simply the survival of rumour. [[Gordon Allport]] credited the staying-power of certain rumours to the persistent cultural state-of-mind that they embody and capsulise; thus &quot;[[Urban legend]]s&quot; are a feature of rumour. When Willian Jansen suggested that legends that disappear quickly were &quot;short-term legends&quot; and the persistent ones be termed &quot;long-term legends&quot;, the distinction between legend and rumour was effectively obliterated, Tangherlini concluded.
+
+       [[Image:Lady godiva full.jpg|thumb|left|In the painting of [[Lady Godiva]] by [[Jules Joseph Lefebvre]], the authentic historical person is fully submerged in the legend, presented in an anachronistic high mediaeval setting.]]
+
+Legends are tales that, because of the tie to a historical event or location, are believable, although not necessarily believed. For the purpose of the study of legends, in the academic discipline of [[folkloristics]], the truth value of legends is irrelevant because, whether the story told is true or not, the fact that the story is being told at all allows scholars to use it as commentary upon the cultures that produce or circulate the legends.
+        [[Image:Hübner Bürkner Genoveva.jpg|right|thumb|The mediaeval legend of [[Genevieve of Brabant]] connected her to [[Treves]].]]
+[[Hippolyte Delehaye]], (in his Preface to The Legends of the Saints: An Introduction to Hagiography, 1907) distinguished legend from [[mythology|myth]]: &quot;The legend, on the other hand, has, of necessity, some historical or topographical connection. It refers imaginary events to some real personage, or it localizes romantic stories in some definite spot.&quot; 
+
+From the moment a legend is retold as fiction its authentic legendary qualities begin to fade and recede: in [[The Legend of Sleepy Hollow]],  [[Washington Irving]] transformed a local Hudson River Valley legend into a literary anecdote with [[Gothic novel|&quot;Gothic&quot; overtones]], which actually tended to diminish its character as genuine legend. 
+
+Stories that exceed these boundaries of &quot;[[Realism (arts)|realism]]&quot; are called &quot;[[fable]]s&quot;. For example, the [[talking animal]] formula of [[Aesop]] identifies his brief stories as fables, not legends. The parable of the [[Prodigal Son]] would be a legend if it were told as having actually happened to a specific son of a historical father. If it included an [[Donkey|ass]] that gave sage advice to the Prodigal Son it would be a fable.
+
+Legend may be transmitted orally, passed on person-to-person, or, in the original sense, through written text. [[Jacob de Voragine]]&apos;s Legenda Aurea or &quot;The Golden Legend&quot; comprises a series of vitae or instructive  biographical narratives, tied to the [[liturgical calendar]] of the [[Roman Catholic Church]]. They are presented as lives of the saints, but the profusion of miraculous happenings and above all their uncritical context are characteristics of [[hagiography]]. The Legenda was intended to inspire extemporized homilies and sermons appropriate to the [[saint]] of the day.
+
+Atlantis]]
+Beowulf]]
+Cenodoxus]], or the Damnation of the Good Doctor of Paris, told as an event justifying the sanctification of St. [[Bruno]]
+Celtic Legends]]
+El Dorado]] and the [[Fountain of Youth]]
+King Arthur]] and the [[Knights of the Round Table]]
+Legends of Africa]]
+Odysseus]]
+Philosopher&apos;s stone]]
+Ramayana]] Legend of Rama the prince of [[Ayodhya]]
+Robin Hood]]
+Roland]]
+Roma society and culture|Romani legends]] and [[Romulus and Remus]]
+Shangri-La]]
+Vlad III Dracula|Vlad the Impaler]]; stories of his cruelty have attained legendary status, most likely spread after his death by his enemies.
+William Tell]]
+
+</text>
+</document>
