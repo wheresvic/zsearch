@@ -5,6 +5,7 @@
 #include <tr1/functional> // for std::tr1::hash
 #include <sparsehash/dense_hash_map>
 #include "Word.hpp"
+#include "city.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -16,8 +17,7 @@ struct hashstr
   std::tr1::hash<string> hasher;
   long operator()(const string& s1) const
   { 
-	return hasher(s1);
-    //return CityHash64(s1.data(),s1.size());
+    return CityHash64(s1.data(),s1.size());
   }
 };
 

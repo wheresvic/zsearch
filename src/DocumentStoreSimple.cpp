@@ -9,7 +9,7 @@ DocumentStoreSimple::DocumentStoreSimple() {
 	// store.Open("/tmp/DocumentStore");	
 }
 
-void DocumentStoreSimple::addDoc(unsigned int docId, shared_ptr<IDocument> doc) {
+void DocumentStoreSimple::addDoc(unsigned int docId, const shared_ptr<IDocument>& doc) {
 	//store.Put(docId,);
 	documents.insert(make_pair(docId++, doc));
 }

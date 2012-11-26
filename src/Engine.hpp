@@ -40,19 +40,20 @@ class Engine
         }
 
         ~Engine(){
-			flushBatch();
         }
 
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
 			documentStore->addDoc(docId, document);
-
+			// we create a set of word in the document
+			// to avoid duplicate pair<wordid,docid>
+            set<unsigned int> documentWordId;
 			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
 			{
-				string field = iter->first;
-				string value = iter->second;
+				const string& field = iter->first;
+				const string& value = iter->second;
 
 				fields.insert(field);
 
@@ -61,16 +62,19 @@ class Engine
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer->getToken();
+
                     if(wordIndex.Get(field,token,id)){
-					    invertedIndex.add(id,docId);
+						documentWordId.insert(id);
 					} else {
 					   	wordIndex.Put(field,token,wordId);
-					   	invertedIndex.add(wordId++,docId);
+					    documentWordId.insert(wordId++);
 					}
 
 				}
-
 			} // end looping through entries
+			for (auto value : documentWordId){
+			  invertedIndex.add(value,docId);	
+			} 
 			return docId++;
 		}
 

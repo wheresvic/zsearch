@@ -16,6 +16,7 @@ void TokenizerImpl::setString(const std::string& str)
 	m_offset = 0;
 }
 
+
 bool TokenizerImpl::nextToken()
 {
 	m_token.resize(0);
@@ -25,7 +26,7 @@ bool TokenizerImpl::nextToken()
 		c = c | 0x20;	// lowercase
 		if (c >= 'a' ? c <= 'z' : (c >= '0' && c <= '9'))
 		{
-			m_token.append(&c,1);
+			m_token.push_back(c);
 		} else {
 			if (m_token.size()>0)
 			  return true;

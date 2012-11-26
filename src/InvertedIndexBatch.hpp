@@ -13,16 +13,24 @@
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
 #include "varint/SetFactory.h"
+#include <vector>
+#include <algorithm>
 
 using google::dense_hash_map;
-// TODO implement ConcurrentMerge
+
+struct postingComp {
+  inline bool operator()(const std::pair<unsigned int,unsigned int>& first, 
+  const std::pair<unsigned int,unsigned int>& second) const{
+   return (first.second < second.second);
+  }
+};
 
 class InvertedIndexBatch : public IInvertedIndex
 {
 private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
-	dense_hash_map<unsigned int, shared_ptr<vector<unsigned int>>> buffer;
+	vector<std::pair<unsigned int,unsigned int>> postings;
 	shared_ptr<SetFactory> setFactory;
 	int maxbatchsize;
 	int batchsize;
@@ -50,17 +58,17 @@ public:
 	
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory)  :
 	 store(store), 
-	 buffer(656538),
 	 setFactory(setFactory)
 	{
-		maxbatchsize = 200000000;
+		maxbatchsize = 500000;
 		batchsize = 0;
 		store->Open();
-		buffer.set_empty_key(0);
+
 	}
 	~InvertedIndexBatch()
 	{
 
+	   flushBatch();
 	}
 	
 
@@ -74,18 +82,6 @@ public:
 			inset->read(bitmapStream);
 			return 1;
 		}
-		// search inside the batch buffer
-		auto iter = buffer.find(wordId);
-		if (iter != buffer.end())
-		{
-			inset = setFactory->createSparseSet();
-			for (auto docid = iter->second->begin(); docid != iter->second->end(); ++docid){	
-			   inset->addDoc(*docid);
-			}
-			return 1;
-		}
-
-        
 		return 0;
 	}
 
@@ -96,43 +92,41 @@ public:
 		return found;		
 	}
 	
+	shared_ptr<Set> getOrCreate(unsigned int wordid){
+		shared_ptr<Set> docSet;
+	  	if(!get(wordid,docSet)){
+		    docSet = setFactory->createSparseSet();	
+		}
+		return docSet;
+	}
+
 	int flushBatch()
 	{
-		for (auto iter = buffer.begin(); iter != buffer.end(); ++iter)
-        {
-            shared_ptr<Set> docSet;
-			if(!get(iter->first,docSet)){
-			    docSet = setFactory->createSparseSet();	
+		std::stable_sort(postings.begin(),postings.end(),postingComp());
+		
+		if (postings.size() > 0){
+			unsigned int wordid = postings[0].second;
+			shared_ptr<Set> docSet = getOrCreate(wordid);
+			for (auto posting : postings){
+				if (posting.second != wordid){
+					storePut(wordid, docSet);
+					docSet = getOrCreate(posting.second);
+					wordid = posting.second;
+				}
+				docSet->addDoc(posting.first);
 			}
-			//use a normal set to remove duplicate document
-			set<unsigned int> docBatch;
-			for (auto docid : *(iter->second)){
-				docBatch.insert(docid);	
-			}
-			//add all elements of the set to our compressed Set
-			for (auto docid : docBatch) {
-				docSet->addDoc(docid);
-			}
-			storePut(iter->first, docSet);		
-        }
-		buffer.clear();
+			storePut(wordid, docSet);
+			
+		}
+		postings.clear();
 		batchsize = 0;
 		return 1;
 	}
 	
 	int add(unsigned int wordId, unsigned int docid)
 	{
-		//todo: keep track of memory usage and # of doc in batch
+		postings.push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
 		batchsize +=1;
-		auto iter = buffer.find(wordId);
-		
-		if (iter!= buffer.end()){
-			iter->second->push_back(docid);
-		} else {
-			shared_ptr<vector<unsigned int>> v = make_shared<vector<unsigned int>>();
-			v->push_back(docid);
-			buffer.insert(std::make_pair(wordId, v));
-		}
 		if(batchsize > maxbatchsize){
 			flushBatch();
 		}
@@ -141,7 +135,7 @@ public:
 	
 	
 	int Compact(){
-	//	store.Compact();
+	//	store->Compact();
 		return 1;
 	}
 };

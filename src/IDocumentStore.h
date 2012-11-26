@@ -15,7 +15,7 @@ class IDocumentStore
 
 		virtual ~IDocumentStore() { }
 
-		virtual void addDoc(unsigned int, shared_ptr<IDocument> doc) = 0;
+		virtual void addDoc(unsigned int, const shared_ptr<IDocument>& doc) = 0;
 		
 		virtual void removeDoc(unsigned int docId) = 0;
 
