@@ -1,0 +1,244 @@
+<document>
+<title>L'H��pital's_rule</title>
+<text>In [[calculus]], l&apos;Hôpital&apos;s rule (also called [[Johann Bernoulli|Bernoulli]]&apos;s rule) uses [[derivative]]s to help evaluate [[limit of a function|limits]] involving [[indeterminate form]]s. Application (or repeated application) of the rule often converts an indeterminate form to a determinate form, allowing easy evaluation of the limit. The rule is named after the 17th-century [[France|French]] [[mathematician]] [[Guillaume de l&apos;Hôpital]], who published the rule in his book [[l&apos;Analyse des Infiniment Petits pour l&apos;Intelligence des Lignes Courbes]] (literal translation: Analysis of the Infinitely Small to Understand Curved Lines) (1696), the first textbook on [[differential calculus]]. However, it is believed that the rule was discovered by the Swiss mathematician [[Johann Bernoulli]]. (See also [[Johann Bernoulli#L&apos;Hôpital controversy|l&apos;Hôpital controversy]])
+
+The [[Stolz-Cesàro theorem]] is a similar result involving limits of sequences, but it uses finite [[difference operator]]s rather than derivatives.
+
+In its simplest form, l&apos;Hôpital&apos;s rule states that for functions ƒ and g:
+
+If \lim_{x \to c}f(x)=\lim_{x \to c}g(x)=0 \, 
+or \pm\infty  and \lim_{x\to c}f&apos;(x)/g&apos;(x) exists,
+
+then \lim_{x\to c}\frac{f(x)}{g(x)} = \lim_{x\to c}\frac{f&apos;(x)}{g&apos;(x)}.
+
+The differentiation of the numerator and denominator often simplifies the quotient and/or converts it to a determinate form, allowing the limit to be evaluated more easily.
+
+The general form of l&apos;Hôpital&apos;s rule covers many more cases. Suppose that c and L are [[Extended real number line|extended real numbers]] (i.e., real numbers, positive infinity, or negative infinity). Suppose that either
+
+\lim_{x\to c}{f(x)} = \lim_{x\to c}g(x) = 0
+
+or
+
+\lim_{x\to c}{f(x)} = \pm\lim_{x\to c}{g(x)} = \pm\infty.
+
+And suppose that
+
+\lim_{x\to c}{\frac{f&apos;(x)}{g&apos;(x)}} = L.
+
+Then
+
+\lim_{x\to c}{\frac{f(x)}{g(x)}}=L.
+
+The limits may also be [[One-sided limit|one-sided]] limits.
+
+The requirement that the limit
+
+\lim_{x\to c}\frac{f&apos;(x)}{g&apos;(x)}
+
+exists is essential. Differentiation of indeterminate forms can sometimes lead to limits that do not exist. If this happens, then l&apos;Hôpital&apos;s rule does not apply. For example, if ƒ(x) = x + sin(x) and g(x) = x, then
+
+\lim_{x\to\infty}\frac{f&apos;(x)}{g&apos;(x)}=\lim_{x\to\infty}\frac{1+\cos x}{1},
+
+which does not exist, whereas
+
+\lim_{x\to\infty}\frac{f(x)}{g(x)} = \lim_{x\to\infty}\left(1+\frac{\sin x}{x}\right) = 1.
+
+Here is an example involving the [[sinc function]] and the indeterminate form 0/0:
+
+ 
+\begin{align}
+\lim_{x \to 0} \operatorname{sinc}(x)
+&amp; = \lim_{x \to 0} \frac{\sin \pi x}{\pi x} \\
+&amp; = \lim_{y \to 0} \frac{\sin y}{y} \\
+&amp; = \lim_{y \to 0} \frac{\cos y}{1} \\
+&amp; = 1.
+\end{align}
+
+Alternatively, just observe that the limit is the definition of the derivative of the [[sine]] function at zero.
+This is a more elaborate example involving 0/0. Applying l&apos;Hôpital&apos;s rule a single time still results in an indeterminate form. In this case, the limit may be evaluated by applying the rule three times:
+
+ 
+\begin{align}
+\lim_{x\to 0}{\frac{2\sin x-\sin 2x}{x-\sin x}}
+&amp; =\lim_{x\to 0}{\frac{2\cos x -2\cos 2x}{1-\cos x}} \\
+&amp; = \lim_{x\to 0}{\frac{-2\sin x +4\sin 2x}{\sin x}} \\
+&amp; = \lim_{x\to 0}{\frac{-2\cos x +8\cos 2x}{\cos x}} \\
+&amp; ={\frac{-2 +8}{1}} \\
+&amp; =6.
+\end{align}
+
+This example involves 0/0. Suppose that b &gt; 0. Then
+
+ \lim_{x\to 0} {\frac{b^x - 1}{x}}=\lim_{x \to 0}{\frac{b^x \ln b}{1}}=\ln b \lim_{x \to 0}{b^x}=\ln b.
+Here is another example involving 0/0:
+
+\lim_{x\to 0}{\frac{e^x-1-x}{x^2}}
+=\lim_{x\to 0}{\frac{e^x-1}{2x}}
+=\lim_{x\to 0}{\frac{e^x}{2}}={\frac{1}{2}}.
+This example involves ∞/∞. Assume n is a positive integer. Then
+
+ \lim_{x\to\infty} x^n e^{-x}
+=\lim_{x\to\infty}{\frac{x^n}{e^x}}
+=\lim_{x\to\infty}{\frac{nx^{n-1}}{e^x}}
+=n\lim_{x\to\infty}{\frac{x^{n-1}}{e^x}}.
+
+Repeatedly apply l&apos;Hôpital&apos;s rule until the exponent is zero to conclude that the limit is zero.
+Here is another example involving ∞/∞:
+
+ \lim_{x\to 0^+} x \ln x =\lim_{x\to 0^+}{\frac{\ln x}{1/x}}
+=\lim_{x\to 0^+}{\frac{1/x}{-1/x^2}}
+=\lim_{x\to 0^+} -x = 0.
+Here is an example involving the impulse response of a [[raised-cosine filter]] and 0/0:
+
+ 
+\begin{align}
+\lim_{t\to 1/2} \operatorname{sinc}(t) \frac{\cos \pi t}{1 - (2t)^2}
+&amp; = \operatorname{sinc}(1/2) \lim_{t\to 1/2} \frac{\cos \pi t}{1 - (2 t)^2} \\
+&amp; = \frac{2}{\pi} \lim_{t\to 1/2} \frac{-\pi \sin \pi t}{-8 t} \\
+&amp; = \frac{2}{\pi} \cdot \frac{\pi}{4} \\
+&amp; = \frac{1}{2}.
+\end{align}
+
+One can also use l&apos;Hôpital&apos;s rule to prove the following theorem. If \scriptstyle f is continuous at x, then
+
+ 
+\begin{align}
+\lim_{h \to 0} \frac{f(x + h) + f(x - h) - 2f(x)}{h^2}
+&amp; = \lim_{h \to 0} \frac{f&apos;(x + h) - f&apos;(x - h)}{2h} \\
+&amp; = f(x).
+\end{align}
+
+Sometimes L&apos;Hôpital&apos;s rule is invoked in a tricky way: suppose f(x) + f&apos;(x) converges as x \to \infty. It follows:
+math&gt;\lim_{x \to \infty} f(x) = \lim_{x \to \infty} {e^x f(x) \over e^x} = \lim_{x \to \infty} {e^x (f(x) + f&apos;(x)) \over e^x} = \lim_{x \to \infty} (f(x) + f&apos;(x))
+and so \lim_{x \to \infty} f(x) exists and \lim_{x \to \infty} f&apos;(x) = 0.
+
+Other indeterminate forms, such as 1∞, 00, ∞0, 0·∞, and ∞ − ∞, can sometimes be evaluated using l&apos;Hôpital&apos;s rule. For example, to evaluate a limit involving ∞ − ∞, convert the difference of two functions to a quotient:
+
+\begin{align}
+\lim_{x \to 1} \left( \frac{x}{x-1} - \frac{1}{\ln x} \right)
+&amp; = \lim_{x \to 1} \frac{x \ln x - x + 1}{(x-1) \ln x} \quad (1) \\
+&amp; = \lim_{x \to 1} \frac{\ln x}{\frac{x-1}{x} + \ln x} \quad (2) \\
+&amp; = \lim_{x \to 1} \frac{x \ln x}{x - 1 + x \ln x} \quad (3) \\
+&amp; = \lim_{x \to 1} \frac{1 + \ln x}{2 + \ln x} \quad (4) \\
+&amp; = \frac{1}{2},
+\end{align}
+
+where l&apos;Hôpital&apos;s rule was applied in going from (1) to (2) and then again in going from (3) to (4).
+
+l&apos;Hôpital&apos;s rule can be used on indeterminate forms involving [[Exponentiation|exponents]] by using [[logarithm]]s to &quot;move the exponent down&quot;. Here is an example involving the indeterminate form 00:
+
+\lim_{x \to 0^+} x^x
+= \lim_{x \to 0^+} e^{\ln x^x}
+= \lim_{x \to 0^+} e^{x \ln x}
+= e^{\lim_{x \to 0^+} x \ln x}.
+
+It is valid to move the limit inside the [[exponential function]] because the exponential function is [[continuous function|continuous]]. Now the exponent x has been &quot;moved down&quot;. The limit \scriptstyle\lim_{x \to 0^+} x \ln x is of the indeterminate form 0·(−∞), but as shown in an example above, l&apos;Hôpital&apos;s rule may be used to determine that
+
+\lim_{x \to 0^+} x \ln x = 0.
+
+Thus
+
+\lim_{x \to 0^+} x^x = e^0 = 1.
+
+Although l&apos;Hôpital&apos;s rule is a powerful way of evaluating otherwise hard-to-evaluate limits, it is not always the easiest way. Consider
+
+\lim_{|x| \to \infty} x \sin \frac{1}{x}.
+
+This limit may be evaluated using l&apos;Hôpital&apos;s rule:
+
+\begin{align}
+\lim_{|x| \to \infty} x \sin \frac{1}{x}
+&amp; = \lim_{|x| \to \infty} \frac{\sin \frac{1}{x}}{1/x} \\
+&amp; = \lim_{|x| \to \infty} \frac{-x^{-2}\cos\frac{1}{x}}{-x^{-2}} \\
+&amp; = \lim_{|x| \to \infty} \cos\frac{1}{x} \\
+&amp; = \cos{\left(\lim_{|x| \to \infty} \frac{1}{x} \right)} \\
+&amp; = 1.
+\end{align}
+
+It is valid to move the limit inside the [[cosine]] function because the cosine function is uniformly continuous.
+
+Another way to evaluate this limit is to use a substitution. Let y = 1/x. As |x| approaches infinity, y approaches zero. So,
+
+\lim_{|x| \to \infty} x \sin \frac{1}{x} = \lim_{y \to 0} \frac{\sin y}{y} = 1.
+
+The final limit may be evaluated using l&apos;Hôpital&apos;s rule or by noting that it is the definition of the derivative of the sine function at zero.
+
+Still another way to evaluate this limit is to use a [[Taylor series]] expansion:
+
+\begin{align}
+\lim_{|x| \to \infty} x \sin \frac{1}{x}
+&amp; = \lim_{|x| \to \infty} x \left( \frac{1}{x} - \frac{1}{3!\, x^3} + \frac{1}{5!\, x^5} - \cdots \right) \\
+&amp; = \lim_{|x| \to \infty} 1 - \frac{1}{3!\, x^2} + \frac{1}{5!\, x^4} - \cdots \\
+&amp; = 1 + \lim_{|x| \to \infty} \frac{1}{x}\left(-\frac{1}{3!\, x} + \frac{1}{5!\, x^3} - \cdots \right).
+\end{align}
+
+For |x| ≥ 1, the expression in parentheses is bounded, so the limit in the last line is zero.
+
+In some cases it may constitute [[circular reasoning]] to use l&apos;Hôpital&apos;s rule to evaluate a limit. Consider
+
+\lim_{h\to 0} \frac{(x+h)^n-x^n}{h}.
+
+If the purpose of evaluating this limit is to prove that if ƒ(x) = xn, then
+
+f&apos;(x)=nx^{n-1},\,
+
+and one uses l&apos;Hôpital&apos;s rule and this same fact to evaluate the limit, then the argument uses the conclusion as an assumption (i.e., [[begging the question]]) and is therefore fallacious (even though the conclusion is true).
+
+The following simple argument suggests that l&apos;Hôpital&apos;s rule (or something like it) is true. It is not a proof of l&apos;Hôpital&apos;s rule because it requires stronger hypotheses than does l&apos;Hôpital&apos;s rule.
+
+Suppose that \scriptstyle f&apos; and g&apos; are continuous at c, f(c)=g(c)=0, and g′(c) ≠ 0. Then
+
+\lim_{x\to c}\frac{f(x)}{g(x)} = \lim_{x\to c}\frac{f(x)/(x-c)}{g(x)/(x-c)} = \frac{f&apos;(c)}{g&apos;(c)} = \lim_{x\to c}\frac{f&apos;(x)}{g&apos;(x)}.
+
+Consider curve in the plane whose x-coordinate is given by g(t) and whose y-coordinate is given by ƒ(t) – i.e.
+
+  t\mapsto [g(t),f(t)]. \, 
+
+Suppose ƒ(c) = g(c) = 0. The limit of the ratio ƒ(t)/g(t) as t → c is the slope of tangent to the curve at the point [0, 0].  The tangent to the curve at the point t is given by [g&apos;(t),f&apos;(t)].  L&apos;Hôpital&apos;s rule then states that the slope of the tangent at 0 is the limit of the slopes of tangents at the points approaching 0.
+
+A standard proof of l&apos;Hôpital&apos;s rule uses [[Cauchy&apos;s mean value theorem]]. l&apos;Hôpital&apos;s rule has many variations depending on whether c and L are finite or infinite, whether ƒ and g converge to zero or infinity, and whether the limits are one-sided or two-sided. All the variations follow from the two main variations below without, for the most part, requiring any new reasoning.
+
+Suppose that c and L are finite and ƒ and g converge to zero.
+
+First, define (or redefine) ƒ(c) = 0 and g(c) = 0. This makes ƒ and g continuous at c, but does not change the limit (since, by definition, the limit does not depend on the value at the point c). Since \scriptstyle\lim_{x\to c}f&apos;(x)/g&apos;(x) exists, there is an interval (c − δ, c + δ) such that for all x in the interval, with the possible exception of x = c, both \scriptstyle f&apos;(x) and g&apos;(x) exist and g&apos;(x) is not zero.
+
+If x is in the interval (c, c + δ), then the [[mean value theorem]] and Cauchy&apos;s mean value theorem both apply to the interval [c, x] (and a similar statement holds for x in the interval (c − δ, c)). The mean value theorem implies that g(x) is not zero (since otherwise there would be a y in the interval (c, x) with g&apos;(y)=0). Cauchy&apos;s mean value theorem now implies that there is a point ξx in (c, x) such that
+
+\frac{f(x)}{g(x)} = \frac{f&apos;(\xi_x)}{g&apos;(\xi_x)}.
+
+If x approaches c, then ξx approaches c (by the [[squeeze theorem]] ).  Since \scriptstyle\lim_{x\to c}f&apos;(x)/g&apos;(x) exists, it follows that
+
+\lim_{x\to c}\frac{f(x)}{g(x)}
+= \lim_{x\to c}\frac{f&apos;(\xi_x)}{g&apos;(\xi_x)}
+= \lim_{x\to c}\frac{f&apos;(x)}{g&apos;(x)}.
+
+Suppose that L is finite, c is positive infinity, and ƒ and g converge to positive infinity.
+
+For every ε &gt; 0, there is an m such that
+
+\left|\frac{f&apos;(x)}{g&apos;(x)} - L\right| 
+
+The mean value theorem implies that if x &gt; m, then g(x) ≠ g(m) (since otherwise there would be a y in the interval (m, x) with g&apos;(y)=0). [[Cauchy&apos;s mean value theorem]] applied to the interval [m, x] now implies that
+
+\left|\frac{f(x)-f(m)}{g(x)-g(m)} - L\right| m.
+
+Since ƒ converges to positive infinity, if x is large enough, then ƒ(x) ≠ ƒ(m). Write
+
+\frac{f(x)}{g(x)} = \frac{f(x)-f(m)}{g(x)-g(m)} \cdot \frac{f(x)}{f(x)-f(m)} \cdot \frac{g(x)-g(m)}{g(x)}.
+
+Now,
+
+\begin{align}
+&amp; \left|\frac{f(x)-f(m)}{g(x)-g(m)} \cdot \frac{f(x)}{f(x)-f(m)} \cdot \frac{g(x)-g(m)}{g(x)} - \frac{f(x)-f(m)}{g(x)-g(m)}\right| \\
+&amp; \quad \leq \left|\frac{f(x)-f(m)}{g(x)-g(m)}\right| \left|\frac{f(x)}{f(x)-f(m)} \cdot \frac{g(x)-g(m)}{g(x)} - 1\right| \\
+&amp; \quad &lt; (|L|+\varepsilon)\left|\frac{f(x)}{f(x)-f(m)} \cdot \frac{g(x)-g(m)}{g(x)} - 1\right|.
+\end{align}
+
+For x sufficiently large, this is less than ε and therefore
+
+\left|\frac{f(x)}{g(x)} - L\right| *
+Note: Steps are missing.
+Double note:  This entire page often neglects to demonstrate intermediate steps.
+
+</text>
+</document>

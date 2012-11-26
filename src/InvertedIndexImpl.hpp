@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "varint/SetFactory.h"
+#include "varint/ISetFactory.h"
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
@@ -19,12 +19,11 @@ class InvertedIndexImpl : public IInvertedIndex
 	private:
 
 		std::shared_ptr<KVStore::IKVStore> store;		
-	    shared_ptr<SetFactory> setFactory;
+	    shared_ptr<ISetFactory> setFactory;
+	
 	public:
 
-		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory) :
-		 store(store),
-		 setFactory(setFactory)
+		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory)
 		{
 			store->Open();
 		}

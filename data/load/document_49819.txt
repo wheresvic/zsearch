@@ -1,0 +1,17 @@
+<document>
+<title>Munch_Township,_Pine_County,_Minnesota</title>
+<text>
+Munch Township is a township in [[Pine County, Minnesota|Pine County]], [[Minnesota]], [[United States]]. The population was 222 at the 2000 census.
+
+According to the [[United States Census Bureau]], the township has a total area of 36.1 square miles (93.4 km²), of which, 35.5 square miles (91.9 km²) of it is land and 0.6 square miles (1.5 km²) of it (1.58%) is water.
+
+As of the [[census]] of 2000, there were 222 people, 97 households, and 65 families residing in the township.  The [[population density]] was 6.3 people per square mile (2.4/km²).  There were 168 housing units at an average density of 4.7/sq mi (1.8/km²).  The racial makeup of the township was 96.85% [[White (U.S. Census)|White]], 1.80% [[Native American (U.S. Census)|Native American]], and 1.35% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.45% of the population.
+
+There were 97 households out of which 20.6% had children under the age of 18 living with them, 55.7% were [[Marriage|married couples]] living together, 9.3% had a female householder with no husband present, and 32.0% were non-families. 26.8% of all households were made up of individuals and 7.2% had someone living alone who was 65 years of age or older.  The average household size was 2.29 and the average family size was 2.73.
+
+In the township the population was spread out with 18.9% under the age of 18, 5.0% from 18 to 24, 32.0% from 25 to 44, 28.8% from 45 to 64, and 15.3% who were 65 years of age or older.  The median age was 41 years. For every 100 females there were 101.8 males.  For every 100 females age 18 and over, there were 104.5 males.
+
+The median income for a household in the township was $34,375, and the median income for a family was $35,938. Males had a median income of $23,125 versus $22,917 for females. The [[per capita income]] for the township was $19,588.  About 7.2% of families and 6.7% of the population were below the [[poverty line]], including 3.8% of those under the age of eighteen and none of those sixty five or over.
+
+</text>
+</document>

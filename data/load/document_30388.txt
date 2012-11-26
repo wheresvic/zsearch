@@ -1,0 +1,39 @@
+<document>
+<title>Agavaceae</title>
+<text>
+
+Agavaceae is a [[family (biology)|family]] of [[plant]]s that includes many well-known [[desert]] and dry zone types such as the [[agave]], [[yucca]], and [[Yucca brevifolia|Joshua tree]].  The family includes about 550-600 [[species]] in around 18 [[genus|genera]], and is widespread in the tropical, subtropical and warm temperate regions of the world.
+
+The circumscription of this family has varied widely. Some genera (e.g. [[Cordyline]] and [[Dracaena (plant)|Dracaena]]) are sometimes separated off into a separate family, [[Dracaenaceae]], though recent research has tended to incorporate these into a larger family [[Ruscaceae]]. Nolina, Beaucarnea, and Dasylirion are sometimes recognized as Nolinaceae or placed in Ruscaceae. Conversely, data from [[molecular systematics]] now suggest that Agavaceae should be broadened to include a number of genera previously classified elsewhere, among them [[Chlorogalum]], [[Camassia]] and the family [[Anthericaceae]] with anything up to 22 additional genera.  The [[Angiosperm Phylogeny Group]]&apos;s APG II classification places Agavaceae, along with a number of other families (including Ruscaceae) in an expanded family [[Asparagaceae]].  However, APG II allows the alternative of keeping some of these families, including Agavaceae, separate, though in this case it recommends expanding the family to include the genera currently classified in [[Anemarrhenaceae]], [[Anthericaceae]] (with Anthericum and Paradisea), [[Behniaceae]] and [[Herreriaceae]]. Most references have retained Agavaceae (in varying circumscriptions) as a family distinct from Asparagaceae. [[Hesperocallis]], sometimes placed in its own family, Hesperocallideaceae, has recently been shown to be closely related and its inclusion in Agavaceae has been recommended (Pires et al. 2004).
+
+Species may be [[succulent]] or not. In general, Agavaceae leaves occur as rosettes at the end of a woody stem, which may range from extremely short to tree-like heights, as in the Joshua tree.  The leaves are parallel-veined, and usually appear long and pointed, often with a hardened spine on the end, and sometimes with additional spines along the margins.
+
+Agave species are used to make [[pulque]] and [[mezcal]], while others are valued for their fibers.  They are quite popular for [[xeriscaping]], many types having showy flowers.
+
+Agave]]
+Anemarrhena]]
+Behnia]]
+Beschorneria]]
+Bravoa]]
+Camassia]]
+Chlorogalum]]
+Chlorophytum]]
+Clistoyucca]]
+Eremocrinum]]
+Furcraea]]
+Hastingsia]]
+Herreria (genus)|Herreria]]
+Hesperaloe]]
+Hesperocallis]]
+Hesperoyucca]]
+Hosta]]
+Littaea]]
+Manfreda]]
+Polianthes]]
+Prochnyanthes]]
+Pseudobravoa]]
+Samuela]]
+Yucca]]
+
+</text>
+</document>

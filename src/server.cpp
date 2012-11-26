@@ -58,6 +58,7 @@
 #include <memory>
 #include <exception>
 #include <iostream>
+#include <chrono>
 
 #include "DocumentStoreSimple.h"
 #include "TokenizerImpl.h"
@@ -66,118 +67,287 @@
 #include "Constants.hpp"
 #include "Engine.hpp"
 #include "varint/BasicSet.h"
+#include "varint/SetFactory.h"
+#include "varint/BasicSetFactory.h"
 
 static const std::string POST_HTM = "/post.htm";
 static const std::string SEARCH_PATH = "/search";
 static const std::string POST_PATH = "/post";
+static const std::string DOC_PATH = "/doc";
+static const std::string INDEX_PATH = "/index";
 static const std::string ROOT = "/";
 
 static Engine *engine;
 
 char uri_root[512];
 
+static unsigned int getDocIdFromString(const std::string& strDocId)
+{
+	unsigned int docId;
+	stringstream ss(strDocId);
+	ss >> docId;
+	return docId;
+}
+
+static void printTimeTaken(const std::chrono::nanoseconds& ns)
+{
+	if (ns.count() >= 1000000000)
+	{
+		std::cout << "request processed in " << std::chrono::duration_cast<std::chrono::seconds>(ns).count() << "s" << std::endl;
+	}
+	else if (ns.count() >= 1000000)
+	{
+		std::cout << "request processed in " << std::chrono::duration_cast<std::chrono::milliseconds>(ns).count() << "ms" << std::endl;
+	}
+	else
+	{
+		std::cout << "request processed in " << ns.count() << "ns" << std::endl;
+	}
+}
+
+/**
+ * Callback used for doc request
+ */
+static void doc_request_cb(struct evhttp_request *req, void *arg)
+{
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
+
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET)
+	{
+		std::cerr << "Invalid query request! Needs to be GET" << std::endl;
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+	}
+	else
+	{
+		struct evbuffer *evb = NULL;
+		const char *uri = evhttp_request_get_uri(req);
+		struct evhttp_uri *decoded = NULL;
+		const char *path = NULL;
+		const char *query = NULL;
+
+		printf("Got a GET request for %s\n",  uri);
+
+		// Decode the URI
+		decoded = evhttp_uri_parse(uri);
+
+		if (!decoded)
+		{
+			printf("It's not a good URI. Sending BADREQUEST\n");
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+			return;
+		}
+
+		path = evhttp_uri_get_path(decoded);
+		std::cout << path << std::endl;
+
+		query = evhttp_uri_get_query(decoded);
+		std::cout << query << std::endl;
+
+		// This holds the content we're sending
+		evb = evbuffer_new();
+
+		struct evkeyvalq params;	// create storage for your key->value pairs
+		struct evkeyval *param;		// iterator
+
+		int result = evhttp_parse_query_str(query, &params);
+
+		if (result == 0)
+		{
+			bool found = false;
+
+			for (param = params.tqh_first; param; param = param->next.tqe_next)
+			{
+				std::string key(param->key);
+				std::string value(param->value);
+
+				printf("%s\n%s\n", key.c_str(), value.c_str());
+
+				if (key.compare(zsearch::DOC_ID_KEY) == 0)
+				{
+					std::cout << "retrieving document " << value << std::endl;
+
+					unsigned int docId = getDocIdFromString(value);
+
+					std::shared_ptr<IDocument> document;
+
+					if (engine->getDoc(docId, document))
+					{
+						std::stringstream ss;
+						document->write(ss);
+						std::string docStr = ss.str();
+						std::cout << docStr << std::endl;
+
+						evbuffer_add_printf(evb, docStr.c_str());
+						found = true;
+					}
+
+					break;
+				}
+			}
+
+			if (found)
+			{
+				evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/xml");
+			}
+			else
+			{
+				evbuffer_add_printf(evb, "Document not found or invalid docId");
+				evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+			}
+
+			evhttp_send_reply(req, 200, "OK", evb);
+		}
+		else
+		{
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		}
+
+		evhttp_clear_headers(&params);
+
+
+		if (decoded)
+		{
+			evhttp_uri_free(decoded);
+		}
+
+		if (evb)
+		{
+			evbuffer_free(evb);
+		}
+	}
+
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
+	printTimeTaken(timeTaken);
+}
 
 /**
  * Callback used for search request
  */
 static void search_request_cb(struct evhttp_request *req, void *arg)
 {
-	struct evbuffer *evb = NULL;
-	const char *uri = evhttp_request_get_uri(req);
-	struct evhttp_uri *decoded = NULL;
-	const char *path = NULL;
-	const char *query = NULL;
-	// struct evkeyvalq *headers;
-	// struct evkeyval *header;
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET)
 	{
 		// evbuffer_add_printf(evb, "Invalid query request! Needs to be GET\n");
-		std::cout << "Invalid query request! Needs to be GET" << std::endl;
+		std::cerr << "Invalid query request! Needs to be GET" << std::endl;
 		evhttp_send_error(req, HTTP_BADREQUEST, 0);
-		return;
-	}
-
-	printf("Got a GET request for %s\n",  uri);
-
-	// Decode the URI
-	decoded = evhttp_uri_parse(uri);
-	if (!decoded) {
-		printf("It's not a good URI. Sending BADREQUEST\n");
-		evhttp_send_error(req, HTTP_BADREQUEST, 0);
-		return;
-	}
-
-	path = evhttp_uri_get_path(decoded);
-	std::cout << path << std::endl;
-
-	query = evhttp_uri_get_query(decoded);
-	std::cout << query << std::endl;
-
-	// This holds the content we're sending
-	evb = evbuffer_new();
-
-	/*
-	headers = evhttp_request_get_input_headers(req);
-	for (header = headers->tqh_first; header;
-	    header = header->next.tqe_next) {
-		printf("  %s: %s\n", header->key, header->value);
-	}
-	*/
-
-	struct evkeyvalq params;	// create storage for your key->value pairs
-	struct evkeyval *param;		// iterator
-
-	int result = evhttp_parse_query_str(query, &params);
-
-	if (result == 0)
-	{
-		for (param = params.tqh_first; param; param = param->next.tqe_next)
-	    {
-			std::string key(param->key);
-			std::string value(param->value);
-
-			printf("%s\n%s\n", key.c_str(), value.c_str());
-
-			if (key.compare(zsearch::GET_QUERY_KEY) == 0)
-			{
-				std::cout << "searching for " << value << std::endl;
-			
-				auto docSet = engine->search(value);
-	            
-				for (auto document : docSet)
-				{
-					std::string title;
-					document->getEntry("title", title);
-					std::cout << title << " ";
-					evbuffer_add_printf(evb, title.c_str());
-					evbuffer_add_printf(evb, "\n");
-				}
-				
-			}
-		}
-
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-		evhttp_send_reply(req, 200, "OK", evb);
-
 	}
 	else
 	{
-		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+
+		struct evbuffer *evb = NULL;
+		const char *uri = evhttp_request_get_uri(req);
+		struct evhttp_uri *decoded = NULL;
+		const char *path = NULL;
+		const char *query = NULL;
+		// struct evkeyvalq *headers;
+		// struct evkeyval *header;
+
+
+		printf("Got a GET request for %s\n",  uri);
+
+		// Decode the URI
+		decoded = evhttp_uri_parse(uri);
+		if (!decoded) {
+			printf("It's not a good URI. Sending BADREQUEST\n");
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+			return;
+		}
+
+		path = evhttp_uri_get_path(decoded);
+		std::cout << path << std::endl;
+
+		query = evhttp_uri_get_query(decoded);
+		std::cout << query << std::endl;
+
+		// This holds the content we're sending
+		evb = evbuffer_new();
+
+		/*
+		headers = evhttp_request_get_input_headers(req);
+		for (header = headers->tqh_first; header;
+			header = header->next.tqe_next) {
+			printf("  %s: %s\n", header->key, header->value);
+		}
+		*/
+
+		struct evkeyvalq params;	// create storage for your key->value pairs
+		struct evkeyval *param;		// iterator
+
+		int result = evhttp_parse_query_str(query, &params);
+
+		if (result == 0)
+		{
+			for (param = params.tqh_first; param; param = param->next.tqe_next)
+			{
+				std::string key(param->key);
+				std::string value(param->value);
+
+				printf("%s\n%s\n", key.c_str(), value.c_str());
+
+				if (key.compare(zsearch::GET_QUERY_KEY) == 0)
+				{
+					std::cout << "searching for " << value << std::endl;
+
+					auto docIdSet = engine->search(value);
+
+					evbuffer_add_printf(evb, "%u ", docIdSet.size());
+
+					if (docIdSet.size())
+					{
+						for (auto docId : docIdSet)
+						{
+							evbuffer_add_printf(evb, "%u ", docId);
+						}
+
+						/*
+						auto docSet = engine->getDocs(docIdSet);
+
+						for (auto document : docSet)
+						{
+							std::string title;
+							document->getEntry("title", title);
+							std::cout << title << " ";
+							evbuffer_add_printf(evb, title.c_str());
+							evbuffer_add_printf(evb, "\n");
+						}
+						*/
+					}
+
+					// evbuffer_add_printf(evb, "\n");
+
+					break;
+				}
+			}
+
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+			evhttp_send_reply(req, 200, "OK", evb);
+
+		}
+		else
+		{
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		}
+
+		evhttp_clear_headers(&params);
+
+
+		if (decoded)
+		{
+			evhttp_uri_free(decoded);
+		}
+
+		if (evb)
+		{
+			evbuffer_free(evb);
+		}
 	}
 
-	evhttp_clear_headers(&params);
-
-
-	if (decoded)
-	{
-		evhttp_uri_free(decoded);
-	}
-
-	if (evb)
-	{
-		evbuffer_free(evb);
-	}
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
+	printTimeTaken(timeTaken);
 }
 
 /**
@@ -185,13 +355,12 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
  */
 static void post_request_cb(struct evhttp_request *req, void *arg)
 {
-	struct evbuffer *evb = NULL;
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
-	const char *cmdtype = NULL;
-	struct evkeyvalq *headers;
-	struct evkeyval *header;
-	struct evbuffer *buf;
+	/*
+
 	bool isPostRequest = false;
+	const char *cmdtype = NULL;
 
 	switch (evhttp_request_get_command(req))
 	{
@@ -207,121 +376,141 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 		default: cmdtype = "unknown"; break;
 	}
 
-	printf("Received a %s request for %s\nHeaders:\n", cmdtype, evhttp_request_get_uri(req));
-
 	if (!isPostRequest)
-	{
-		evhttp_send_error(req, HTTP_BADREQUEST, 0);
-	}
-
-	headers = evhttp_request_get_input_headers(req);
-	for (header = headers->tqh_first; header;
-	    header = header->next.tqe_next) {
-		printf("  %s: %s\n", header->key, header->value);
-	}
-
-	buf = evhttp_request_get_input_buffer(req);
-
-	std::string postData;
-
-	while (evbuffer_get_length(buf))
-	{
-		int n;
-		char cbuf[128];
-		n = evbuffer_remove(buf, cbuf, sizeof(buf)-1);
-		if (n > 0)
-		{
-			// (void) fwrite(cbuf, 1, n, stdout);
-			postData.append(cbuf, n);
-		}
-	}
-
-	std::cout << "Post data: " << std::endl << postData << std::endl;
-
-	struct evkeyvalq params;	// create storage for your key->value pairs
-	struct evkeyval *param;		// iterator
-
-	int result = evhttp_parse_query_str(postData.c_str(), &params);
-
-	std::string postDataDecoded;
-
-	// working code to return the parameters as plain text ...
-	/*
-	if (result == 0)
-	{
-		for (param = params.tqh_first; param; param = param->next.tqe_next)
-	    {
-			printf("%s %s\n", param->key, param->value);
-			postDataDecoded.append(param->key);
-			postDataDecoded.append(" ");
-			postDataDecoded.append(param->value);
-			postDataDecoded.append("\n");
-		}
-
-		evb = evbuffer_new();
-		evbuffer_add_printf(evb, postDataDecoded.c_str());
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-
-		evhttp_send_reply(req, 200, "OK", evb);
-	}
-	else
 	{
 		evhttp_send_error(req, HTTP_BADREQUEST, 0);
 	}
 	*/
 
-	// if we were able to parse post data ok
-	if (result == 0)
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_POST)
 	{
-		param = params.tqh_first;
-
-		std::string key(param->key);
-		std::string value(param->value);
-
-		evb = evbuffer_new();
-
-		// check that the first key is data
-		if (key.compare(zsearch::POST_DATA_KEY) == 0)
-		{
-			printf("%s\n%s\n", key.c_str(), value.c_str());
-
-			try
-			{
-				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
-				std::cout << "Added document: " << engine->addDocument(document) << std::endl;
-				evbuffer_add_printf(evb, "Ok");
-			}
-			catch (const std::string& e)
-			{
-				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-				evbuffer_add_printf(evb, e.c_str());
-			}
-			catch (const std::exception& e)
-			{
-				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-				evbuffer_add_printf(evb, e.what());
-			}
-		}
-		else
-		{
-			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details\n");
-		}
-
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-		evhttp_send_reply(req, 200, "OK", evb);
-
+		std::cerr << "Invalid request! Needs to be POST" << std::endl;
+		evhttp_send_error(req, HTTP_BADREQUEST, 0);
 	}
 	else
 	{
-		evhttp_send_error(req, HTTP_BADREQUEST, 0);
+
+		struct evbuffer *evb = NULL;
+		struct evkeyvalq *headers;
+		struct evkeyval *header;
+		struct evbuffer *buf;
+
+		printf("Received a POST request for %s\nHeaders:\n", evhttp_request_get_uri(req));
+
+		headers = evhttp_request_get_input_headers(req);
+		for (header = headers->tqh_first; header;
+			header = header->next.tqe_next) {
+			printf("  %s: %s\n", header->key, header->value);
+		}
+
+		buf = evhttp_request_get_input_buffer(req);
+
+		std::string postData;
+
+		while (evbuffer_get_length(buf))
+		{
+			int n;
+			char cbuf[128];
+			n = evbuffer_remove(buf, cbuf, sizeof(buf)-1);
+			if (n > 0)
+			{
+				// (void) fwrite(cbuf, 1, n, stdout);
+				postData.append(cbuf, n);
+			}
+		}
+
+		std::cout << "Post data: " << std::endl << postData << std::endl;
+
+		struct evkeyvalq params;	// create storage for your key->value pairs
+		struct evkeyval *param;		// iterator
+
+		int result = evhttp_parse_query_str(postData.c_str(), &params);
+
+		std::string postDataDecoded;
+
+		// working code to return the parameters as plain text ...
+		/*
+		if (result == 0)
+		{
+			for (param = params.tqh_first; param; param = param->next.tqe_next)
+			{
+				printf("%s %s\n", param->key, param->value);
+				postDataDecoded.append(param->key);
+				postDataDecoded.append(" ");
+				postDataDecoded.append(param->value);
+				postDataDecoded.append("\n");
+			}
+
+			evb = evbuffer_new();
+			evbuffer_add_printf(evb, postDataDecoded.c_str());
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+
+			evhttp_send_reply(req, 200, "OK", evb);
+		}
+		else
+		{
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		}
+		*/
+
+		// if we were able to parse post data ok
+		if (result == 0)
+		{
+			param = params.tqh_first;
+
+			std::string key(param->key);
+			std::string value(param->value);
+
+			evb = evbuffer_new();
+
+			// check that the first key is data
+			if (key.compare(zsearch::POST_DATA_KEY) == 0)
+			{
+				printf("%s\n%s\n", key.c_str(), value.c_str());
+
+				try
+				{
+					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
+					unsigned int docId = engine->addDocument(document);
+					std::cout << "Added document: " << docId << std::endl;
+					evbuffer_add_printf(evb, "%d", docId);
+				}
+				catch (const std::string& e)
+				{
+					evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
+					evbuffer_add_printf(evb, e.c_str());
+				}
+				catch (const std::exception& e)
+				{
+					evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
+					evbuffer_add_printf(evb, e.what());
+				}
+			}
+			else
+			{
+				evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details\n");
+			}
+
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+			evhttp_send_reply(req, 200, "OK", evb);
+
+		}
+		else
+		{
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+		}
+
+		evhttp_clear_headers(&params);
+
+		if (evb)
+		{
+			evbuffer_free(evb);
+		}
 	}
 
-	evhttp_clear_headers(&params);
-
-	if (evb)
-	{
-		evbuffer_free(evb);
-	}
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
+	printTimeTaken(timeTaken);
 }
 
 /**
@@ -331,108 +520,138 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
  */
 static void generic_request_cb(struct evhttp_request *req, void *arg)
 {
-	// if this is a post request try to index post data
-	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
-		post_request_cb(req, arg);
-		return;
-	}
-	
-	struct evbuffer *evb = NULL;
-	const char *docroot = (char *) arg;
-	const char *uri = evhttp_request_get_uri(req);
-	struct evhttp_uri *decoded = NULL;
-	const char *path;
-	char *decoded_path;
-	char *whole_path = NULL;
-	size_t len;
-	int fd = -1;
-	struct stat st;
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
-	printf("Got a GET request for %s\n",  uri);
-
-	// Decode the URI
-	decoded = evhttp_uri_parse(uri);
-	if (!decoded) 
+	// if this is not a GET request error out
+	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET)
 	{
-		printf("It's not a good URI. Sending BADREQUEST\n");
+		std::cerr << "Invalid request! Needs to be GET" << std::endl;
 		evhttp_send_error(req, HTTP_BADREQUEST, 0);
-		return;
 	}
-
-	// Let's see what path the user asked for 
-	path = evhttp_uri_get_path(decoded);
-	if (!path)
-	{	
-		path = ROOT.c_str();
-	}
-
-	// We need to decode it, to see what path the user really wanted 
-	decoded_path = evhttp_uridecode(path, 0, NULL);
-	
-	if (decoded_path == NULL)
+	else
 	{
-		goto err;
+		struct evbuffer *evb = NULL;
+		const char *docroot = (char *) arg;
+		const char *uri = evhttp_request_get_uri(req);
+		struct evhttp_uri *decoded = NULL;
+		const char *path;
+		char *decoded_path;
+		char *whole_path = NULL;
+		size_t len;
+		int fd = -1;
+		struct stat st;
+
+		printf("Got a GET request for %s\n",  uri);
+
+		// Decode the URI
+		decoded = evhttp_uri_parse(uri);
+		if (!decoded)
+		{
+			printf("It's not a good URI. Sending BADREQUEST\n");
+			evhttp_send_error(req, HTTP_BADREQUEST, 0);
+			return;
+		}
+
+		// Let's see what path the user asked for
+		path = evhttp_uri_get_path(decoded);
+		if (!path)
+		{
+			path = ROOT.c_str();
+		}
+
+		// We need to decode it, to see what path the user really wanted
+		decoded_path = evhttp_uridecode(path, 0, NULL);
+
+		bool error = false;
+
+		if (decoded_path == NULL)
+		{
+			error = true;
+		}
+		else
+		{
+			// This holds the content we're sending
+			evb = evbuffer_new();
+
+			// add headers
+			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+
+			if (POST_HTM.compare(decoded_path) == 0)
+			{
+				len = strlen(decoded_path)+strlen(docroot)+2;
+				whole_path = (char *) malloc(len);
+
+				if (whole_path)
+				{
+					evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
+
+					if (stat(whole_path, &st)<0)
+					{
+						error = true;
+					}
+					else
+					{
+						if ((fd = open(whole_path, O_RDONLY)) < 0)
+						{
+							perror("open");
+							error = true;
+
+						}
+						else
+						{
+							if (fstat(fd, &st)<0)
+							{
+								// Make sure the length still matches, now that we opened the file :/
+								perror("fstat");
+								error = true;
+							}
+							else
+							{
+								evbuffer_add_file(evb, fd, 0, st.st_size);
+							}
+						}
+					}
+				}
+				else
+				{
+					perror("malloc");
+					error = true;
+				}
+			}
+			else // if (ROOT.compare(decoded_path) == 0)
+			{
+				evbuffer_add_printf(evb, "Invalid request <br />\n");
+				evbuffer_add_printf(evb, "%s to post data manually or %s to post via api<br />\n", POST_HTM.c_str(), INDEX_PATH.c_str());
+				evbuffer_add_printf(evb, "%s to search <br />\n", SEARCH_PATH.c_str());
+				evbuffer_add_printf(evb, "%s to get document by id <br />\n", DOC_PATH.c_str());
+			}
+		}
+
+		if (error)
+		{
+			if (fd >= 0)
+				close(fd);
+
+			evhttp_send_error(req, 404, "Document not found.");
+		}
+		else
+		{
+			evhttp_send_reply(req, 200, "OK", evb);
+		}
+
+		if (decoded)
+			evhttp_uri_free(decoded);
+		if (decoded_path)
+			free(decoded_path);
+		if (whole_path)
+			free(whole_path);
+		if (evb)
+			evbuffer_free(evb);
 	}
-	
-	// This holds the content we're sending 
-	evb = evbuffer_new();
-		
-	// add headers
-	evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-	
-	if (POST_HTM.compare(decoded_path) == 0)
-	{
-		len = strlen(decoded_path)+strlen(docroot)+2;
-		if (!(whole_path = (char *) malloc(len))) 
-		{
-			perror("malloc");
-			goto err;
-		}
-		
-		evutil_snprintf(whole_path, len, "%s/%s", docroot, decoded_path);
 
-		if (stat(whole_path, &st)<0) 
-		{
-			goto err;
-		}
-
-		if ((fd = open(whole_path, O_RDONLY)) < 0) 
-		{
-			perror("open");
-			goto err;
-		}
-
-		if (fstat(fd, &st)<0) 
-		{
-			// Make sure the length still matches, now that we opened the file :/
-			perror("fstat");
-			goto err;
-		}
-		
-		evbuffer_add_file(evb, fd, 0, st.st_size);
-	}
-	else // if (ROOT.compare(decoded_path) == 0)
-	{
-		evbuffer_add_printf(evb, "Invalid request, try %s to post data or %s to search.\n", POST_HTM.c_str(), SEARCH_PATH.c_str());
-	}
-	
-	evhttp_send_reply(req, 200, "OK", evb);
-	goto done;
-
-err:
-	evhttp_send_error(req, 404, "Document not found.");
-	if (fd>=0)
-		close(fd);
-done:
-
-	if (decoded)
-		evhttp_uri_free(decoded);
-	if (decoded_path)
-		free(decoded_path);
-	if (whole_path)
-		free(whole_path);
-	if (evb)
-		evbuffer_free(evb);
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
+	printTimeTaken(timeTaken);
 }
 
 
@@ -446,15 +665,16 @@ int main(int argc, char **argv)
 	struct event_base *base;
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
-	
-    std::shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
+
+    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine(tokenizer, documentStore, invertedIndexStore,setFactory);
+	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);
 
 	unsigned short port = 8080;
+
 #ifdef _WIN32
 	WSADATA WSAData;
 	WSAStartup(0x101, &WSAData);
@@ -486,7 +706,9 @@ int main(int argc, char **argv)
 	// The /dump URI will dump all requests to stdout and say 200 ok
 	// evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
 
-	evhttp_set_cb(http, "/search", search_request_cb, NULL);
+	evhttp_set_cb(http, SEARCH_PATH.c_str(), search_request_cb, NULL);
+	evhttp_set_cb(http, DOC_PATH.c_str(), doc_request_cb, NULL);
+	evhttp_set_cb(http, INDEX_PATH.c_str(), post_request_cb, NULL);
 
 	// We want to accept arbitrary requests, so we need to set a "generic"
 	evhttp_set_gencb(http, generic_request_cb, argv[1]);

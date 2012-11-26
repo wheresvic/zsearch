@@ -1,0 +1,37 @@
+<document>
+<title>Isotropy</title>
+<text>
+
+Isotropy is uniformity in all directions. Precise definitions depend on the subject area. The word is made up from Greek iso (equal) and tropos (direction). Exceptions, or inequalities, are frequently indicated by the prefix an, hence [[anisotropy]]. Anisotropy is also used to describe situations where properties vary systematically, dependent on direction. [[Isotropic radiation]] has the same intensity regardless of the direction of [[measurement]], and an isotropic field exerts the same action regardless of how the test [[Elementary particle|particle]] is oriented.
+
+Within [[mathematics]], isotropy has a few different meanings:
+Isotropic manifold]]s: Some [[manifold]]s are isotropic, meaning that the [[geometry]] on the manifold is the same regardless of direction. A similar concept is [[homogeneous space|homogeneity]]. A manifold can be homogeneous without being isotropic. But if it is inhomogeneous, it is necessarily anisotropic.
+Isotropic quadratic form]]: A [[quadratic form]] q is said to be isotropic if there is a non-zero vector v such that q(v)=0.
+Isotropic coordinates]] on an [[Isotropic chart]] for [[Lorentzian manifolds]].
+
+Quantum Mechanics / Particle Physics: When a spinless particle (or even an unpolarized particle with spin) decays, the resulting decay distribution must be isotropic in the rest frame of the decaying particle regardless of the detailed physics of the decay. This follows from [[Rotational invariance|rotational invariance]] of the Hamiltonian, which in turn is guaranteed for a spherically symmetric potential.
+
+Cosmology: The [[Big Bang]] theory of the evolution of the observable universe assumes that space is isotropic. It also assumes that space is homogeneous. These two assumptions together are known as the [[Cosmological Principle]]. As of 2006, the observations suggest that, on distance scales much larger than galaxies, galaxy clusters are [[Great Wall (astronomy)|&quot;Great&quot;]] features, but small compared to so-called multi-verse scenarios.
+
+Cell biology: If the properties of the [[Cell (biology)|cell wall]] are more or less the same everywhere, it is said to be isotropic. The interior of the cell is anisotropic due to intracellular [[organelle]]s.
+
+Radio broadcasting: In [[radio]], an [[isotropic antenna]] is an idealized &quot;[[radiator|radiating element]]&quot; used as a [[reference]]; an [[antenna (electronics)|antenna]] that broadcasts power equally (calculated by the [[Poynting vector]]) in all directions. In practice, an isotropic antenna cannot exist, as equal radiation in all directions would be a violation of the [[Helmholtz equation|Helmholtz wave equation]]. The gain of an arbitrary antenna is usually reported in [[decibel]]s relative to an isotropic antenna, and is expressed as dBi or dB(i).
+
+Physiology: In skeletal muscle cells (a.k.a. [[muscle fibers]]), the term &quot;[[isotropic bands|isotropic]]&quot; refers to the light bands ([[I bands]]) that contribute to the striated pattern of the cells.
+
+Materials: In the study of [[List of materials properties|mechanical properties of materials]], &quot;isotropic&quot; means having identical values of a property in all [[crystallographic]] directions.
+
+Optics: Optical isotropy means having the same optical properties in all directions. The individual [[reflectance]] or [[transmittance]] of the domains is averaged if the macroscopic reflectance or transmittance is to be calculated. This can be verified simply by investigating, e.g., a [[polycrystalline]] material under a polarizing microscope having the polarizers crossed: If the crystallites are larger than the resolution limit, they will be visible.
+
+Microfabrication: In industrial processes, such as etching steps, isotropic means that the process proceeds at the same rate, regardless of direction. Simple chemical reaction and removal of a substrate by an acid, a solvent or a reactive gas is often very close to isotropic. Conversely, anisotropic means that the attack rate of the substrate is higher in a certain direction. Anisotropic etch processes, where vertical etch-rate is high, but lateral etch-rate is very small are essential processes in [[microfabrication]] of [[integrated circuits]] and [[MEMS]] devices.
+
+Thermal expansion: A solid is said to be isotropic if the expansion of solid is equal in all directions when thermal energy is provided to the solid. All metals are isotropic.
+
+Economics and Geography: An isotropic region is a region which has the same properties everywhere. Such a region is a construction needed in many types of models.
+
+Kinetic Theory is also an example of isotropy. It is assumed that the molecules move in random directions and as a consequence, there is an equal probability of a molecule moving in any direction. Thus when there are many molecules in the gas, there will be an equal number moving in one direction as any other hence demonstrating isotropy.
+
+Electromagnetics: An isotropic medium is one such that the permittivity, ε, and permeability, μ, of the medium are uniform in all directions of the medium, the most simple instance being free space.
+
+</text>
+</document>

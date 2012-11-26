@@ -1,0 +1,230 @@
+<document>
+<title>Dimensional_analysis</title>
+<text>In [[mathematics]] and [[science]], dimensional analysis is a tool to understand the properties of physical quantities independent of the units used to measure them. Every physical quantity is some combination of [[mass]], [[length]], [[time]], [[electric charge]], and [[temperature]], (denoted M, L, T, Q, and Θ, respectively). For example, [[velocity]], which may be measured in [[meters per second]] (m/s), [[miles per hour]] (mi/h), or some other units, has dimension L/T.
+
+Dimensional analysis is routinely used to check the plausibility of [[derivation|derived]] equations and computations. It is also used to form reasonable hypotheses about complex physical situations that can be tested by experiment or by more developed theories of the phenomena, and to categorize types of physical quantities and units based on their relations to or dependence on other units, or their &quot;dimensions&quot;, or their lack thereof.
+
+The basic principle of dimensional analysis was known to [[Isaac Newton]] (1686) who referred to it as the &quot;Great Principle of Similitude&quot;. Important contributions were made by the 19th century French mathematician [[Joseph Fourier]], based on the idea that the physical laws like [[Newton&apos;s laws of motion#Newton&apos;s second law|]] should be independent of the units employed to measure the physical variables.  This led to the conclusion that meaningful laws must be homogeneous equations in their various units of measurement, a result which was eventually formalized in the [[Buckingham π theorem]]. This theorem describes how every physically meaningful equation involving n variables can be equivalently rewritten as an equation of  dimensionless parameters, where m is the number of fundamental dimensions used. Furthermore, and most importantly, it provides a method for computing these dimensionless parameters from the given variables.
+
+A dimensional equation can have the dimensions reduced or eliminated through [[nondimensionalization]], which begins with dimensional analysis, and involves scaling quantities by [[characteristic units]] of a system or [[natural units]] of nature. This gives insight into the fundamental properties of the system, as illustrated in the examples below.
+
+The dimensions of a [[physical quantity]] are associated with combinations of [[mass]], [[length]], [[time]], [[electric charge]], and [[temperature]], represented by symbols M, L, T, Q, and Θ, respectively, each raised to rational powers.
+
+Note that dimension is more abstract than scale [[units of measurement|unit]]: mass is a dimension, while [[kilograms]] are a scale unit (choice of standard) in the mass dimension.
+
+As examples, the dimension of the physical quantity [[speed]] is &quot;distance/time&quot; (L/T or LT −1), and the dimension of the physical quantity [[force (physics)|force]] is &quot;mass × [[acceleration]]&quot; or &quot;mass×(distance/time)/time&quot; (ML/T 2 or MLT −2).  In principle, other dimensions of physical quantity could be defined as &quot;fundamental&quot; (such as [[momentum]] or [[energy]] or [[electric current]]) in lieu of some of those shown above. Most physicists do not recognize temperature, Θ, as a fundamental dimension of physical quantity since it essentially expresses the energy per particle per degree of freedom, which can be expressed in terms of energy (or mass, length, and time).  Still others do not recognize electric charge, Q, as a separate fundamental dimension of physical quantity, since it has been expressed in terms of mass, length, and time in unit systems such as the electrostatic [[cgs]] system. There are also physicists that have cast doubt on the very existence of incompatible fundamental dimensions of physical quantity.
+
+The [[units of measurement|unit]]  of a physical quantity and its dimension are related, but not precisely identical concepts.  The units of a physical quantity are defined by convention and related to some standard; e.g., length may have units of metres, feet, inches, miles or micrometres;  but any length always has a dimension of L, independent of what units are arbitrarily chosen to measure it.  Two different units of the same physical quantity have [[conversion of units|conversion factors]] between them.  For example: 1 [[inch|in]] = 2.54 [[centimetre|cm]];  then (2.54 cm/in) is called a conversion factor (between two representations expressed in different units of a common quantity) and is itself dimensionless and equal to one.  There are no conversion factors between dimensional symbols.
+
+Dimensional symbols, such as L, form a [[Group (mathematics)|group]]:  There is an identity, L0 = 1; there is an inverse to L, which is 1/L or L−1, and L raised to any rational power p is a member of the group, having an inverse of L−p or 1/Lp.  The operation of the group is multiplication, with the usual rules for handling exponents (Ln × Lm = Ln+m).
+
+Indeed, dimensional symbols can be seen as a [[vector space]] over the rational numbers, with the coordinates of the vector being the powers of the exponents – expressing a dimensional symbol as M^iL^jT^k corresponds to the vector (i,j,k). A basis for a given space of dimensional symbols is called a set of fundamental quantities or [[fundamental dimensions]].
+
+When quantities (be they like-dimensioned or unlike-dimensioned) are multiplied or divided by each other, their dimensional symbols are likewise multiplied or divided; this corresponds to vector addition or subtraction (on the exponents). When dimensioned quantities are raised to a rational power, the same is done to the dimensional symbols attached to those quantities; this corresponds to scalar multiplication on the exponents.
+
+As in any vector space, one may choose different [[Basis (linear algebra)|bases]], which yield different physical interpretations.
+
+In [[mechanics]], the dimension of any physical quantity can be expressed in terms of the fundamental dimensions (or base dimensions) M, L and T – these form a 3-dimensional vector space. This is not the only possible choice, but it is the one most commonly used. For example, one might choose force, length and mass as the base dimensions (as some have done), with associated dimensions F, L, M; this corresponds to a different basis, and one may convert between these representations by a [[change of basis]]. The choice of the base set of dimensions is, thus, partly a convention, resulting in increased utility and familiarity. It is, however, important to note that the choice of the set of dimensions cannot be chosen arbitrarily – it is not just a convention – because the dimensions must form a basis: they must [[Linear span|span]] the space, and be [[linearly independent]].
+
+For example, F, L, M form a set of fundamental dimensions because they form an equivalent basis to M, L, T: the former can be expressed as [F=ML/T^2],L,M, while the latter can be expressed as M,L,[T=(ML/F)^{1/2}].
+
+On the other hand, using length, velocity and time (L, V, T) as base dimensions will not work well (they do not form a set of fundamental dimensions), for two reasons:
+There is no way to obtain mass — or anything derived from it, such as force — without introducing another base dimension (thus these do not span the space).
+Velocity, being derived from length and time (V=L/T), is redundant (the set is not linearly independent).
+
+Depending on the field of physics, it may be advantageous to choose one or another extended set of dimensional symbols. In electromagnetism, for example, it may be useful to use dimensions of M, L, T, and Q, where Q represents quantity of [[electric charge]].  In [[thermodynamics]], the base set of dimensions is often extended to include a dimension for temperature, Θ.  In chemistry  the number of [[Mole (unit)|mole]]s of substance (loosely, but not precisely, related to the number of molecules or atoms) is often involved and a dimension for this is used as well. The choice of the dimensions or even the number of dimensions to be used in different fields of physics is to some extent arbitrary, but consistency in use and ease of communications are very important. 
+
+The most basic consequence of dimensional analysis is:
+Only [[commensurability (philosophy of science)|commensurable]] quantities (quantities with the same dimensions) may be compared, equated, added, or subtracted.
+However,
+One may take ratios of incommensurable quantities (quantities with different dimensions), and multiply or divide them.
+
+For example, it makes no sense to ask if 1 hour is more or less than 1 kilometer, as these have different dimensions, nor to add 1 hour to 1 kilometer. On the other hand, if one travels 100 km in 2 hours, one may divide these and conclude that one&apos;s average velocity was 50 km/hour.
+
+In this way, dimensional analysis may be used to check the plausibility of physical equations: the two sides of any equation must be [[commensurability (philosophy of science)|commensurable]] or have the same dimensions, i.e., the equation must be dimensionally homogeneous.
+
+As a corollary of this requirement, it follows that in a physically meaningful expression, only quantities of the same dimension can be added or subtracted. For example, the mass of a rat and the mass of a flea may be added, but the mass of a flea  and the length of a rat cannot be meaningfully added.  Physical quantities having different dimensions cannot be compared to one another either. For example, &quot;3 m &gt; 1 g&quot; is not a meaningful expression.
+
+Only like-dimensioned quantities may be added, subtracted, compared, or equated. When unlike-dimensioned quantities appear opposite of the &quot;+&quot; or &quot;−&quot; or &quot;=&quot; sign, that physical equation is not plausible, which might prompt one to correct errors before proceeding to use it.
+
+[[Scalar (physics)|Scalar]] arguments to [[transcendental function]]s such as [[Exponential function|exponential]], [[Trigonometric function|trigonometric]] and [[logarithm]]ic functions, or to [[inhomogeneous polynomials]],
+must be [[dimensionless number|dimensionless quantities]].
+
+This requirement is clear when one observes the [[Taylor expansion]]s for these functions (a sum of various powers of the function argument). For example, the logarithm of 3 kg is undefined even though the logarithm of 3 is nearly 0.477. An attempt to compute ln 3 kg would produce, if one naively took ln 3 kg to mean the dimensionally meaningless &quot;ln (1 + 2 kg)&quot;,
+
+ 2\,\mathrm{kg} - \frac{4\,\mathrm{kg}^2}{2} + \cdots
+
+which is dimensionally incompatible – the sum has no meaningful dimension – requiring the argument of transcendental functions to be dimensionless.
+
+Another way to understand this problem is that the different coefficients scale differently under change of units – were one to reconsider this in grams as &quot;ln 3000 g&quot; instead of &quot;ln 3 kg&quot;, one could compute ln 3000, but in terms of the Taylor series, the degree 1 term would scale by 1000, the degree 2 term would scale by 10002, and so forth – the overall output would not scale as a particular dimension.
+
+Similarly, while one can evaluate [[monomials]] (xn) of dimensional quantities, one cannot evaluate polynomials of mixed degree on dimensional quantities: for x2 (3 \mathrm{m})^2 = 9\mathrm{m}^2  makes sense (as an area), while for x^2+x, (3 \mathrm{m})^2 + 3 \mathrm{m} = 9 \mathrm{m}^2 + 3 \mathrm{m} does not make sense.
+
+The value of a dimensional physical quantity Z is written as the product of a [[Units of measurement|unit]] [Z] within the dimension and a dimensionless numerical factor, n. 
+
+Z = n \times [Z] = n [Z]
+
+In a strict sense, when like-dimensioned quantities are added or subtracted or compared, these dimensioned quantities must be expressed in consistent units so that the numerical values of these quantities may be directly added or subtracted.  But, in concept, there is no problem adding quantities of the same dimension expressed in different units.  For example, 1 meter added to 1 foot is a length, but it would not be correct to add 1 to 1 to get the result.  A [[Conversion of units|conversion factor]], which is a ratio of like-dimensioned quantities and is equal to the dimensionless unity, is needed:
+
+ 1 \ \mbox{ft} = 0.3048 \ \mbox{m} \   is identical to  1 = \frac{0.3048 \ \mbox{m}}{1 \ \mbox{ft}}.\ 
+
+The factor  0.3048 \ \frac{\mbox{m}}{\mbox{ft}}  is identical to the dimensionless 1, so multiplying by this conversion factor changes nothing.  Then when adding two quantities of like dimension, but expressed in different units, the appropriate conversion factor, which is essentially the dimensionless 1, is used to convert the quantities to identical units so that their numerical values can be added or subtracted.
+
+ 
+\begin{align}
+1 \ \mbox{m} + 1 \ \mbox{ft} &amp; = 1 \ \mbox{m} + 1 \ \mbox{ft} \times 0.3048 \ \frac{\mbox{m}}{\mbox{ft}} \\
+&amp; = 1 \ \mbox{m} + 1 \ \mbox{ft} \!\!\!\! / \times 0.3048 \ \frac{\mbox{m}}{\mbox{ft} \!\!\!\! /} \\
+&amp; = 1 \ \mbox{m} +  0.3048 \ \mbox{m} \\
+&amp; =1.3048 \ \mbox{m}
+\end{align}
+
+Only in this manner is it meaningful to speak of adding like-dimensioned quantities of differing units.
+
+Consider position versus displacement (on a line, to avoid issues of higher dimension). These both have dimensions of length, but are not interchangeable:
+one may add two displacements, obtaining a new displacement,
+one may add a displacement to a position, obtaining a new position,
+one may subtract two positions, obtaining a displacement,
+but one may not add two positions.
+This illustrates the subtle distinction between affine quantities (ones modeled by an [[affine space]], such as position) and vector quantities (ones modeled by a [[vector space]], such as displacement).
+Vector quantities may be added to each other, yielding a new vector quantity, and a vector quantity may be added to a suitable affine quantity (a vector space [[group action|acts on]] an affine space), yielding a new affine quantity.
+Affine quantities cannot be added, but may be subtracted, yielding relative quantities which are vectors, and these relative differences may then be added to each other or to an affine quantity.
+
+Properly then, positions have dimension of affine length, while displacements have dimension of vector length. To assign a number to an affine unit, one must not only choose a unit of measurement, but also a [[point of reference]], while to assign a number to a vector unit only requires a unit of measurement.
+
+Thus some physical quantities are better modeled by affine quantities than by vector quantities, and the distinction is reflected in their dimensional analysis.
+
+Some discussions of dimensional analysis implicitly assume that all quantities are vectors (can be added, can be divided), or assume an implicit point of reference.
+
+Similar to the issue of a point of reference is the issue of orientation: a displacement in 2 or 3 dimensions is not just a length, but is a length together with a direction. (This issue does not arise in 1 dimension, or rather is equivalent to the distinction between positive and negative.) Thus, to compare or combine two dimensional quantities in a multi-dimensional space, one also needs an orientation: they need to be compared to a [[frame of reference]].
+
+This leads to the [[#Extensions|extensions]] discussed below, namely Huntley&apos;s directed dimensions and Siano&apos;s orientational analysis.
+
+Dimensional analysis is also used to derive relationships between the physical quantities that are involved in a particular phenomenon that one wishes to understand and characterize.  It was used for the first time (Pesic, 2005) in this way in 1872 by [[Lord Rayleigh]], who was trying to understand why the sky is blue.
+
+What is the period of [[Harmonic oscillator|oscillation]] T of a mass m attached to an ideal linear spring with spring constant k suspended in gravity of strength g?
+The four quantities have the following dimensions:  T  [T];  m  [M]; k [M/T^2]; and  g [L/T^2]. From these we can form only one dimensionless product of powers of our chosen variables, G_1 = T^2 k/m.  The dimensionless product of powers of variables is sometimes referred to as a dimensionless group of variables, but the group, G_1, referred to means &quot;collection&quot; rather than mathematical [[Group (mathematics)|group]].  They are often called [[dimensionless number]]s as well.
+
+Note that no other dimensionless product of powers involving g with k, m, T, and g alone can be formed, because only g involves L . Dimensional analysis can sometimes yield strong statements about the irrelevance of some quantities in a problem, or the need for additional parameters. If we have chosen enough variables to properly describe the problem, then from this argument we can conclude that the period of the mass on the spring is independent of g: it is the same on the earth or the moon. The equation demonstrating the existence of a product of powers for our problem can be written in an entirely equivalent way:  T = \kappa \sqrt{m/k}, for some dimensionless constant κ.
+
+When faced with a case where our analysis rejects a variable (g, here) that we feel sure really belongs in a physical description of the situation, we might also consider the possibility that the rejected variable is in fact relevant, and that some other relevant variable has been omitted, which might combine with the rejected variable to form a dimensionless quantity. That is, however, not the case here.
+
+When dimensional analysis yields a solution of problems where only one dimensionless product of powers is involved, as here, there are no unknown functions, and the solution is said to be &quot;complete.&quot;
+
+Consider the case of a vibrating wire of length ℓ (L) vibrating with an amplitude A (L).  The wire has a linear density ρ (M/L) and is under tension s (ML/T2), and we want to know the energy E (ML2/T2) in the wire.  Let π1 and π2 be two dimensionless products of powers of the variables chosen, given by
+\begin{align} \pi_1 &amp;= E/As \\ \pi_2 &amp;= \ell  / A. \end{align}
+The linear density of the wire is not involved. The two groups found can be combined into an equivalent form as an equation 
+
+F (E/As, \ell/A) = 0, \!
+
+where F is some unknown function, or, equivalently as
+
+E = A s f(\ell/A), \!
+
+where f is some other unknown function.  Here the unknown function implies that our solution is now incomplete, but dimensional analysis has given us something that may not have been obvious: the energy is proportional to the first power of the tension.  Barring further analytical analysis, we might proceed to experiments to discover the form for the unknown function f.  But our experiments are simpler than in the absence of dimensional analysis.  We&apos;d perform none to verify that the energy is proportional to the tension.  Or perhaps we might guess that the energy is proportional to ℓ, and so infer that .  The power of dimensional analysis as an aid to experiment and forming hypotheses becomes evident.
+
+The power of dimensional analysis really becomes apparent when it is applied to situations, unlike those given above, that are more complicated, the set of variables involved are not apparent, and the underlying equations hopelessly complex.  Consider, for example, a small pebble sitting on the bed of a river.  If the river flows fast enough, it will actually raise the pebble and cause it to flow along with the water.  At what critical velocity will this occur?  Sorting out the guessed variables is not so easy as before.  But dimensional analysis can be a powerful aid in understanding problems like this, and is usually the very first tool to be applied to complex problems where the underlying equations and constraints are poorly understood. In such cases, the answer may depend on a [[dimensionless number]] such as the [[Reynolds number]], which may be interpreted by dimensional analysis.
+
+Huntley (Huntley, 1967) has pointed out that it is sometimes productive to refine our concept of dimension. Two possible refinements are:
+
+The magnitude of the components of a vector are to be considered dimensionally distinct. For example, rather than an undifferentiated length unit L, we may have L_x represent length in the x direction, and so forth. This requirement stems ultimately from the requirement that each component of a physically meaningful equation (scalar, vector, or tensor) must be dimensionally consistent.
+
+Mass as a measure of quantity is to be considered dimensionally distinct from mass as a measure of inertia.
+
+As an example of the usefulness of the first refinement, suppose we wish to calculate the [[Trajectory#Range_and_height|distance a cannon ball travels]] when fired with a vertical velocity component V_y and a horizontal velocity component V_x, assuming it is fired on a flat surface. Assuming no use of directed lengths, the quantities of interest are then V_x, V_y, both dimensioned as L/T, R, the distance travelled, having dimension L, and g the downward acceleration of gravity, with dimension L/T^2
+
+With these four quantities, we may conclude that the equation for the range R may be written:
+
+R \propto V_x^a\,V_y^b\,g^c.\,
+
+Or dimensionally
+
+L = (L/T)^{a+b} (L/T^2)^c\,
+
+from which we may deduce that a+b+c=1 and a+b+2c=0, which leaves one exponent undetermined. This is to be expected since we have two fundamental quantities L and T and four parameters, with one equation.
+
+If, however, we use directed length dimensions, then V_x will be dimensioned as L_x/T, V_y as L_y/T, R as L_x and g as L_y/T^2. The dimensional equation becomes:
+
+L_x = (L_x/T)^a\,(L_y/T)^b (L_y/T^2)^c\,
+
+and we may solve completely as a=1, b=1 and c=-1. The increase in deductive power gained by the use of directed length dimensions is apparent.
+
+In a similar manner, it is sometimes found useful (e.g., in fluid mechanics and thermodynamics) to distinguish between mass as a measure of inertia (inertial mass), and mass as a measure of quantity (substantial mass). For example, consider the derivation of [[Poiseuille&apos;s Law]]. We wish to find the rate of mass flow of a viscous fluid through a circular pipe. Without drawing distinctions between inertial and substantial mass we may choose as the relevant variables
+
+math&gt;\dot{m} the mass flow rate with dimensions M/T
+math&gt;p_x the pressure gradient along the pipe with dimensions M/L^2T^2
+math&gt;\rho the density with dimensions M/L^3
+math&gt;\eta the dynamic fluid viscosity with dimensions M/LT
+math&gt;r the radius of the pipe with dimensions L
+
+There are three fundamental variables so the above five equations will yield two dimensionless variables which we may take to be \pi_1=\dot{m}/\eta r and \pi_2=p_x\rho r^5/\dot{m}^2 and we may express the dimensional equation as
+
+C=\pi_1\pi_2^a=\left(\frac{\dot{m}}{\eta r}\right)\left(\frac{p_x\rho r^5}{\dot{m}^2}\right)^a
+
+where C and a are undetermined constants. If we draw a distinction between inertial mass with dimensions M_i and substantial mass with dimensions M_s, then mass flow rate and density will use substantial mass as the mass parameter, while the pressure gradient and coefficient of viscosity will use inertial mass. We now have four fundamental parameters, and one dimensionless constant, so that the dimensional equation may be written:
+
+C=\frac{p_x\rho r^4}{\eta \dot{m}}
+
+where now only C is an undetermined constant (found to be equal to \pi/8 by methods outside of dimensional analysis). This equation may be solved for the mass flow rate to yield [[Poiseuille&apos;s law]].
+
+Huntley&apos;s extension has some serious drawbacks:
+It does not deal well with vector equations involving the [[cross product]],
+nor does it handle well the use of angles as physical variables.
+It also is often quite difficult to assign the L, Lx, Ly, Lz, symbols to the physical variables involved in the problem of interest.  He invokes a procedure that involves the &quot;symmetry&quot; of the physical problem.  This is often very difficult to apply reliably: It is unclear as to what parts of the problem that the notion of &quot;symmetry&quot; is being invoked.  Is it the symmetry of the physical body that forces are acting upon, or to the points, lines or areas at which forces are being applied?  What if more than one body is involved with different symmetries?  Consider the spherical bubble attached to a cylindrical tube, where one wants the flow rate of air as a function of the pressure difference in the two parts.  What are the Huntley extended dimensions of the viscosity of the air contained in the connected parts?  What are the extended dimensions of the pressure of the two parts?  Are they the same or different?  These difficulties are responsible for the limited application of Huntley&apos;s addition to real problems.
+
+Angles are, by convention, considered to be dimensionless variables, and so the use of angles as physical variables in dimensional analysis can give less meaningful results. As an example, consider the projectile problem mentioned above. Suppose that, instead of the x-  and y-components of the initial velocity, we had chosen the magnitude of the velocity v and the angle θ at which the projectile was fired. The angle is, by convention, considered to be dimensionless, and the magnitude of a vector has no directional quality, so that no dimensionless variable can be composed of the four variables g, v, R, and θ. Conventional analysis will correctly give the powers of g and v, but will give no information concerning the dimensionless angle θ.
+
+Siano (Siano, 1985-I, 1985-II) has suggested that the directed dimensions of Huntley be replaced by using orientational symbols 1x 1y 1z to denote vector directions, and an orientationless symbol 10. Thus, Huntley&apos;s 1x becomes L 1x with L specifying the dimension of length, and 1x specifying the orientation. Siano further shows that the orientational symbols have an algebra of their own.  Along with the requirement that 1i−1 = 1i, the following multiplication table for the orientation symbols results:
+
+\begin{matrix}
+   &amp;\mathbf{1_0}&amp;\mathbf{1_x}&amp;\mathbf{1_y}&amp;\mathbf{1_z}\\
+\mathbf{1_0}&amp;1_0&amp;1_x&amp;1_y&amp;1_z\\
+\mathbf{1_x}&amp;1_x&amp;1_0&amp;1_z&amp;1_y\\
+\mathbf{1_y}&amp;1_y&amp;1_z&amp;1_0&amp;1_x\\
+\mathbf{1_z}&amp;1_z&amp;1_y&amp;1_x&amp;1_0
+\end{matrix}
+
+Note that the orientational symbols form a group (the [[Klein four-group]] or &quot;Viergruppe&quot;). In this system, scalars always have the same orientation as the identity element, independent of the &quot;symmetry of the problem.&quot;  Physical quantities that are vectors have the orientation expected:  a force or a velocity in the x-direction has the orientation of 1z.  For angles, consider an angle θ that lies in the z-plane.  Form a right triangle in the z plane with θ being one of the acute angles.  The side of the right triangle adjacent to the angle then has an orientation 1x and the side opposite has an orientation 1y.  Then, since tan(θ) = 1y/1x = θ + ... we conclude that an angle in the xy plane must have an orientation 1y/1x = 1z, which is not unreasonable.  Analogous reasoning forces the conclusion that sin(θ) has orientation 1z while cos(θ) has orientation 10.  These are different, so one concludes (correctly), for example, that there are no solutions of physical equations that are of the form a sin(θ) + b cos(θ), where a and b are scalars.
+
+The assignment of orientational symbols to physical quantities and the requirement that physical equations be orientationally homogeneous can actually be used in a way that is similar to dimensional analysis to derive a little more information about acceptable solutions of physical problems.  In this approach one sets up the dimensional equation and solves it as far as one can.  If the lowest power of a physical variable is fractional, both sides of the solution is raised to a power such that all powers are integral.  This puts it into &quot;normal form&quot;.  The orientational equation is then solved to give a more restrictive condition on the unknown powers of the orientational symbols, arriving at a solution that is more complete than the one that dimensional analysis alone gives. Often the added information is that one of the powers of a certain variable is even or odd.
+
+As an example, for the projectile problem, using orientational symbols, θ, being in the xy-plane will thus have dimension 1z and the range of the projectile R will be of the form:
+
+R=g^a\,v^b\,\theta^c\text{ which means }L\,1_x\sim
+\left(\frac{L\,1_y}{T^2}\right)^a\left(\frac{L}{T}\right)^b\,1_z^c.\,
+
+Dimensional homogeneity will now correctly yield a = −1 and b = 2, and orientational homogeneity requires that c be an odd integer. In fact the required function of theta will be sin(θ)cos(θ) which is a series of odd powers of θ.
+
+It is seen that the Taylor series of sin(θ) and cos(θ) are orientationally homogeneous using the above multiplication table, while expressions like cos(θ) + sin(θ) and exp(θ) are not, and are (correctly) deemed unphysical.
+
+It should be clear that the multiplication rule used for the orientational symbols is not the same as that for the cross product of two vectors.  The cross product of two identical vectors is zero, while the product of two identical orientational symbols is the identity element.
+
+Percentages are dimensionless quantities, since they are ratios of two quantities with the same dimensions.
+
+Derivatives with respect to a quantity add the dimensions of the variable one is differentiating with respect to on the denominator. Thus:
+position (x) has units of L (Length);
+derivative of position with respect to time (dx/dt, [[velocity]]) has units of L/T – Length from position, Time from the derivative;
+the second derivative (d2x/dt2, [[acceleration]]) has units of L/T2.
+
+Beware that in some contexts, dimensional quantities are expressed as dimensionless quantities or percentages by omitting some dimensions. This may or may not be misleading. For example, [[Debt to GDP ratio]]s are generally expressed as percentages: total debt outstanding (dimension of Currency) divided by annual GDP (dimension of Currency) – but one may argue that in comparing a stock to a flow, annual GDP should have dimensions of Currency/Time (Dollars/Year, for instance), and thus Debt to GDP should have units of years.
+
+The dimensionless constants that arise in the results obtained, such as the C in the Poiseuille&apos;s Law problem and the \kappa in the spring problems discussed above come from a more detailed analysis of the underlying physics, and often arises from integrating some differential equation.  Dimensional analysis itself has little to say about these constants, but it is useful to know that they very often have a magnitude of order unity.  This observation can allow one to sometimes make &quot;back of the envelope&quot; calculations about the phenomenon of interest, and therefore be able to more efficiently design experiments to measure it, or to judge whether it is important, etc.
+
+Paradoxically, dimensional analysis can be a useful tool even if all the parameters in the underlying theory are dimensionless, e.g., lattice models such as the [[Ising model]] can be used to study phase transitions and critical phenomena. Such models can be formulated in a purely dimensionless way. As we approach the critical point closer and closer, the distance over which the variables in the lattice model are correlated (the so-called correlation length, \xi ) becomes larger and larger. Now, the correlation length is the relevant length scale related to critical phenomena, so one can, e.g., surmize on &quot;dimensional grounds&quot; that the non-analytical part of the free energy per lattice site should be \sim 1/\xi^{d} where d is the dimension of the lattice. 
+
+It has been argued by some physicists, e.g., Michael Duff, that the laws of physics are inherently dimensionless. The fact that we have assigned incompatible dimensions to Length, Time and Mass is, according to this point of view, just a matter of convention, borne out of the fact that before the advent of modern physics, there was no way to relate mass, length, and time to each other. The three independent dimensionful constants: [[Speed of light|c]], [[Planck constant|\hbar]], and [[Gravitational constant|G]], in the fundamental equations of physics must then be seen as mere conversion factors to convert Mass, Time and Length into each other.
+
+Just as in the case of critical properties of lattice models, one can recover the results of dimensional analysis in the appropriate scaling limit; e.g., dimensional analysis in mechanics can be derived by reinserting the constants \hbar, c, and G (but we can now consider them to be dimensionless) and demanding that a nonsingular relation between quantities exists in the limit c\rightarrow \infty,  \hbar\rightarrow 0 and G\rightarrow  0. In problems involving a gravitational field the latter limit should be taken such that the field stays finite.
+
+While dimensional analysis is most used in physics and chemistry, and in the mathematics thereof, but finds some applications outside.
+
+A simple application of dimensional analysis to mathematics is in computing the form of the [[N-sphere#Volume_of_the_n-ball|volume of an n-ball]] (the solid ball in n-dimensions), or the area of its surface, the [[n-sphere|n-sphere]]: being an n-dimensional figure, the volume scales as x^n, while the surface area, being (n-1)-dimensional, scales as x^{n-1}. Thus the volume of the n-ball in terms of the radius is C_nr^n, for some constant C_n. Determining the constant takes more involved mathematics, but the form can be deduced and checked by dimensional analysis alone.
+
+In finance, economics, and accounting, dimensional analysis is most commonly used in interpreting various [[financial ratios]], economics ratios, and accounting ratios.
+
+For example, the [[P/E ratio]] has dimensions of time (units of years), and can be interpreted as &quot;years of earnings to earn the price paid&quot;.
+In economics, [[debt-to-GDP ratio]] also has units of years (debt has units of currency, GDP has units of currency/year).
+More surprisingly, [[bond duration]] also has units of years, which can be shown by dimensional analysis, but takes some financial intuition to understand.
+Velocity of money]] has units of 1/Years (GDP/Money supply has units of Currency/Year over Currency): how often a unit of currency circulates per year.
+
+</text>
+</document>

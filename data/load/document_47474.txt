@@ -1,0 +1,17 @@
+<document>
+<title>Avery_Township,_Michigan</title>
+<text>
+Avery Township is a [[civil township]] of [[Montmorency County, Michigan|Montmorency County]] in the [[U.S. state]] of [[Michigan]].  As of the [[United States Census, 2000|2000 census]], the township population was 717.
+
+According to the [[United States Census Bureau]], the township has a total area of 35.3 square miles (91.4 km²), of which, 35.0 square miles (90.7 km²) of it is land and 0.3 square miles (0.7 km²) of it (0.74%) is water.
+
+As of the [[census]] of 2000, there were 717 people, 309 households, and 218 families residing in the township.  The [[population density]] was 20.5 per square mile (7.9/km²).  There were 646 housing units at an average density of 18.4/sq mi (7.1/km²).  The racial makeup of the township was 97.07% [[White (U.S. Census)|White]], 1.53% [[African American (U.S. Census)|African American]], 0.84% [[Native American (U.S. Census)|Native American]], and 0.56% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.42% of the population.
+
+There were 309 households out of which 22.0% had children under the age of 18 living with them, 59.5% were [[Marriage|married couples]] living together, 7.1% had a female householder with no husband present, and 29.4% were non-families. 23.9% of all households were made up of individuals and 14.6% had someone living alone who was 65 years of age or older.  The average household size was 2.32 and the average family size was 2.73.
+
+In the township the population was spread out with 20.6% under the age of 18, 4.5% from 18 to 24, 20.9% from 25 to 44, 33.2% from 45 to 64, and 20.8% who were 65 years of age or older.  The median age was 48 years. For every 100 females there were 97.0 males.  For every 100 females age 18 and over, there were 93.5 males.
+
+The median income for a household in the township was $27,723, and the median income for a family was $28,261. Males had a median income of $24,464 versus $15,833 for females. The [[per capita income]] for the township was $14,677.  About 11.0% of families and 17.4% of the population were below the [[poverty line]], including 33.1% of those under age 18 and 10.9% of those age 65 or over.
+
+</text>
+</document>

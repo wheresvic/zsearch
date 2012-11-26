@@ -1,0 +1,29 @@
+<document>
+<title>Ballad</title>
+<text>
+A ballad is a form of verse, often a [[narrative]] and set to [[music]]. Ballads were particularly characteristic of [[United Kingdom|British]] and [[Ireland|Irish]] popular poetry and song from the later [[medieval]] period until the [[19th century]] and used extensively across [[Europe]] and later [[North America]], [[Australia]] and [[North Africa]]. Many ballads were written and sold as single sheet [[Broadside (music)|broadsides]]. The form was often used by [[poet]]s and [[composer]]s from the [[18th century]] onwards to produce lyrical ballads. In the later [[19th century]] it took on the meaning of a slow form of popular love song and the term is now often used as synonymous with any love song.[[File:The-Twa-Corbies.jpg|right|thumb|Illustration by [[Arthur Rackham]] of the ballad [[The Twa Corbies]]]]  
+ 
+
+The ballad probably derives its name from medieval [[French language|French]] dance songs or ‘ballares’ (from which we also get ballet), as did the alternative rival form that became the French [[Ballade]]. In theme and function they may originate from [[Scandinavia|Scandinavian]] and [[Germanic peoples|Germanic]] traditions of [[Epic poetry|epic]] storytelling that can be seen in poems such as [[Beowulf]]. The earliest example we have of a recognisable ballad in form in England is ‘[[Judas (ballad)|Judas]]’ in a [[thirteenth-century]] [[manuscript]].
+
+Most, but not all northern and west European ballads are written in [[ballad stanza]]s or [[quatrains]] (four line [[stanzas]]) of alternating lines of [[iambic]] (an unstressed followed by a stressed syllable) [[tetrameter]] (eight syllables) and iambic [[trimeter]] (six syllables), known as [[Common metre#Ballad metre|ballad meter]]. Usually, only the second and fourth line of a quatrain are rhymed (in the scheme a, b, c, b), which has been taken to suggest that, originally, ballads consisted of couplets (two lines) of rhymed verse, each of fourteen syllables. As can be seen in this stanza from ‘[[Lord Thomas and Fair Annet]]’,
+
+The horse| fair Ann|et rode| upon|
+He amb|led like| the wind|,
+With sil|ver he| was shod| before,
+With burn|ing gold| behind|.
+
+[[File:012-O-Waken,-Waken,-Burd-Isbel-q75-404x500.jpg|right|thumb|Illustration by [[Arthur Rackham]] to [[Young Bekie]].]] European Ballads have been generally been classified into three major groups: traditional, broadside and literary. In America a distinction is drawn between ballads that are versions of European, particularly British and Irish songs, and &apos;native American ballads&apos;, developed without reference to earlier songs. A further development was the evolution of the blues ballad, which mixed the genre with Afro-American music. For the late nineteenth century the music publishing industry found a market for what are often termed sentimental ballads, and these are the origin of the modern use of the term ballad to mean a slow love song.
+
+The traditional, classical or popular (meaning of the people) ballad has been seen as originating with the wandering [[minstrels]] of late medieval Europe.
+
+Early collections of ballads were made by [[Samuel Pepys]] (1633–1703) and in the [[Roxburghe Ballads]] collected by [[Robert Harley, 1st Earl of Oxford and Earl Mortimer|Robert Harley]], 1st Earl of Oxford and Mortimer (1661-1724). Examples include ‘[[The Streets of Laredo]]’, which was found in Britain and Ireland as ‘The Unfortunate Rake’. However, a further 400 have been identified as originating in colonial north America, including among the best known, ‘[[The Ballad of Davy Crockett]]&apos; and &apos;[[Jesse James in music|Jesse James]]&apos;. In 1976, the power ballad broke the top 40: &quot;earlier songs like ([[Led Zeppelin]]&apos;s) [[Stairway To Heaven]], ([[Aerosmith]]&apos;s) [[Dream On (Aerosmith song) | Dream On]], and ([[Lynyrd Skynyrd]]&apos;s) [[Free Bird]] had a new lease on life&quot;. He cites [[Mötley Crüe]]&apos;s &quot;[[Home Sweet Home (Mötley Crüe song)|Home Sweet Home]]&quot; as the power ballad that popularized the style in the 1980s The song aired frequently on [[MTV]] in 1985 becoming the most requested video for four months straight and the most requested video on the station in its history up to that time. Other examples include [[Foreigner (band)|Foreigner]]&apos;s &quot;[[I Want to Know What Love Is]]&quot; (1984) and [[Heart (band)|Heart’s]] &quot;What About Love&quot; (1985).
+
+Middleton, Richard.  &quot;Popular Music (I)&quot;.  ed. L. Macy (subscription required). Accessed 2007-04-06.
+Randel, Don (1986). The New Harvard Dictionary of Music.  Cambridge: Harvard University Press. ISBN 0-674-61525-5.
+Temperley, Nicholas. &quot;Ballad (II, 2)&quot;.  ed. L. Macy (subscription required). Accessed 2007-04-06.
+Witmer, Robert. &quot;Ballad (jazz)&quot;.  ed. L. Macy (subscription required). Accessed 2007-04-06.
+Marcello Sorce Keller, &quot;Sul castel di mirabel: Life of a Ballad in Oral Tradition and Choral Practice&quot;, Ethnomusicology, XXX(1986), no. 3, 449- 469.
+
+</text>
+</document>

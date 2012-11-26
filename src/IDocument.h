@@ -22,8 +22,8 @@ class IDocument
 		
 		virtual void getEntry(const string& key, string& value) = 0;
 		
-		virtual void write(ostream & out) = 0;
-
+		virtual void write(ostream& out) = 0;
+		
 		virtual ~IDocument() { }
 };
 

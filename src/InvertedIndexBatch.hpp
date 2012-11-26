@@ -8,13 +8,15 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "../varint/Set.h"
-#include "../varint/CompressedSet.h"
+#include "varint/Set.h"
+#include "varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
-#include "varint/SetFactory.h"
 #include <vector>
 #include <algorithm>
+
+#include "varint/ISetFactory.h"
+
 
 using google::dense_hash_map;
 
@@ -30,8 +32,10 @@ class InvertedIndexBatch : public IInvertedIndex
 private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
+
 	vector<std::pair<unsigned int,unsigned int>> postings;
-	shared_ptr<SetFactory> setFactory;
+	std::shared_ptr<ISetFactory> setFactory;
+	
 	int maxbatchsize;
 	int batchsize;
 
@@ -55,16 +59,15 @@ private:
 	}
 
 public:
-	
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store,shared_ptr<SetFactory> setFactory)  :
-	 store(store), 
-	 setFactory(setFactory)
+
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory)
 	{
 		maxbatchsize = 500000;
 		batchsize = 0;
 		store->Open();
 
 	}
+	
 	~InvertedIndexBatch()
 	{
 
@@ -138,6 +141,7 @@ public:
 	//	store->Compact();
 		return 1;
 	}
+	
 };
 
 #endif

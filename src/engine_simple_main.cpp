@@ -18,6 +18,8 @@
 #include "Word.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
+#include "varint/SetFactory.h"
+#include "varint/BasicSetFactory.h"
 
 using namespace std;
 
@@ -35,12 +37,12 @@ int main()
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
-	shared_ptr<SetFactory> setFactory = make_shared<SetFactory>();
+	shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 	
-	Engine engine(tokenizer, documentStore, invertedIndexStore,setFactory);
+	Engine engine(tokenizer, documentStore, invertedIndexStore, setFactory);
 
 	cout << "Made engine!" << endl;
 	
@@ -75,7 +77,8 @@ int main()
 	string query = "some  more text";
 	cout << "searching for: " << query << endl;
 
-	auto docSet = engine.search(query);
+	auto docIdSet = engine.search(query);
+	auto docSet = engine.getDocs(docIdSet);
 
 	for (auto document : docSet)
 	{
@@ -86,11 +89,12 @@ int main()
 
 	cout << endl;
 
-	query = "bandes";
+	query = "série";
 	cout << "searching for: " << query << endl;
 
-	docSet = engine.search(query);
-
+	docIdSet = engine.search(query);
+	docSet = engine.getDocs(docIdSet);
+	
 	for (auto document : docSet)
 	{
 		string title;

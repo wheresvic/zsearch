@@ -1,0 +1,17 @@
+<document>
+<title>Newkirk_Township,_Michigan</title>
+<text>
+Newkirk Township is a [[civil township]] of [[Lake County, Michigan|Lake County]] in the [[U.S. state]] of [[Michigan]]. As of the [[United States Census, 2000|2000 census]], the population was 719.
+
+According to the [[United States Census Bureau]], the township has a total area of 72.8 square miles (188.6 km²), of which, 72.8 square miles (188.4 km²) of it is land and 0.1 square miles (0.2 km²) of it (0.11%) is water.
+
+As of the [[census]] of 2000, there were 719 people, 302 households, and 199 families residing in the township.  The [[population density]] was 9.9 per square mile (3.8/km²).  There were 767 housing units at an average density of 10.5/sq mi (4.1/km²).  The racial makeup of the township was 93.74% [[White (U.S. Census)|White]], 0.14% [[African American (U.S. Census)|African American]], 2.64% [[Native American (U.S. Census)|Native American]], 0.14% [[Asian (U.S. Census)|Asian]], 0.42% from [[Race (United States Census)|other races]], and 2.92% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 2.09% of the population.
+
+There were 302 households out of which 25.8% had children under the age of 18 living with them, 53.0% were [[Marriage|married couples]] living together, 9.6% had a female householder with no husband present, and 34.1% were non-families. 30.1% of all households were made up of individuals and 14.2% had someone living alone who was 65 years of age or older.  The average household size was 2.38 and the average family size was 2.90.
+
+In the township the population was spread out with 24.8% under the age of 18, 6.0% from 18 to 24, 24.1% from 25 to 44, 24.9% from 45 to 64, and 20.3% who were 65 years of age or older.  The median age was 43 years. For every 100 females there were 99.2 males.  For every 100 females age 18 and over, there were 105.7 males.
+
+The median income for a household in the township was $23,636, and the median income for a family was $26,932. Males had a median income of $25,893 versus $19,464 for females. The [[per capita income]] for the township was $11,432.  Below the [[poverty line]] were 25.1% of people, 19.1% of families, 37.2% of those under 18 and 14.1% of those over 64.
+
+</text>
+</document>

@@ -1,0 +1,11 @@
+<document>
+<title>Timeline_of_programming_languages</title>
+<text>
+This is a [[timeline]] of historically important [[programming language]]s.
+
+Legend
+ ( Entry ) means a non-universal programming language
+ * means a unique language (no direct predecessor)
+
+</text>
+</document>

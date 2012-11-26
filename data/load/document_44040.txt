@@ -1,0 +1,23 @@
+<document>
+<title>Countryside,_Kansas</title>
+<text>
+Countryside was a city in [[Johnson County, Kansas]], USA. As of the [[United States 2000 Census|2000 census]], the city population was 295.  
+
+In a special election on December 3, 2002, residents voted to consolidate with the adjacent city of [[Mission, Kansas]]. Consolidation became effective on January 15, 2003. 
+
+The community was established as the Countryside Homes Association in 1937 and incorporated as a city in 1951. The Countryside Homes Association continues to serve the community.
+
+Countryside is located at  (39.015985, -94.655297).
+
+According to the [[United States Census Bureau]], the city had a total area of 0.3 km² (0.1 mi²), all land.
+
+As of the [[census]] of 2000, there were 295 people, 133 households, and 90 families residing in the city. The [[population density]] was 949.2/km² (2,449.9/mi²). There were 133 housing units at an average density of 421.5/km² (1,087.9/mi²). The racial makeup of the city was 99.32% [[White (U.S. Census)|White]], 0.34% [[Native American (U.S. Census)|Native American]], and 0.34% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 1.02% of the population. 32.5% were of [[german people|German]], 19.2% [[english people|English]], 13.6% [[irish people|Irish]] and 5.3% [[united states|American]] ancestry according to [[Census 2000]].
+
+There were 133 households out of which 27.1% had children under the age of 18 living with them, 60.5% were [[Marriage|married couples]] living together, 7.0% had a female householder with no husband present, and 30.2% were non-families. 26.4% of all households were made up of individuals and 7.0% had someone living alone who was 65 years of age or older. The average household size was 2.29 and the average family size was 2.77.
+
+In the city the population was spread out with 21.4% under the age of 18, 2.7% from 18 to 24, 34.6% from 25 to 44, 26.8% from 45 to 64, and 14.6% who were 65 years of age or older. The median age was 41 years. For every 100 females there were 86.7 males. For every 100 females age 18 and over, there were 90.2 males.
+
+The median income for a household in the city was $73,958, and the median income for a family was $88,029. Males had a median income of $49,063 versus $52,813 for females. The [[per capita income]] for the city was $37,129. About 2.7% of families and 1.0% of the population were below the [[poverty line]], including 1.1% of those under the age of eighteen and none of those sixty five or over.
+
+</text>
+</document>

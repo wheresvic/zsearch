@@ -1,0 +1,21 @@
+<document>
+<title>Velda_City,_Missouri</title>
+<text>
+Velda City is a city in [[St. Louis County, Missouri|St. Louis County]], [[Missouri]], [[United States]]. The population was 1,616 at the 2000 census.
+
+Velda City is located at  (38.694051, -90.294163).
+
+According to the [[United States Census Bureau]], the city has a total area of 0.2 square miles (0.4 km²), all of it land.
+
+Velda City is the most densely populated incorporated area in [[St. Louis County, Missouri|St. Louis County]] with 9,872.8 people per square mile.
+
+As of the [[census]] of 2000, there were 1,616 people, 610 households, and 428 families residing in the city. The [[population density]] was 9,872.8 people per square mile (3,899.6/km²). There were 670 housing units at an average density of 4,093.3/sq mi (1,616.8/km²). The racial makeup of the city was 3.09% [[White (U.S. Census)|White]], 96.04% [[African American (U.S. Census)|African American]], and 0.87% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 0.87% of the population.
+
+There were 610 households out of which 28.4% had children under the age of 18 living with them, 29.5% were [[Marriage|married couples]] living together, 35.9% had a female householder with no husband present, and 29.7% were non-families. 27.5% of all households were made up of individuals and 9.0% had someone living alone who was 65 years of age or older. The average household size was 2.65 and the average family size was 3.20.
+
+In the city the population was spread out with 27.0% under the age of 18, 9.4% from 18 to 24, 26.5% from 25 to 44, 24.6% from 45 to 64, and 12.5% who were 65 years of age or older. The median age was 36 years. For every 100 females there were 76.8 males. For every 100 females age 18 and over, there were 68.7 males.
+
+The median income for a household in the city was $30,000, and the median income for a family was $31,652. Males had a median income of $27,768 versus $26,083 for females. The [[per capita income]] for the city was $15,009. About 15.9% of families and 17.5% of the population were below the [[poverty line]], including 19.8% of those under age 18 and 23.3% of those age 65 or over.
+
+</text>
+</document>

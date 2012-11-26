@@ -1,0 +1,20 @@
+<document>
+<title>Cypress_Quarters,_Florida</title>
+<text>
+
+Cypress Quarters is a [[census-designated place]] (CDP) in [[Okeechobee County, Florida|Okeechobee County]], [[Florida]], [[United States]].  The population was 1,150 at the 2000 census.
+
+Cypress Quarters is located at .
+
+According to the [[United States Census Bureau]], the CDP has a total area of 2.7 square miles (7.0 km²), all of it land.
+
+As of the [[census]] of 2000, there were 1,150 people, 420 households, and 291 families residing in the CDP.  The [[population density]] was 425.0 people per square mile (163.8/km²).  There were 469 housing units at an average density of 173.3/sq mi (66.8/km²).  The racial makeup of the CDP was 29.22% [[White (U.S. Census)|White]], 65.83% [[African American (U.S. Census)|African American]], 0.61% [[Native American (U.S. Census)|Native American]], 0.43% [[Asian (U.S. Census)|Asian]], 3.04% from [[Race (United States Census)|other races]], and 0.87% from two or more races. [[Hispanic (U.S. Census)|Hispanic]] or [[Latino (U.S. Census)|Latino]] of any race were 5.48% of the population.
+
+There were 420 households out of which 29.3% had children under the age of 18 living with them, 40.2% were [[Marriage|married couples]] living together, 24.5% had a female householder with no husband present, and 30.7% were non-families. 25.5% of all households were made up of individuals and 9.5% had someone living alone who was 65 years of age or older.  The average household size was 2.72 and the average family size was 3.26.
+
+In the CDP the population was spread out with 30.7% under the age of 18, 9.6% from 18 to 24, 22.6% from 25 to 44, 24.1% from 45 to 64, and 13.0% who were 65 years of age or older.  The median age was 33 years. For every 100 females there were 94.3 males.  For every 100 females age 18 and over, there were 89.3 males.
+
+The median income for a household in the CDP was $29,565, and the median income for a family was $38,125. Males had a median income of $31,103 versus $17,411 for females. The [[per capita income]] for the CDP was $13,046.  About 25.4% of families and 30.5% of the population were below the [[poverty line]], including 32.1% of those under age 18 and 16.7% of those age 65 or over.
+
+</text>
+</document>

@@ -32,7 +32,7 @@ struct XmlTest : tpunit::TestFixture
 
 		try
 		{
-			fileStr = readFile("document01.xml");
+			fileStr = readFile("../data/document01.xml");
 		}
 		catch(const string& e)
 		{
@@ -44,7 +44,7 @@ struct XmlTest : tpunit::TestFixture
 		copy(fileStr.begin(), fileStr.end(), back_inserter(xmlVec));
 		xmlVec.push_back('\n');
 
-		rapidxml::xml_document<> doc;					// character type defaults to char
+		rapidxml::xml_document<> doc;																// character type defaults to char
 		doc.parse<rapidxml::parse_full>(&xmlVec[0]);	// 0 means default parse flags
 
 		string root(doc.first_node()->name());

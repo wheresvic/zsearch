@@ -30,7 +30,7 @@ endif
 clean :
 	rm -f $(BUILD_DIR_TEST)/*
 
-all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test
+all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test statistics_test
 
 document_test : document_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
@@ -49,3 +49,7 @@ compressed_set_test : CompressedSetTests.cpp $(OBJECTS)
 
 basic_set_test : BasicSetTest.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
+
+statistics_test : statistics_test.cpp $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
+	

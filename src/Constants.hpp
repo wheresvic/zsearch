@@ -14,6 +14,7 @@ namespace zsearch
 
 	const std::string POST_DATA_KEY = "data";
 	const std::string GET_QUERY_KEY = "q";
+	const std::string DOC_ID_KEY = "id";
 
 	const std::string DOCUMENT_ROOT = "document";
 	const std::string DOCUMENT_TITLE = "title";
