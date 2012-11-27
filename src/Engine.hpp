@@ -226,7 +226,7 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexImpl invertedIndex;
+		InvertedIndexBatch invertedIndex;
 		//InvertedIndexImpl invertedIndex;
 
 		// which type of set to use

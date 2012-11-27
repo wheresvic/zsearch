@@ -78,7 +78,7 @@ public:
 	}
 	
 
-	int get(unsigned int wordId, shared_ptr<Set>& inset)
+	int get(unsigned int wordId, shared_ptr<Set>& inset) const
 	{		
 		string bitmap;
 		if(store->Get(wordId,bitmap).ok())
