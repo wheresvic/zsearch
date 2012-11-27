@@ -227,6 +227,7 @@ class Engine
 
 		// inverted index that maps words(wordId) to documents that contain it
 		InvertedIndexImpl invertedIndex;
+		//InvertedIndexImpl invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;
