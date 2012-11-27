@@ -75,9 +75,6 @@ class Engine
 				}
 			} // end looping through entries
 			for (auto value : documentWordId){
-			//  if (value == 197){
-			//	std::cout << "adding doc: "<< docId << std::endl;	
-			//  }	
 			  invertedIndex.add(value,docId);	
 			} 
 			return docId++;

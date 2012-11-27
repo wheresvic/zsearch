@@ -39,8 +39,8 @@ private:
 	int maxbatchsize;
 	int batchsize;
 
-	int storePut(unsigned int wordId, const shared_ptr<Set>& set)
-	{
+	int storePut(unsigned int wordId, const shared_ptr<Set> set)
+	{  
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
@@ -49,8 +49,8 @@ private:
 		{
 			return 1;
 		}
-        
 		return 0;
+		
 	}
 	
 	int put(unsigned int wordId, const shared_ptr<Set>& set)
@@ -105,9 +105,8 @@ public:
 
 	int flushBatch()
 	{
-		std::stable_sort(postings.begin(),postings.end(),postingComp());
-		
 		if (postings.size() > 0){
+			std::stable_sort(postings.begin(),postings.end(),postingComp());
 			unsigned int wordid = postings[0].second;
 			shared_ptr<Set> docSet = getOrCreate(wordid);
 			for (auto posting : postings){
@@ -115,9 +114,6 @@ public:
 					storePut(wordid, docSet);
 					docSet = getOrCreate(posting.second);
 					wordid = posting.second;
-				}
-				if (wordid == 197){
-					std::cout << "\f adding doc: "<< posting.first << std::endl;	
 				}
 				docSet->addDoc(posting.first);
 			}

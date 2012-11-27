@@ -64,10 +64,10 @@
     }
 
     void CompressedSet::read(istream & in)
-	{
+	{ 
+		
         //read totalDocIdNum
         in.read((char*)&totalDocIdNum,4);
-		
 		if (totalDocIdNum>0)
 		{
 			in.read((char*)&sizeOfCurrentNoCompBlock,4);
@@ -88,7 +88,7 @@
 		       	//write compressed blocks
 		       	sequenceOfCompBlocks.read(in);
 			}
-		}
+		} 
     }
 
     shared_ptr<Set::Iterator>  CompressedSet::iterator() const {
