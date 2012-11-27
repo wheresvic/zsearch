@@ -18,9 +18,9 @@ class InvertedIndexImpl : public IInvertedIndex
 {
 	private:
 
-		std::shared_ptr<KVStore::IKVStore> store;		
+		std::shared_ptr<KVStore::IKVStore> store;
 	    shared_ptr<ISetFactory> setFactory;
-	
+
 	public:
 
 		InvertedIndexImpl(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory)
@@ -28,11 +28,12 @@ class InvertedIndexImpl : public IInvertedIndex
 			store->Open();
 		}
 
-		int get(unsigned int wordId, shared_ptr<Set>& outset)
+		int get(unsigned int wordId, shared_ptr<Set>& outset) const
 		{
 			string bitmap;
-			if(store->Get(wordId,bitmap).ok())
-			{ 
+
+			if(store->Get(wordId, bitmap).ok())
+			{
 				outset = setFactory->createSparseSet();
 				stringstream bitmapStream(bitmap);
 				outset->read(bitmapStream);
@@ -83,12 +84,12 @@ class InvertedIndexImpl : public IInvertedIndex
 
 			return 1;
 		}
-		
+
 		int flushBatch()
 		{
 			return 1;
 		}
-	
+
 };
 
 #endif

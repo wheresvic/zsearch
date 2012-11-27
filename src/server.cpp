@@ -280,46 +280,50 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 
 		if (result == 0)
 		{
+			std::string query;
+			unsigned int start = 0;
+			unsigned int offset = 0;
+
 			for (param = params.tqh_first; param; param = param->next.tqe_next)
 			{
 				std::string key(param->key);
 				std::string value(param->value);
 
-				printf("%s\n%s\n", key.c_str(), value.c_str());
+				std::cout << key << " " << value << std::endl;
 
-				if (key.compare(zsearch::GET_QUERY_KEY) == 0)
+				if (key.compare(zsearch::GET_SEARCH_QUERY_KEY) == 0)
 				{
-					std::cout << "searching for " << value << std::endl;
-
-					auto docIdSet = engine->search(value);
-
-					evbuffer_add_printf(evb, "%u ", docIdSet.size());
-
-					if (docIdSet.size())
-					{
-						for (auto docId : docIdSet)
-						{
-							evbuffer_add_printf(evb, "%u ", docId);
-						}
-
-						/*
-						auto docSet = engine->getDocs(docIdSet);
-
-						for (auto document : docSet)
-						{
-							std::string title;
-							document->getEntry("title", title);
-							std::cout << title << " ";
-							evbuffer_add_printf(evb, title.c_str());
-							evbuffer_add_printf(evb, "\n");
-						}
-						*/
-					}
-
-					// evbuffer_add_printf(evb, "\n");
-
-					break;
+					query = value;
 				}
+			}
+
+			std::cout << "searching for " << query << std::endl;
+
+			auto docIdSet = engine->search(query, start, offset);
+
+			evbuffer_add_printf(evb, "%u ", docIdSet.size());
+
+			if (docIdSet.size())
+			{
+				for (auto docId : docIdSet)
+				{
+					evbuffer_add_printf(evb, "%u ", docId);
+				}
+
+				/*
+				auto docSet = engine->getDocs(docIdSet);
+
+				for (auto document : docSet)
+				{
+					std::string title;
+					document->getEntry("title", title);
+					std::cout << title << " ";
+					evbuffer_add_printf(evb, title.c_str());
+					evbuffer_add_printf(evb, "\n");
+				}
+				*/
+
+				// evbuffer_add_printf(evb, "\n");
 			}
 
 			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
@@ -426,10 +430,10 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 
 		int result = evhttp_parse_query_str(postData.c_str(), &params);
 
-		std::string postDataDecoded;
-
 		// working code to return the parameters as plain text ...
 		/*
+		std::string postDataDecoded;
+
 		if (result == 0)
 		{
 			for (param = params.tqh_first; param; param = param->next.tqe_next)

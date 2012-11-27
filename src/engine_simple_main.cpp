@@ -30,6 +30,31 @@ string convertInt(int number)
    return ss.str();
 }
 
+void search(const string& query, const Engine& engine, unsigned int start, unsigned int offset)
+{
+	cout << "searching for: " << query << " with start = " << start << ", offset = " << offset << endl;
+
+	auto docIdSet = engine.search(query, start, offset);
+
+	/*
+	auto docSet = engine.getDocs(docIdSet);
+
+	for (auto document : docSet)
+	{
+		string title;
+		document->getEntry("title", title);
+		cout << title << " ";
+	}
+	*/
+
+	for (auto docId : docIdSet)
+	{
+		cout << docId << " ";
+	}
+
+	cout << endl;
+}
+
 int main()
 {
 	string input;
@@ -41,11 +66,11 @@ int main()
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
-	
+
 	Engine engine(tokenizer, documentStore, invertedIndexStore, setFactory);
 
 	cout << "Made engine!" << endl;
-	
+
 	// test input
 	while (getline(cin, input))
 	{
@@ -75,34 +100,18 @@ int main()
 	// test that searching for some more text returns only 1 document
 
 	string query = "some  more text";
-	cout << "searching for: " << query << endl;
-
-	auto docIdSet = engine.search(query);
-	auto docSet = engine.getDocs(docIdSet);
-
-	for (auto document : docSet)
-	{
-		string title;
-		document->getEntry("title", title);
-		cout << title << " ";
-	}
-
-	cout << endl;
+	search(query, engine, 0, 0);
 
 	query = "série";
-	cout << "searching for: " << query << endl;
+	search(query, engine, 0, 0);
 
-	docIdSet = engine.search(query);
-	docSet = engine.getDocs(docIdSet);
-	
-	for (auto document : docSet)
-	{
-		string title;
-		document->getEntry("title", title);
-		cout << title << " ";
-	}
-
-	cout << endl;
+	query = "de";
+	search(query, engine, 0, 0);
+	search(query, engine, 0, 1);
+	search(query, engine, 1, 1);
+	search(query, engine, 5, 5);
+	search(query, engine, 4, 7);
+	search(query, engine, 2, 0);
 
 	return 0;
 }
