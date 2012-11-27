@@ -130,7 +130,7 @@ public:
 		postings.push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
 		batchsize +=1;
 		if(batchsize > maxbatchsize){
-			flushBatch();
+	//		flushBatch();
 		}
 		return 1;
 	}
