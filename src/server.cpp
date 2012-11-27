@@ -301,8 +301,6 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 
 			auto docIdSet = engine->search(query, start, offset);
 
-			evbuffer_add_printf(evb, "%u ", docIdSet.size());
-
 			if (docIdSet.size())
 			{
 				for (auto docId : docIdSet)
@@ -423,7 +421,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			}
 		}
 
-		std::cout << "Post data: " << std::endl << postData << std::endl;
+	//	std::cout << "Post data: " << std::endl << postData << std::endl;
 
 		// do not remove this
 		struct evkeyvalq params;	// create storage for your key->value pairs
@@ -473,12 +471,13 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			// check that the first key is data
 			if (key.compare(zsearch::POST_DATA_KEY) == 0)
 			{
-				printf("%s\n%s\n", key.c_str(), value.c_str());
+//				printf("%s\n%s\n", key.c_str(), value.c_str());
 
 				try
 				{
 					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
 					unsigned int docId = engine->addDocument(document);
+					engine->flushBatch();
 					std::cout << "Added document: " << docId << std::endl;
 					evbuffer_add_printf(evb, "%d", docId);
 				}
@@ -713,7 +712,7 @@ int main(int argc, char **argv)
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
 
-    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
+    std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");

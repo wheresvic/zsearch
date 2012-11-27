@@ -125,6 +125,7 @@ class Engine
 
 					if(wordIndex.Get(field,token,wordId))
 					{
+						std::cout << "field: "<< field <<" token: " << "wordid: "<< wordId << std::endl;
 						shared_ptr<Set> docSet;
 						invertedIndex.get(wordId,docSet);
 						unionSet.push_back(docSet);
