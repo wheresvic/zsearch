@@ -116,6 +116,9 @@ public:
 					docSet = getOrCreate(posting.second);
 					wordid = posting.second;
 				}
+				if (wordid == 197){
+					std::cout << "\f adding doc: "<< posting.first << std::endl;	
+				}
 				docSet->addDoc(posting.first);
 			}
 			storePut(wordid, docSet);

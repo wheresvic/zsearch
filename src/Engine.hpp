@@ -65,6 +65,7 @@ class Engine
 				    const string& token = tokenizer->getToken();
 
                     if(wordIndex.Get(field,token,id)){
+	                   
 						documentWordId.insert(id);
 					} else {
 					   	wordIndex.Put(field,token,wordId);
@@ -74,6 +75,9 @@ class Engine
 				}
 			} // end looping through entries
 			for (auto value : documentWordId){
+			//  if (value == 197){
+			//	std::cout << "adding doc: "<< docId << std::endl;	
+			//  }	
 			  invertedIndex.add(value,docId);	
 			} 
 			return docId++;
@@ -110,8 +114,9 @@ class Engine
                     
 					if(wordIndex.Get(field,token,wordId))
 					{
+						std::cout << "field: "<< field <<" token: " << "wordid: "<< wordId << std::endl;
 						shared_ptr<Set> docSet;
-						invertedIndex.get(wordId,docSet);
+						invertedIndex.get(wordId,docSet);	
 						unionSet.push_back(docSet);
 					}
 				}

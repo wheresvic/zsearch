@@ -22,8 +22,7 @@ public:
 	virtual void addDoc(unsigned int docId) {};
 	// Free up unused memory in dynamic collection
 	virtual void compact() {};
-	// Force all docId to be part of a compressed chunk. 
-	virtual void flush() {};
+
 	virtual bool find(unsigned int target) const = 0;
 	virtual ~Set() {}
 	virtual void write(std::ostream & out){}

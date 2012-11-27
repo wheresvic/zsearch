@@ -63,7 +63,6 @@ private:
 
 
 public:
-	unsigned int lastAdded; // recently inserted/accessed element
     Codec codec; // varint encoding codec
     unsigned int totalDocIdNum; // the total number of elemnts that have been inserted/accessed so far
     // unsigned int* currentNoCompBlock;
@@ -84,11 +83,6 @@ public:
     CompressedSet();
 
 	~CompressedSet();
-
-    /**
-     *  Flush the data left in the currentNoCompBlock into the compressed data
-     */
-	void flush();
 
     void write(ostream & out);
 
