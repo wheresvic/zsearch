@@ -96,7 +96,7 @@ int main()
 
 		cout << "Added document: " << engine.addDocument(doc) << endl;
 	}
-
+	engine.flushBatch();
 	// test that searching for some more text returns only 1 document
 
 	string query = "some  more text";

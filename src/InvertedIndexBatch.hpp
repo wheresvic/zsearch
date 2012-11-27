@@ -41,14 +41,17 @@ private:
 
 	int storePut(unsigned int wordId, const shared_ptr<Set> set)
 	{  
+	//	std::cout << "begin storeput" << std::endl;
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
 
 		if (store->Put(wordId,bitmap).ok())
 		{
+	//		std::cout << "end storeput" << std::endl;
 			return 1;
 		}
+	  //  std::cout << "end storeput" << std::endl;
 		return 0;
 		
 	}
