@@ -27,6 +27,7 @@ for file in listing:
 		print filename
 		linestring = open(filename, 'r').read()
 		params = urllib.urlencode({'data': linestring})
+		# params = {'data' : linestring}
 		httpServ.request('POST', '/index', params)
 		# inputs.append(linestring)
 		

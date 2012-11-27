@@ -29,7 +29,8 @@ struct DocumentImplTest : tpunit::TestFixture
 		TEST(DocumentImplTest::testParsingDocumentEmptyField),
 		TEST(DocumentImplTest::testParsingEmptyString),
 		TEST(DocumentImplTest::testParsingDocumentCDATA),
-		TEST(DocumentImplTest::testDocumentWrite)
+		TEST(DocumentImplTest::testDocumentWrite),
+		TEST(DocumentImplTest::testParsingDocumentTerrible)
 	)
 	{ }
 
@@ -43,7 +44,7 @@ struct DocumentImplTest : tpunit::TestFixture
 		catch (const string& e)
 		{
 			TRACE(e.c_str());
-			ABORT();	
+			ABORT();
 		}
 		EXPECT_NO_THROW(shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr));
 	}
@@ -97,22 +98,49 @@ struct DocumentImplTest : tpunit::TestFixture
 		}
 		*/
 	}
-	
+
 	void testDocumentWrite()
 	{
 		string docStr = "<document><input1> some text</input1><input2> some more text</input2></document>";
-		
+
 		shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr);
-		
+
 		stringstream ss;
 		document->write(ss);
-		
+
 		string docStrExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + docStr;
 		string docStrActual = ss.str();
-		
+
 		// cout << docStrExpected << endl << docStrActual << endl;
-		
-		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);		
+
+		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);
+	}
+
+	void testParsingDocumentTerrible()
+	{
+		string docStr = "%3Cdocument%3E%0D%0A%09%3Ctitle%3EInput+document%3C%2Ftitle%3E%0D%0A%09%3Cinput1%3E+some+text%3C%2Finput1%3E%0D%0A%09%3Cinput1%3E+some+more+text%3C%2Finput1%3E%0D%0A%3C%2Fdocument%3E";
+		EXPECT_THROW(shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr), string);
+
+		// shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr);
+
+
+		// auto& entries = document->getEntries();
+
+		/*
+		for (auto it = entries.begin(); it != entries.end(); ++ it)
+		{
+			cout << it->first << " " << it->second << endl;
+		}
+		*/
+
+		/*
+		stringstream ss;
+		document->write(ss);
+
+		string docStrActual = ss.str();
+		cout << docStrActual << endl;
+		*/
+
 	}
 
 };

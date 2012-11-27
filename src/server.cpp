@@ -393,7 +393,6 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 	}
 	else
 	{
-
 		struct evbuffer *evb = NULL;
 		struct evkeyvalq *headers;
 		struct evkeyval *header;
@@ -402,8 +401,9 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 		printf("Received a POST request for %s\nHeaders:\n", evhttp_request_get_uri(req));
 
 		headers = evhttp_request_get_input_headers(req);
-		for (header = headers->tqh_first; header;
-			header = header->next.tqe_next) {
+
+		for (header = headers->tqh_first; header; header = header->next.tqe_next)
+		{
 			printf("  %s: %s\n", header->key, header->value);
 		}
 
@@ -425,10 +425,9 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 
 		std::cout << "Post data: " << std::endl << postData << std::endl;
 
+		// do not remove this
 		struct evkeyvalq params;	// create storage for your key->value pairs
 		struct evkeyval *param;		// iterator
-
-		int result = evhttp_parse_query_str(postData.c_str(), &params);
 
 		// working code to return the parameters as plain text ...
 		/*
@@ -456,6 +455,10 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			evhttp_send_error(req, HTTP_BADREQUEST, 0);
 		}
 		*/
+
+		// working code to decode and index data
+
+		int result = evhttp_parse_query_str(postData.c_str(), &params);
 
 		// if we were able to parse post data ok
 		if (result == 0)
@@ -503,6 +506,46 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 		{
 			evhttp_send_error(req, HTTP_BADREQUEST, 0);
 		}
+
+		// this will segfault
+		/*
+		evb = evbuffer_new();
+
+		std::string keyCompare = zsearch::POST_DATA_KEY + "=";
+
+		if (keyCompare.compare(postData.substr(0, 5)) == 0)
+		{
+			// data=
+			std::string value = postData.substr(5);
+			std::cout << value << std::endl;
+
+			try
+			{
+				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
+				std::cout << "made document" << std::endl;
+				unsigned int docId = engine->addDocument(document);
+				std::cout << "Added document: " << docId << std::endl;
+				evbuffer_add_printf(evb, "%u", docId);
+			}
+			catch (const std::string& e)
+			{
+				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
+				evbuffer_add_printf(evb, e.c_str());
+			}
+			catch (const std::exception& e)
+			{
+				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
+				evbuffer_add_printf(evb, e.what());
+			}
+		}
+		else
+		{
+			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details\n");
+		}
+
+		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+		evhttp_send_reply(req, 200, "OK", evb);
+		*/
 
 		evhttp_clear_headers(&params);
 
