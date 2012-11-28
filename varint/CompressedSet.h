@@ -63,7 +63,7 @@ private:
 
 
 public:
-    Codec codec; // varint encoding codec
+    static Codec codec; // varint encoding codec
     unsigned int totalDocIdNum; // the total number of elemnts that have been inserted/accessed so far
     // unsigned int* currentNoCompBlock;
     vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> currentNoCompBlock;  // the memory used to store the uncompressed elements. Once the block is full, all its elements are compressed into sequencOfCompBlock and the block is cleared.

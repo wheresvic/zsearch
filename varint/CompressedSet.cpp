@@ -8,6 +8,7 @@
 #include "CollectionHelper.h"
 #include "CompressedSet.h"
 //baseListForOnlyCompBlocks
+    Codec CompressedSet::codec;
     CompressedSet::CompressedSet(const CompressedSet& other)
 		:  currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
 	{
@@ -390,7 +391,7 @@
          } else {
 	        // (offset==0) must be in one of the compressed blocks
              Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
-             size_t uncompSize = set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
+             set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
             // assert(uncompSize == DEFAULT_BATCH_SIZE);
              lastAccessedDocId = iterDecompBlock[0];
          }
