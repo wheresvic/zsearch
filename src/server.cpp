@@ -174,10 +174,8 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 					{
 						std::stringstream ss;
 						document->write(ss);
-						std::string docStr = ss.str();
-						std::cout << docStr << std::endl;
-
-						evbuffer_add_printf(evb, docStr.c_str());
+						const std::string docStr = ss.str();
+						evbuffer_add(evb,docStr.data(),docStr.size());
 						found = true;
 					}
 
@@ -471,8 +469,6 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			// check that the first key is data
 			if (key.compare(zsearch::POST_DATA_KEY) == 0)
 			{
-//				printf("%s\n%s\n", key.c_str(), value.c_str());
-
 				try
 				{
 					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
