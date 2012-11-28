@@ -1,0 +1,25 @@
+0.3.2, 0.3.3, 0.3.4 (June 12 to 15th 2012)
+  Minor releases trying to fix compatibility issues with Microsoft compilers.
+
+0.3.1 (May 28th, 2012)
+  Fixed a perf. regression bug.
+
+0.3.0  (May 24th, 2012)
+  Fix a bug with the computation of the cardinality.
+  Improved compatibility with microsoft compilers.
+  Introduced a toArray method to retrieve the set bits quickly.
+
+0.2.2 (May 24th, 2012)
+  Fix a compilation problem under GCC 4.5.
+  Added a benchmarking utility. 
+  Minor improvements.
+
+0.2.1 (May 21st, 2012)
+  Performance boost when decoding (uses GCC intrinsics, please contribute MS-equivalent)
+  
+0.2.0 (April 27th 2012)
+  Minor refactor, cleaned the code somewhat. Removed less useful methods.
+
+0.1.0 (April 19th 2012)
+  Added a unit test related to how we compute the cardinality
+  Accelerated the computation of the cardinality
