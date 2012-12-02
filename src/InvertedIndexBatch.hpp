@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #include "varint/ISetFactory.h"
-
+#include "KVStoreLevelDBBatch.h"
 
 using google::dense_hash_map;
 
@@ -32,6 +32,7 @@ class InvertedIndexBatch : public IInvertedIndex
 private:
 
 	std::shared_ptr<KVStore::IKVStore> store;
+	KVStore::KVStoreLevelDBBatch batch;
 
 	vector<std::pair<unsigned int,unsigned int>> postings;
 	std::shared_ptr<ISetFactory> setFactory;
@@ -41,39 +42,40 @@ private:
 
 	int storePut(unsigned int wordId, const shared_ptr<Set> set)
 	{  
-	//	std::cout << "begin storeput" << std::endl;
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
 
 		if (store->Put(wordId,bitmap).ok())
 		{
-	//		std::cout << "end storeput" << std::endl;
 			return 1;
 		}
-	  //  std::cout << "end storeput" << std::endl;
 		return 0;
-		
 	}
 	
-	int put(unsigned int wordId, const shared_ptr<Set>& set)
-	{
+	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
+	{  
+		stringstream ss;
+		set->write(ss);
+		string bitmap = ss.str();
+
+		batch.Put(wordId,bitmap);
 		return 1;
 	}
+	
+
 
 public:
 
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory)
 	{
-		maxbatchsize = 500000;
+		maxbatchsize = 5000000;
 		batchsize = 0;
 		store->Open();
 
 	}
 	
-	~InvertedIndexBatch()
-	{
-
+	~InvertedIndexBatch() {
 	   flushBatch();
 	}
 	
@@ -114,7 +116,7 @@ public:
 			shared_ptr<Set> docSet = getOrCreate(wordid);
 			for (auto posting : postings){
 				if (posting.second != wordid){
-					storePut(wordid, docSet);
+					batchPut(wordid, docSet);
 					docSet = getOrCreate(posting.second);
 					wordid = posting.second;
 				}
@@ -125,15 +127,18 @@ public:
 		}
 		postings.clear();
 		batchsize = 0;
+		store->Write(batch);
+		batch.Clear();
 		return 1;
 	}
 	
 	int add(unsigned int wordId, unsigned int docid)
 	{
 		postings.push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
+		//TODO: we need to track memory usage instead 
 		batchsize +=1;
 		if(batchsize > maxbatchsize){
-	//		flushBatch();
+			flushBatch();
 		}
 		return 1;
 	}

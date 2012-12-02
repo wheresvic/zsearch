@@ -8,20 +8,17 @@
 #include <sstream>
 #include <iostream>
 #include "IKVStore.h"
-
+#include "KVStoreLevelDBBatch.h"
 namespace KVStore
 {
 	class KVStoreLevelDb : public IKVStore
 	{
 		private:
-
+			leveldb::DB* db;		
+		public:
 			char* EncodeVarint64(char* dst, uint64_t v);
 			void PutVarint64(std::string& dst, uint64_t v);
 			
-			leveldb::DB* db;
-			
-		public:
-
 			KVStoreLevelDb(const std::string& path);
 
 			~KVStoreLevelDb();
@@ -39,6 +36,8 @@ namespace KVStore
 			Status Get(uint64_t key, std::string& value);
 			
 			Status Delete(const std::string& key);
+			
+			Status Write(KVStoreLevelDBBatch batch);
 			
 	};
 
