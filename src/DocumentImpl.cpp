@@ -19,7 +19,6 @@ DocumentImpl::DocumentImpl()
 
 DocumentImpl::DocumentImpl(const string& xml)
 {
-    //Rapid xml need a 0 terminated string so we copy to a vector
 	vector<char> xmlVec;
 	copy (xml.begin(), xml.end(), back_inserter(xmlVec));
 	xmlVec.push_back('\0');
@@ -29,18 +28,18 @@ DocumentImpl::DocumentImpl(const string& xml)
 	try
 	{
 		rapidxml::xml_document<> doc;    					// character type defaults to char
-		doc.parse<rapidxml::parse_fastest>(&xmlVec[0]);    	// 0 means default parse flags
+		doc.parse<rapidxml::parse_full>(&xmlVec[0]);    	// 0 means default parse flags
 
 		if (doc.first_node())
 		{
-			string rootNode(doc.first_node()->name(),doc.first_node()->name_size());
+			string rootNode(doc.first_node()->name());
 
 			if (rootNode.compare(zsearch::DOCUMENT_ROOT) == 0)
 			{
 
 				for (rapidxml::xml_node<>* n = doc.first_node(rootNode.c_str())->first_node(); n; n = n->next_sibling())
 				{
-					string field(n->name(),n->name_size());
+					string field(n->name());
 
 					char* v = n->value();
 
@@ -50,7 +49,7 @@ DocumentImpl::DocumentImpl(const string& xml)
 						throw message;
 					}
 
-					string value(v,n->value_size());
+					string value(v);
 					this->addEntry(field, value);
 				}
 
@@ -100,4 +99,3 @@ void DocumentImpl::write(ostream& out)
 
 	out << "</document>";
 }
-
