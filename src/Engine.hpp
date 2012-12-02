@@ -17,6 +17,7 @@
 #include "IKVStore.h"
 #include "WordIndex.hpp"
 #include "varint/ISetFactory.h"
+#include "SparseSet.hpp"
 
 using namespace std;
 
@@ -50,8 +51,8 @@ class Engine
 
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
-
-            set<unsigned int> documentWordId;
+			sparseset.clear();
+            //set<unsigned int> documentWordId;
 			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
@@ -70,19 +71,21 @@ class Engine
 
                     if(wordIndex.Get(field,token,id))
                     {
-						documentWordId.insert(id);
+						sparseset.insert(id);
+						//documentWordId.insert(id);
 					}
 					else
 					{
 					   	wordIndex.Put(field,token,wordId);
-					    documentWordId.insert(wordId++);
+					    //documentWordId.insert(wordId++);
+					    sparseset.insert(wordId++);
 					}
 
 				}
 
 			} // end looping through entries
 
-			for (auto value : documentWordId)
+			for (auto value : sparseset)
 			{
 			  invertedIndex.add(value, docId);
 			}
@@ -94,15 +97,14 @@ class Engine
 		/**
 		 * Return documents that contain all the words in the query
 		 */
-		set<unsigned int> search(const string& query, unsigned int start, unsigned int offset) const
+		vector<unsigned int> search(const string& query, unsigned int start, unsigned int offset) const
 		{
 			// q = "", field1="some more text" = input1/some input1/more input1/text
 			// q = "some more text" = (input1/some OR input2/some ) AND (input1/more or input2/more)
 
 			unsigned int skip = start * offset;
-			// cout << "skip = " << skip << endl;
 
-			set<unsigned int> documentIdSet;
+			vector<unsigned int> documentIdList;
 
 			set<string> queryTokens;
 
@@ -135,8 +137,10 @@ class Engine
 				shared_ptr<Set> orset = make_shared<LazyOrSet>(unionSet);
 				intersectionSet.push_back(orset);
 			}
-
 			LazyAndSet andSet(intersectionSet);
+			
+			//We now create a copy of andSet the fun of it ???
+			
 			shared_ptr<Set::Iterator> it = andSet.iterator();
 
 			unsigned int i = 0;
@@ -160,7 +164,7 @@ class Engine
 					if ((i - skip) < offset)
 					{
 						++i;
-						documentIdSet.insert(it->docID());
+						documentIdList.push_back(it->docID());
 					}
 					else // if we made it past offset then we can stop
 					{
@@ -169,29 +173,26 @@ class Engine
 				}
 				else // if no valid offset, then we just keep adding!
 				{
-					documentIdSet.insert(it->docID());
+					documentIdList.push_back(it->docID());
 				}
 			}
 
-			return documentIdSet;
+			return documentIdList;
 
 		}
 
 		/**
 		 * Return documents given their docIds
 		 */
-		set<shared_ptr<IDocument>> getDocs(const set<unsigned int>& docIds) const
+		vector<shared_ptr<IDocument>> getDocs(const vector<unsigned int>& docIds) const
 		{
-			set<shared_ptr<IDocument>> documentSet;
+			vector<shared_ptr<IDocument>> documentSet;
 
-			for (auto docId : docIds)
-			{
+			for (auto docId : docIds) {
 				shared_ptr<IDocument> doc;
 
-				// if (documentStore->Get(docId, doc))
-				if (getDoc(docId, doc))
-				{
-					documentSet.insert(doc);
+				if (getDoc(docId, doc)) {
+					documentSet.push_back(doc);
 				}
 			}
 
@@ -200,8 +201,7 @@ class Engine
 
 		bool getDoc(const unsigned int docId, shared_ptr<IDocument>& doc) const
 		{
-			if (documentStore->Get(docId, doc))
-			{
+			if (documentStore->Get(docId, doc)) {
 				return true;
 			}
 
@@ -212,7 +212,8 @@ class Engine
 
 		unsigned long docId = 1;
 		unsigned long wordId = 1;
-
+        
+		SparseSet sparseset;
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;
 
