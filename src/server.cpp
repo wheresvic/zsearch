@@ -93,15 +93,15 @@ static void printTimeTaken(const std::chrono::nanoseconds& ns)
 {
 	if (ns.count() >= 1000000000)
 	{
-		std::cout << "request processed in " << std::chrono::duration_cast<std::chrono::seconds>(ns).count() << "s" << std::endl;
+		std::cout << "function returned in " << std::chrono::duration_cast<std::chrono::seconds>(ns).count() << "s" << std::endl;
 	}
 	else if (ns.count() >= 1000000)
 	{
-		std::cout << "request processed in " << std::chrono::duration_cast<std::chrono::milliseconds>(ns).count() << "ms" << std::endl;
+		std::cout << "function returned in " << std::chrono::duration_cast<std::chrono::milliseconds>(ns).count() << "ms" << std::endl;
 	}
 	else
 	{
-		std::cout << "request processed in " << ns.count() << "ns" << std::endl;
+		std::cout << "function returned in " << ns.count() << "ns" << std::endl;
 	}
 }
 
@@ -234,7 +234,6 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 	}
 	else
 	{
-
 		struct evbuffer *evb = NULL;
 		const char *uri = evhttp_request_get_uri(req);
 		struct evhttp_uri *decoded = NULL;
@@ -242,7 +241,6 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 		const char *query = NULL;
 		// struct evkeyvalq *headers;
 		// struct evkeyval *header;
-
 
 		printf("Got a GET request for %s\n",  uri);
 
