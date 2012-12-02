@@ -24,7 +24,7 @@ public:
 	typedef unsigned int* iterator;
 	typedef const unsigned int* const_iterator;
 	
-	SparseSet(unsigned int initialsize = 0){
+	SparseSet(unsigned int initialsize = 1453689){
 		n = 0;	
 		dense.resize(initialsize);
 		sparse.resize(initialsize);
@@ -34,15 +34,19 @@ public:
 		
 	}
 	
+	size_t size(){
+		return sparse.size();
+	}
+	
 	/**
 	 * check whether i is in the set
 	 * you verify that the two arrays point at each other for that element
 	 * this should be constant time.
 	 */
 	bool ismember(unsigned int i){
-		if ((i+1) > sparse.size() ){
-			return false;
-		}
+	  //  if ((i+1) > sparse.size() ){
+	  //  	return false;
+	  //  }
 		//If sparse[i] >= n then i is definetly not in the set and it doesn't matter what sparse[i] is set to.
 		//otherwise sparse can have any arbitrary values so we need to verify that  dense[sparse[i]] == i
 		return sparse[i] < n && dense[sparse[i]] == i;
@@ -64,12 +68,12 @@ public:
 	 * this should be constant time.
 	 */
 	void insert_new(unsigned int i){
-		if ((i+1) > dense.size()){
-			dense.resize(i+1);
-		}
-		if ((i+1) > sparse.size()){
-			sparse.resize(i+1);
-		}
+	   // if ((i+1) > dense.size()){
+	   // 	dense.resize(i+1);
+	   // }
+	   // if ((i+1) > sparse.size()){
+	   // 	sparse.resize(i+1);
+	   // }
 		dense[n] = i;
 		sparse[i] = n;
 		n++;
