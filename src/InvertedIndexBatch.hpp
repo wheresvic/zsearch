@@ -1,19 +1,26 @@
 #ifndef INVERTED_INDEX_BATCH_H
 #define INVERTED_INDEX_BATCH_H
 
-#include "IInvertedIndex.h"
 #include <memory>
 #include <map>
 #include <set>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
+#include <algorithm>
+
+#include <atomic>
+#include "port_posix.h"
+
+#include <thread>
+
+#include "IInvertedIndex.h"
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
 #include "IKVStore.h"
 #include <sparsehash/dense_hash_map>
-#include <vector>
-#include <algorithm>
+
 
 #include "varint/ISetFactory.h"
 #include "KVStoreLevelDBBatch.h"
@@ -30,15 +37,25 @@ struct postingComp {
 class InvertedIndexBatch : public IInvertedIndex
 {
 private:
-
 	std::shared_ptr<KVStore::IKVStore> store;
 	KVStore::KVStoreLevelDBBatch batch;
 
 	vector<std::pair<unsigned int,unsigned int>> postings;
+	vector<std::pair<unsigned int,unsigned int>> postings2;
+	
 	std::shared_ptr<ISetFactory> setFactory;
 	
 	int maxbatchsize;
 	int batchsize;
+	
+	// For the threading
+	std::thread consumerThread;
+    leveldb::port::Mutex m;
+    leveldb::port::CondVar cond_var;
+    leveldb::port::Mutex m2;
+    leveldb::port::CondVar cond_var2;
+	volatile bool done = false;
+	volatile bool notified = false;
 
 	int storePut(unsigned int wordId, const shared_ptr<Set> set)
 	{  
@@ -64,21 +81,35 @@ private:
 	}
 	
 
-
 public:
 
-	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory)
+	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
+	 store(store), 
+	 setFactory(setFactory),
+	 cond_var(&m),
+	 cond_var2(&m2)
 	{
-		maxbatchsize = 5000000;
+		void consumer_main();
+		maxbatchsize = 2500000;
 		batchsize = 0;
 		store->Open();
+		consumerThread = std::thread([this](){
+			       this->consumer_main();
+		        });
 
 	}
 	
 	~InvertedIndexBatch() {
-	   flushBatch();
+		flushBatch();
+		stopConsumerThread();   
 	}
 	
+	void stopConsumerThread(){
+		done=true;
+		notified = true;
+		cond_var.Signal();
+		consumerThread.join();
+	}
 
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
 	{		
@@ -107,14 +138,43 @@ public:
 		}
 		return docSet;
 	}
+	
 
-	int flushBatch()
+
+	void flushBatchAsync(){
+		if (notified != true ){
+			std::swap(postings,postings2);
+			batchsize = 0;
+			notified = true;
+			cond_var.Signal();
+		} 
+	}
+	
+	void flushBatch(){
+		//wait for current background task to finish
+		m2.Lock();
+        while (notified) {  // loop to avoid spurious wakeups
+           cond_var2.Wait();
+        }
+        m2.Unlock();
+	    if (batchsize >0){
+		    //flush remaining
+			flushBatchAsync();
+	    }
+		m2.Lock();
+        while (notified) {  // loop to avoid spurious wakeups
+           cond_var2.Wait();
+        }
+		m2.Unlock();
+	}
+	
+	int flushInBackground()
 	{
-		if (postings.size() > 0){
-			std::stable_sort(postings.begin(),postings.end(),postingComp());
-			unsigned int wordid = postings[0].second;
+		if (postings2.size() > 0){
+			std::stable_sort(postings2.begin(),postings2.end(),postingComp());
+			unsigned int wordid = postings2[0].second;
 			shared_ptr<Set> docSet = getOrCreate(wordid);
-			for (auto posting : postings){
+			for (auto posting : postings2){
 				if (posting.second != wordid){
 					batchPut(wordid, docSet);
 					docSet = getOrCreate(posting.second);
@@ -122,14 +182,25 @@ public:
 				}
 				docSet->addDoc(posting.first);
 			}
-			storePut(wordid, docSet);
-			
+			batchPut(wordid, docSet);
 		}
-		postings.clear();
-		batchsize = 0;
+		postings2.clear();
 		store->Write(batch);
 		batch.Clear();
 		return 1;
+	}
+	
+	void consumer_main(){
+		m.Lock();
+	    while (!done) {
+	        while (!notified) {  // loop to avoid spurious wakeups
+	           cond_var.Wait();
+	        }   
+			flushInBackground();
+			notified = false;
+			cond_var2.Signal();
+	    }
+	    m.Unlock();
 	}
 	
 	int add(unsigned int wordId, unsigned int docid)
@@ -138,7 +209,7 @@ public:
 		//TODO: we need to track memory usage instead 
 		batchsize +=1;
 		if(batchsize > maxbatchsize){
-			flushBatch();
+			flushBatchAsync();
 		}
 		return 1;
 	}
