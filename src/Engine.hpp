@@ -18,6 +18,7 @@
 #include "WordIndex.hpp"
 #include "varint/ISetFactory.h"
 #include "SparseSet.hpp"
+#include <chrono>
 
 using namespace std;
 
@@ -42,13 +43,35 @@ class Engine
 			invertedIndex.flushBatch();
         }
 
+        void flushBatchAsync()
+        {
+			invertedIndex.flushBatchAsync();
+        }
+
         ~Engine()
         { }
 
+	static void printTimeTaken(const std::chrono::nanoseconds& ns)
+	{
+		if (ns.count() >= 1000000000)
+		{
+			std::cout << "Engine add took in " << std::chrono::duration_cast<std::chrono::seconds>(ns).count() << "s" << std::endl;
+		}
+		else if (ns.count() >= 1000000)
+		{
+			std::cout << "Engine add took in " << std::chrono::duration_cast<std::chrono::milliseconds>(ns).count() << "ms" << std::endl;
+		}
+		else
+		{
+			std::cout << "Engine add took in " << ns.count() << "ns" << std::endl;
+		}
+	}
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
+			std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
+			
 			documentStore->addDoc(docId, document);
-
+			
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
 			sparseset.clear();
@@ -63,12 +86,10 @@ class Engine
 				fields.insert(field);
 
 				tokenizer->setString(value);
-
 				while (tokenizer->nextToken())
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer->getToken();
-
                     if(wordIndex.Get(field,token,id))
                     {
 						sparseset.insert(id);
@@ -80,16 +101,18 @@ class Engine
 					    //documentWordId.insert(wordId++);
 					    sparseset.insert(wordId++);
 					}
-
 				}
 
-			} // end looping through entries
 
+			} // end looping through entries
 			for (auto value : sparseset)
 			{
 			  invertedIndex.add(value, docId);
 			}
 
+            std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	        std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
+			printTimeTaken(timeTaken);
 			return docId++;
 		}
 
