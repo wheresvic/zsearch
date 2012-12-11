@@ -43,19 +43,20 @@ private:
 	vector<std::pair<unsigned int,unsigned int>> postings;
 	vector<std::pair<unsigned int,unsigned int>> postings2;
 	
+	atomic<vector<std::pair<unsigned int,unsigned int>>*> consumerVec;
+	atomic<vector<std::pair<unsigned int,unsigned int>>*> producerVec;
+	
 	std::shared_ptr<ISetFactory> setFactory;
 	
 	int maxbatchsize;
-	int batchsize;
+	volatile int batchsize;
 	
 	// For the threading
 	std::thread consumerThread;
     leveldb::port::Mutex m;
     leveldb::port::CondVar cond_var;
-    leveldb::port::Mutex m2;
-    leveldb::port::CondVar cond_var2;
 	volatile bool done = false;
-	volatile bool notified = false;
+
 
 	int storePut(unsigned int wordId, const shared_ptr<Set> set)
 	{  
@@ -86,13 +87,16 @@ public:
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
 	 store(store), 
 	 setFactory(setFactory),
-	 cond_var(&m),
-	 cond_var2(&m2)
+	 cond_var(&m)
 	{
 		void consumer_main();
+	
 		maxbatchsize = 2500000;
 		batchsize = 0;
 		store->Open();
+		
+		producerVec.store(&postings);
+		consumerVec.store(&postings2);
 		consumerThread = std::thread([this](){
 			       this->consumer_main();
 		        });
@@ -106,8 +110,9 @@ public:
 	
 	void stopConsumerThread(){
 		done=true;
-		notified = true;
+		//wakup if sleeping
 		cond_var.Signal();
+		//wait for termination
 		consumerThread.join();
 	}
 
@@ -140,83 +145,80 @@ public:
 	}
 	
 
-
-	void flushBatchAsync(){
-		if (notified != true ){
-			std::swap(postings,postings2);
-			batchsize = 0;
-			notified = true;
-			cond_var.Signal();
-		} 
+	void flushBatch(){
+	   m.Lock();
+	   while (batchsize > 0){
+	     cond_var.Wait();
+	   }
+	   m.Unlock();
 	}
 	
-	void flushBatch(){
-		//wait for current background task to finish
-		m2.Lock();
-        while (notified) {  // loop to avoid spurious wakeups
-           cond_var2.Wait();
-        }
-        m2.Unlock();
-	    if (batchsize >0){
-		    //flush remaining
-			flushBatchAsync();
-	    }
-		m2.Lock();
-        while (notified) {  // loop to avoid spurious wakeups
-           cond_var2.Wait();
-        }
-		m2.Unlock();
-	}
+	
 	
 	int flushInBackground()
 	{
-		if (postings2.size() > 0){
-			std::stable_sort(postings2.begin(),postings2.end(),postingComp());
-			unsigned int wordid = postings2[0].second;
+		vector<std::pair<unsigned int,unsigned int>>& vec = *consumerVec.load();
+		if (vec.size() > 0){
+			std::stable_sort(vec.begin(),vec.end(),postingComp());
+			
+			unsigned int wordid = vec[0].second;
 			shared_ptr<Set> docSet = getOrCreate(wordid);
-			for (auto posting : postings2){
+			unsigned int last = vec[0].first;
+			for (auto posting : vec){
 				if (posting.second != wordid){
 					batchPut(wordid, docSet);
 					docSet = getOrCreate(posting.second);
 					wordid = posting.second;
+					last = posting.first;
 				}
 				docSet->addDoc(posting.first);
+				assert(posting.first >= last);
+				last = posting.first;
+				
 			}
 			batchPut(wordid, docSet);
+			vec.clear();
 		}
-		postings2.clear();
+		
 		store->Write(batch);
 		batch.Clear();
 		return 1;
 	}
 	
 	void consumer_main(){
-		m.Lock();
 	    while (!done) {
-	        while (!notified) {  // loop to avoid spurious wakeups
-	           cond_var.Wait();
-	        }   
+		    m.Lock();
+		    if (batchsize > 0){
+				vector<std::pair<unsigned int,unsigned int>>* temp;
+				temp = producerVec.load();
+				producerVec.store(consumerVec.load());
+				consumerVec.store(temp);
+				batchsize = 0;
+				cond_var.Signal();
+		    } else {
+			   // sleep
+			   while (batchsize == 0 && !done){
+			     cond_var.Wait();
+			   }
+		    }
+	        m.Unlock();
 			flushInBackground();
-			notified = false;
-			cond_var2.Signal();
 	    }
-	    m.Unlock();
 	}
 	
 	int add(unsigned int wordId, unsigned int docid)
-	{
-		postings.push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
-		//TODO: we need to track memory usage instead 
+	{		
+		m.Lock();
+		producerVec.load()->push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
 		batchsize +=1;
-		if(batchsize > maxbatchsize){
-			flushBatchAsync();
-		}
+		cond_var.Signal();
+		m.Unlock();
 		return 1;
 	}
 	
 	
 	int Compact(){
-	//	store->Compact();
+		store->Compact();
 		return 1;
 	}
 	

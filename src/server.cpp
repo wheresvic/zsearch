@@ -471,7 +471,6 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 				{
 					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
 					unsigned int docId = engine->addDocument(document);
-					engine->flushBatchAsync();
 					std::cout << "Added document: " << docId << std::endl;
 					evbuffer_add_printf(evb, "%d", docId);
 				}
