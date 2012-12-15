@@ -45,7 +45,7 @@ namespace KVStore
 			Status KVStoreLevelDb::Open()
 			{
 				leveldb::Options options;
-				options.write_buffer_size = 128000000;
+			//	options.write_buffer_size = 300<<20;
 				options.create_if_missing = true;
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 				return Status::OK();
@@ -66,7 +66,6 @@ namespace KVStore
 
 			Status KVStoreLevelDb::Put(uint64_t key, const std::string& value)
 			{
-				// cout << "PUT ... KEY: " << key << " ,Value.length(): " << value.size()<<endl;
 				std::string keystr;
 				PutVarint64(keystr, key);
 				return Put(keystr, value);
@@ -115,5 +114,12 @@ namespace KVStore
 				}
 		        return Status::IOError();
 	        }
+	      	void KVStoreLevelDb::Compact() {
+		        db->CompactRange(NULL,NULL);
+	
+		        
+	        }
+	
+	
 } // namespace KVStore
 

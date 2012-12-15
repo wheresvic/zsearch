@@ -89,6 +89,10 @@ class InvertedIndexImpl : public IInvertedIndex
 		{
 			return 1;
 		}
+		
+		void flushBatchAsync(){
+
+		}
 
 };
 
