@@ -17,16 +17,16 @@ namespace KVStore
 	        		*(ptr++) = (v & (B-1)) | B;
 	        		v >>= 7;
 	        	}
-            
+
 	        	*(ptr++) = static_cast<unsigned char>(v);
 	        	return reinterpret_cast<char*>(ptr);
 	        }
-            
+
 	        void KVStoreLevelDb::PutVarint64(std::string& dst, uint64_t v)
 	        {
 	        	char buf[10];
 	        	char* ptr = EncodeVarint64(buf, v);
-	        	dst.append(buf, ptr - buf);	
+	        	dst.append(buf, ptr - buf);
 	        }
 
 			KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
@@ -105,21 +105,14 @@ namespace KVStore
 
 				return Status::NotFound();
 			}
-	 
-	        Status KVStoreLevelDb::Write(KVStoreLevelDBBatch batch){
-		        leveldb::Status s = db->Write(leveldb::WriteOptions(), &(batch.batch));
-				if (s.ok())
-				{
-					return Status::OK();
-				}
-		        return Status::IOError();
-	        }
+
+
 	      	void KVStoreLevelDb::Compact() {
 		        db->CompactRange(NULL,NULL);
-	
-		        
+
+
 	        }
-	
-	
+
+
 } // namespace KVStore
 

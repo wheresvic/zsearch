@@ -28,7 +28,7 @@ DocumentImpl::DocumentImpl(const string& xml)
 	try
 	{
 		rapidxml::xml_document<> doc;    					// character type defaults to char
-		doc.parse<rapidxml::parse_full>(&xmlVec[0]);    	// 0 means default parse flags
+		doc.parse<rapidxml::parse_default>(&xmlVec[0]);    	// 0 means default parse flags
 
 		if (doc.first_node())
 		{

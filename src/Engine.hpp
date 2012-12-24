@@ -43,9 +43,12 @@ class Engine
 			invertedIndex.flushBatch();
         }
 
-        void Compact(){
+		/*
+        void Compact()
+        {
 	         invertedIndex.Compact();
         }
+		*/
 
         ~Engine()
         { }
@@ -54,11 +57,11 @@ class Engine
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
 			documentStore->addDoc(docId, document);
-			
+
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
 			sparseset.clear();
-            //set<unsigned int> documentWordId;
+            // set<unsigned int> documentWordId;
 			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
@@ -138,9 +141,9 @@ class Engine
 				intersectionSet.push_back(orset);
 			}
 			LazyAndSet andSet(intersectionSet);
-			
+
 			//We now create a copy of andSet the fun of it ???
-			
+
 			shared_ptr<Set::Iterator> it = andSet.iterator();
 
 			unsigned int i = 0;
@@ -212,7 +215,7 @@ class Engine
 
 		unsigned long docId = 1;
 		unsigned long wordId = 1;
-        
+
 		SparseSet sparseset;
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;
@@ -227,8 +230,8 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch invertedIndex;
-		//InvertedIndexImpl invertedIndex;
+		// InvertedIndexBatch invertedIndex;
+		InvertedIndexImpl invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;

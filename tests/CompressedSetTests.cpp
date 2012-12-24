@@ -1,4 +1,4 @@
-// g++ --std=gnu++0x CompressedSet.cpp 
+// g++ --std=gnu++0x CompressedSet.cpp
 
 #include "varint/CompressedSet.h"
 #include "varint/bitpacking/memutil.h"
@@ -14,12 +14,12 @@ bool testvec(set<unsigned int>& data)
 	stringstream ss;
 	{
       CompressedSet myset2;
-      for (auto i : data) 
+      for (auto i : data)
 	  {
 	    myset2.addDoc(i);
       }
 	  // cout << "added " << data.size() << endl;
-	  myset2.flush();
+	  // myset2.flush();
       myset2.compact();
       myset2.write(ss);
 	}
@@ -40,7 +40,7 @@ bool testvec(set<unsigned int>& data)
 }
 
 void test(){
-	
+
 	for (uint32_t b = 0; b <= 28; ++b) {
         cout << "testing1... b = " << b << endl;
         for (size_t length = 128; length < (1U << 12); length += 128) {

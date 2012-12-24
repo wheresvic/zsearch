@@ -12,7 +12,7 @@ BUILD_DIR_TEST = ../build/tests
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 
-OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/InvertedIndexImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
+OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
 

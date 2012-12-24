@@ -40,12 +40,14 @@ struct XmlTest : tpunit::TestFixture
 			ABORT();
 		}
 
+		// std::cout << fileStr << std::endl;
+
 		vector<char> xmlVec;
 		copy(fileStr.begin(), fileStr.end(), back_inserter(xmlVec));
 		xmlVec.push_back('\n');
 
 		rapidxml::xml_document<> doc;																// character type defaults to char
-		doc.parse<rapidxml::parse_full>(&xmlVec[0]);	// 0 means default parse flags
+		doc.parse<rapidxml::parse_default>(&xmlVec[0]);		// 0 means default parse flags
 
 		string root(doc.first_node()->name());
 		ASSERT_EQUAL(root.compare("document"), 0);

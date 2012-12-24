@@ -33,6 +33,8 @@ namespace KVStore
 			
 			Status Delete(const std::string& key);
 			
+			void Compact();
+			
 	};
 
 

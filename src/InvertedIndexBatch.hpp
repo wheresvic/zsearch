@@ -28,7 +28,7 @@
 using google::dense_hash_map;
 
 struct postingComp {
-  inline bool operator()(const std::pair<unsigned int,unsigned int>& first, 
+  inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
   const std::pair<unsigned int,unsigned int>& second) const{
    return (first.second < second.second);
   }
@@ -42,15 +42,15 @@ private:
 
 	vector<std::pair<unsigned int,unsigned int>> postings;
 	vector<std::pair<unsigned int,unsigned int>> postings2;
-	
+
 	atomic<vector<std::pair<unsigned int,unsigned int>>*> consumerVec;
 	atomic<vector<std::pair<unsigned int,unsigned int>>*> producerVec;
-	
+
 	std::shared_ptr<ISetFactory> setFactory;
-	
+
 	int maxbatchsize;
 	volatile int batchsize;
-	
+
 	// For the threading
 	std::thread consumerThread;
     leveldb::port::Mutex m;
@@ -59,7 +59,7 @@ private:
 
 
 	int storePut(unsigned int wordId, const shared_ptr<Set> set)
-	{  
+	{
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
@@ -70,9 +70,9 @@ private:
 		}
 		return 0;
 	}
-	
+
 	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
-	{  
+	{
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
@@ -80,21 +80,21 @@ private:
 		batch.Put(wordId,bitmap);
 		return 1;
 	}
-	
+
 
 public:
 
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
-	 store(store), 
+	 store(store),
 	 setFactory(setFactory),
 	 cond_var(&m)
 	{
 		void consumer_main();
-	
+
 		maxbatchsize = 2500000;
 		batchsize = 0;
 		store->Open();
-		
+
 		producerVec.store(&postings);
 		consumerVec.store(&postings2);
 		consumerThread = std::thread([this](){
@@ -102,12 +102,12 @@ public:
 		        });
 
 	}
-	
+
 	~InvertedIndexBatch() {
 		flushBatch();
-		stopConsumerThread();   
+		stopConsumerThread();
 	}
-	
+
 	void stopConsumerThread(){
 		done=true;
 		//wakup if sleeping
@@ -117,7 +117,7 @@ public:
 	}
 
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
-	{		
+	{
 		string bitmap;
 		if(store->Get(wordId,bitmap).ok())
 		{
@@ -133,17 +133,17 @@ public:
 	{
 		string ret;
 		bool found = store->Get(wordId,ret).ok();
-		return found;		
+		return found;
 	}
-	
+
 	shared_ptr<Set> getOrCreate(unsigned int wordid){
 		shared_ptr<Set> docSet;
 	  	if(!get(wordid,docSet)){
-		    docSet = setFactory->createSparseSet();	
+		    docSet = setFactory->createSparseSet();
 		}
 		return docSet;
 	}
-	
+
 
 	void flushBatch(){
 	   m.Lock();
@@ -152,15 +152,15 @@ public:
 	   }
 	   m.Unlock();
 	}
-	
-	
-	
+
+
+
 	int flushInBackground()
 	{
 		vector<std::pair<unsigned int,unsigned int>>& vec = *consumerVec.load();
 		if (vec.size() > 0){
 			std::stable_sort(vec.begin(),vec.end(),postingComp());
-			
+
 			unsigned int wordid = vec[0].second;
 			shared_ptr<Set> docSet = getOrCreate(wordid);
 			unsigned int last = vec[0].first;
@@ -174,17 +174,17 @@ public:
 				docSet->addDoc(posting.first);
 				assert(posting.first >= last);
 				last = posting.first;
-				
+
 			}
 			batchPut(wordid, docSet);
 			vec.clear();
 		}
-		
-		store->Write(batch);
+
+		// store->Write(batch);
 		batch.Clear();
 		return 1;
 	}
-	
+
 	void consumer_main(){
 	    while (!done) {
 		    m.Lock();
@@ -205,9 +205,9 @@ public:
 			flushInBackground();
 	    }
 	}
-	
+
 	int add(unsigned int wordId, unsigned int docid)
-	{		
+	{
 		m.Lock();
 		producerVec.load()->push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
 		batchsize +=1;
@@ -215,13 +215,13 @@ public:
 		m.Unlock();
 		return 1;
 	}
-	
-	
+
+
 	int Compact(){
 		store->Compact();
 		return 1;
 	}
-	
+
 };
 
 #endif

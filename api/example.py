@@ -3,6 +3,8 @@
 import httplib, urllib
 import os, shutil
 
+from xml.sax.saxutils import escape
+
 def printText(txt):
     lines = txt.split('\n')
     for line in lines:
@@ -26,7 +28,8 @@ for file in listing:
 		
 		print filename
 		linestring = open(filename, 'r').read()
-		params = urllib.urlencode({'data': linestring})
+		# params = urllib.urlencode({'data': escape(linestring)})
+		params = urllib.urlencode({'data' : linestring})
 		# params = {'data' : linestring}
 		httpServ.request('POST', '/index', params)
 		# inputs.append(linestring)

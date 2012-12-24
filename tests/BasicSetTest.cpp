@@ -14,12 +14,12 @@ bool testvec(set<unsigned int>& data)
 	stringstream ss;
 	{
       BasicSet myset2;
-      for (auto i : data) 
+      for (auto i : data)
 	  {
 	    myset2.addDoc(i);
       }
 	  // cout << "added " << data.size() << endl;
-	  myset2.flush();
+	  // myset2.flush();
       myset2.compact();
       myset2.write(ss);
 	}
@@ -34,14 +34,14 @@ bool testvec(set<unsigned int>& data)
 		assert(it2.nextDoc()!=NO_MORE_DOCS );
 		assert(it2.docID() == idx);
 	}
-	
+
 	assert(it2.nextDoc() == NO_MORE_DOCS);
 
 	return true;
 }
 
 void test(){
-	
+
 	for (uint32_t b = 0; b <= 28; ++b) {
         cout << "testing1... b = " << b << endl;
         for (size_t length = 128; length < (1U << 12); length += 128) {
@@ -73,26 +73,26 @@ void test(){
 void binarySearch()
 {
 	set<int> basic;
-	
+
 	for (int i = 1; i <= 10; ++i)
 		basic.insert(i);
-	
+
 	/*
 	int search = 11;
-	
+
 	set<int>::iterator upper;
-	
+
 	if (basic.find(search) == basic.end())
 	{
 		upper = upper_bound(basic.begin(), basic.end(), search);
 	}
-	
+
 	cout << "upper " << upper - basic.begin() << endl;
 	*/
 }
 
 
-int main() 
+int main()
 {
 	test();
 	// binarySearch();

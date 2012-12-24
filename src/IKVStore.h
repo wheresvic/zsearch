@@ -2,9 +2,7 @@
 #define IKVSTORE_H
 
 #include <string>
-//FIXME: IKVSTORE sbould not depend on KVStoreLevelDBBatch
-#include "KVStoreLevelDBBatch.h"
-//TODO: add batching and compaction 
+
 namespace KVStore
 {
 
@@ -73,7 +71,6 @@ namespace KVStore
 			virtual Status Get(const std::string& key, std::string& value) = 0;
 			virtual Status Get(uint64_t key, std::string& value) = 0;
 			virtual Status Delete(const std::string& key) = 0;
-		    virtual	Status Write(KVStoreLevelDBBatch batch) = 0;
 		    virtual	void Compact() = 0;
 		
 			IKVStore(const std::string& path) : path(path) { }

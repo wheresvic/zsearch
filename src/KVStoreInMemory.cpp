@@ -85,6 +85,11 @@ namespace KVStore
 
 				return Status::NotFound();
 			}
-	
+
+			void KVStoreInMemory::Compact()
+			{
+				// do nothing
+			}
+
 } // namespace KVStore
 

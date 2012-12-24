@@ -417,7 +417,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			}
 		}
 
-	//	std::cout << "Post data: " << std::endl << postData << std::endl;
+		// std::cout << "Post data: " << std::endl << postData << std::endl;
 
 		// do not remove this
 		struct evkeyvalq params;	// create storage for your key->value pairs
@@ -461,6 +461,8 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 
 			std::string key(param->key);
 			std::string value(param->value);
+
+			std::cout << value << std::endl;
 
 			evb = evbuffer_new();
 
