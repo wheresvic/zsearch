@@ -30,6 +30,7 @@ struct DocumentImplTest : tpunit::TestFixture
 		TEST(DocumentImplTest::testParsingEmptyString),
 		TEST(DocumentImplTest::testParsingDocumentCDATA),
 		TEST(DocumentImplTest::testDocumentWrite),
+		TEST(DocumentImplTest::testDocumentXmlEntity),
 		TEST(DocumentImplTest::testParsingDocumentTerrible)
 	)
 	{ }
@@ -114,6 +115,32 @@ struct DocumentImplTest : tpunit::TestFixture
 		// cout << docStrExpected << endl << docStrActual << endl;
 
 		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);
+	}
+
+	void testDocumentXmlEntity()
+	{
+		string docStr;
+		try
+		{
+			docStr = readFile("../data/document04.xml");
+		}
+		catch (const string& e)
+		{
+			TRACE(e.c_str());
+			ABORT();
+		}
+		EXPECT_NO_THROW(shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr));
+
+		shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr);
+
+		stringstream ss;
+		document->write(ss);
+
+		string docStrActual = ss.str();
+
+		cout << docStr << endl << docStrActual << endl;
+
+		// ASSERT_TRUE(docStr.compare(docStrActual) == 0);
 	}
 
 	void testParsingDocumentTerrible()

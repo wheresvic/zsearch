@@ -19,16 +19,18 @@ class DocumentImpl : public IDocument
 		DocumentImpl(const string& xml);
 
 		void addEntry(const string& key, const string& value);
-		
+
 		void getEntry(const string& key, string& value);
 
 		const map<string, string>& getEntries();
-		
+
 		void write(ostream & out);
 
 	private:
 
 		map<string, string> entries;
+
+		std::string encodeForXml( const std::string &sSrc );
 
 };
 

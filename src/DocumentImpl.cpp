@@ -1,14 +1,17 @@
 
 #include <map>
 #include <string>
+#include <sstream>
 // #include <utility>
 #include <iterator>
 #include <vector>
 #include <iostream>
 
 #include <rapidxml.hpp>
+#include <rapidxml_print.hpp>
 #include "DocumentImpl.h"
 #include "Constants.hpp"
+
 
 using namespace std;
 
@@ -87,15 +90,77 @@ void DocumentImpl::getEntry(const string& key, string& value)
 
 void DocumentImpl::write(ostream& out)
 {
+	// for some weird reason rapidxml_print is not working ...
+	// either fix or consider using another xml library
+
+	/*
+	string document;
+
+	rapidxml::xml_document<> doc;
+	rapidxml::xml_node<> *root = doc.allocate_node(rapidxml::node_element, "document");
+	doc.append_node(root);
+
+	for (auto it = entries.begin(); it != entries.end(); ++it)
+	{
+		rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, (it->first).c_str(), (it->second).c_str());
+		root->append_node(node);
+	}
+
+	rapidxml::print(std::back_inserter(document), doc, 0);
+	out << document;
+	*/
+
+	/*
+	for (rapidxml::xml_node<>* n = doc.first_node("document")->first_node(); n; n = n->next_sibling())
+	{
+		string field(n->name());
+		string value(n->value());
+		std::cout << field << " " << value << std::endl;
+	}
+	*/
+
 	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	out << "<document>";
 
 	for (auto it = entries.begin(); it != entries.end(); ++it)
 	{
 		out << "<" << it->first << ">";
-		out << it->second;
+		out << encodeForXml(it->second);
 		out << "</" << it->first << ">";
 	}
 
 	out << "</document>";
+
+}
+
+
+std::string DocumentImpl::encodeForXml( const std::string &sSrc )
+{
+    ostringstream sRet;
+
+    for( string::const_iterator iter = sSrc.begin(); iter!=sSrc.end(); iter++ )
+    {
+         unsigned char c = (unsigned char)*iter;
+
+         switch( c )
+         {
+             case '&': sRet << "&amp;"; break;
+             case '<': sRet << "&lt;"; break;
+             case '>': sRet << "&gt;"; break;
+             case '"': sRet << "&quot;"; break;
+             case '\'': sRet << "&apos;"; break;
+
+             default:
+              if ( c<32 || c>127 )
+              {
+                   sRet << "&#" << (unsigned int)c << ";";
+              }
+              else
+              {
+                   sRet << c;
+              }
+         }
+    }
+
+    return sRet.str();
 }

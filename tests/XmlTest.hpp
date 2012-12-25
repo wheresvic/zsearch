@@ -9,7 +9,7 @@
 #include <iterator>
 
 
-#include "lib/rapidxml.hpp"
+#include "lib/rapidxml-1.13/rapidxml.hpp"
 #include "lib/tpunit++.hpp"
 #include "TestUtils.hpp"
 

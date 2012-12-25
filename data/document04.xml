@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<title>Input document</title>
+	<input1> some &lt; text</input1>
+	<input1> some more text</input1>
+</document>
