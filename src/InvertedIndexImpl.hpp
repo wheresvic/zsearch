@@ -69,10 +69,12 @@ class InvertedIndexImpl : public IInvertedIndex
 			if (exist(wordId))
 			{
 				shared_ptr<Set> set;
-				get(wordId,set);
-				if (!set->find(docid)){
+				get(wordId, set);
+
+				if (!set->find(docid))
+				{
 					set->addDoc(docid);
-					put(wordId,set);
+					put(wordId, set);
 				}
 			}
 			else
@@ -89,10 +91,7 @@ class InvertedIndexImpl : public IInvertedIndex
 		{
 			return 1;
 		}
-		
-		void flushBatchAsync(){
 
-		}
 
 };
 

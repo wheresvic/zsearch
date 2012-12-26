@@ -1,5 +1,6 @@
 
 #include "InvertedIndexImplTest.hpp"
+#include "InvertedIndexSimpleBatchTest.hpp"
 #include "lib/tpunit++.hpp"
 
 using namespace std;
@@ -7,6 +8,7 @@ using namespace std;
 int main()
 {
 	InvertedIndexImplTest __InvertedIndexImplTest;
+	InvertedIndexSimpleBatchTest __InvertedIndexSimpleBatchTest;
 
 	/**
 	 * Run all of the registered tpunit++ tests. Returns 0 if

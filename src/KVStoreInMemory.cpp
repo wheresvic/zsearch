@@ -91,5 +91,15 @@ namespace KVStore
 				// do nothing
 			}
 
+			Status KVStoreInMemory::Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
+			{
+				for (auto write : writes)
+				{
+					Put(write.first, write.second);
+				}
+
+				return Status::OK();
+			}
+
 } // namespace KVStore
 

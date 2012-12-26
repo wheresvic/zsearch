@@ -22,7 +22,7 @@ LIBS = -L/opt/local/lib -lleveldb -lm -levent
 endif
 
 ifeq ($(OSNAME), Linux)
-CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
+CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include -D_GLIBCXX_USE_NANOSLEEP
 LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L../leveldb-1.7.0 -lm -levent -lpthread
 endif
 
@@ -30,9 +30,9 @@ endif
 clean :
 	rm -f $(BUILD_DIR_TEST)/*
 
-all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test statistics_test
+all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test statistics_test thread_test
 
-document_test : document_test.cpp $(OBJECTS)
+thread_test : thread_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 
 query_parser_test : query_parser_test.cpp $(OBJECTS)

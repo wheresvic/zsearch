@@ -12,3 +12,21 @@ Interface provided by a simple libEvent2 http server
 
 Sharding and replication is left as an exercise to the reader!
 
+
+Design
+======
+
+Engine 
+	-> tokenizer
+	
+	-> documentStore
+	
+	-> invertedIndex
+		-> KVStore
+			-> InMemory
+			-> LevelDb
+		-> setFactory
+
+	-> setFactory
+	
+	-> wordIndex

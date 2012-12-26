@@ -17,7 +17,6 @@
 #include "IKVStore.h"
 #include "WordIndex.hpp"
 #include "varint/ISetFactory.h"
-#include "SparseSet.hpp"
 #include <chrono>
 
 using namespace std;
@@ -60,8 +59,8 @@ class Engine
 
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
-			sparseset.clear();
-            // set<unsigned int> documentWordId;
+			set<unsigned int> documentWordId;
+
 			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
@@ -76,23 +75,26 @@ class Engine
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer->getToken();
+
                     if(wordIndex.Get(field,token,id))
                     {
-						sparseset.insert(id);
+						documentWordId.insert(id);
 					}
 					else
 					{
 					   	wordIndex.Put(field,token,wordId);
-					    sparseset.insert(wordId++);
+					    documentWordId.insert(wordId++);
 					}
 				}
 
 
 			} // end looping through entries
-			for (auto value : sparseset)
+
+			for (auto value : documentWordId)
 			{
-			  invertedIndex.add(value, docId);
+				invertedIndex.add(value, docId);
 			}
+
 			return docId++;
 		}
 
@@ -140,6 +142,7 @@ class Engine
 				shared_ptr<Set> orset = make_shared<LazyOrSet>(unionSet);
 				intersectionSet.push_back(orset);
 			}
+
 			LazyAndSet andSet(intersectionSet);
 
 			//We now create a copy of andSet the fun of it ???
@@ -216,7 +219,6 @@ class Engine
 		unsigned long docId = 1;
 		unsigned long wordId = 1;
 
-		SparseSet sparseset;
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;
 

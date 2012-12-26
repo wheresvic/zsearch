@@ -2,13 +2,14 @@
 #define IKVSTORE_H
 
 #include <string>
+#include <vector>
 
 namespace KVStore
 {
 
-	class Status 
+	class Status
 	{
-		enum Code 
+		enum Code
 		{
 			kOk = 0,
 			kNotFound = 1,
@@ -17,12 +18,12 @@ namespace KVStore
 			kInvalidArgument = 4,
 			kIOError = 5
 		};
-		
+
 		Code _code;
 
 		public:
-			
-			Code code() const 
+
+			Code code() const
 			{
 				return _code;
 			}
@@ -31,17 +32,17 @@ namespace KVStore
 		{
 			_code = code;
 		}
-		
+
 		// Return a success status.
 		static Status OK() { return Status(kOk); }
 
 		// Return error status of an appropriate type.
 		static Status NotFound() { return Status(kNotFound); }
-  
+
 		static Status Corruption() { return Status(kCorruption); }
-  
+
 		static Status NotSupported() { return Status(kNotSupported); }
-  
+
 		static Status InvalidArgument() { return Status(kInvalidArgument); }
 
 		static Status IOError() { return Status(kIOError); }
@@ -59,26 +60,27 @@ namespace KVStore
 		bool IsIOError() const { return code() == kIOError; }
 	};
 
-	
+
 	class IKVStore
 	{
 		public:
-			
+
 			virtual Status Open() = 0;
 			virtual Status Put(const std::string& key,const std::string& value) = 0;
 			virtual Status Put(uint64_t key,const std::string& value) = 0;
+			virtual Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes) = 0;
 			virtual Status Get(const std::string& key, std::string* value) = 0;
 			virtual Status Get(const std::string& key, std::string& value) = 0;
 			virtual Status Get(uint64_t key, std::string& value) = 0;
 			virtual Status Delete(const std::string& key) = 0;
 		    virtual	void Compact() = 0;
-		
+
 			IKVStore(const std::string& path) : path(path) { }
-			
+
 			virtual ~IKVStore() { }
-			
+
 		protected:
-		
+
 			const std::string path;
 	};
 

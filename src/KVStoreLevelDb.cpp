@@ -1,9 +1,11 @@
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
+#include "leveldb/write_batch.h"
 #include <map>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include "KVStoreLevelDb.h"
 
 namespace KVStore
@@ -107,11 +109,32 @@ namespace KVStore
 			}
 
 
-	      	void KVStoreLevelDb::Compact() {
+	      	void KVStoreLevelDb::Compact()
+	      	{
 		        db->CompactRange(NULL,NULL);
+			}
 
+			Status KVStoreLevelDb::Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
+			{
+				leveldb::WriteBatch batch;
 
-	        }
+				for (auto kv : writes)
+				{
+					std::string keystr;
+					PutVarint64(keystr, kv.first);
+					batch.Put(keystr, kv.second);
+				}
+
+				leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
+
+				if (s.ok())
+				{
+					return Status::OK();
+				}
+
+				return Status::NotFound();
+
+			}
 
 
 } // namespace KVStore
