@@ -10,6 +10,7 @@
 #include "Word.hpp"
 
 #include "InvertedIndexBatch.hpp"
+#include "InvertedIndexSimpleBatch.hpp"
 #include "InvertedIndexImpl.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
@@ -37,7 +38,12 @@ class Engine
 
 		}
 
-        void flushBatch()
+		void disableBatching()
+		{
+			invertedIndex.shutDownBatchProcessor();
+		}
+
+		void flushBatch()
         {
 			invertedIndex.flushBatch();
         }
@@ -130,11 +136,11 @@ class Engine
 				{
 					unsigned int wordId = 0;
 
-					if(wordIndex.Get(field,token,wordId))
+					if(wordIndex.Get(field, token, wordId))
 					{
-						std::cout << "field: "<< field <<" token: " << "wordid: "<< wordId << std::endl;
+						// cout << "field: "<< field <<" token: " << "wordid: "<< wordId << endl;
 						shared_ptr<Set> docSet;
-						invertedIndex.get(wordId,docSet);
+						invertedIndex.get(wordId, docSet);
 						unionSet.push_back(docSet);
 					}
 				}
@@ -233,7 +239,8 @@ class Engine
 
 		// inverted index that maps words(wordId) to documents that contain it
 		// InvertedIndexBatch invertedIndex;
-		InvertedIndexImpl invertedIndex;
+		// InvertedIndexImpl invertedIndex;
+		InvertedIndexSimpleBatch invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;

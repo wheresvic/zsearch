@@ -21,6 +21,7 @@
 #include "IKVStore.h"
 #include "IInvertedIndex.h"
 
+/*
 struct postingComp
 {
 	inline bool operator()(const std::pair<unsigned int, unsigned int>& first,
@@ -29,7 +30,7 @@ struct postingComp
 		return (first.second < second.second);
 	}
 };
-
+*/
 
 /**
  * The general strategy here is to add wordId, docId into a
@@ -75,7 +76,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		 *
 		 * finally insert in batch
 		 */
-		int flushBatch(const std::map<unsigned int, std::set<unsigned int>>& postings)
+		int flush(const std::map<unsigned int, std::set<unsigned int>>& postings)
 		{
 			// std::stable_sort(postings.begin(), postings.end(), postingComp());
 
@@ -182,7 +183,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 					lock.unlock();
 
-					flushBatch(postingsCopy);
+					flush(postingsCopy);
 				}
 			}
 
@@ -207,17 +208,17 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		{
 			shutDownBatchProcessor();
 
-			flushBatch(postings);
+			flush(postings);
 		}
 
 		/**
 		 * Perhaps we shouldn't be exposing this method
 		 */
-		void flush()
+		void flushBatch()
 		{
 			unique_lock<mutex> lock(m);
 
-			flushBatch(postings);
+			flush(postings);
 
 			batchSize = 0;
 			postings.clear();
@@ -286,9 +287,9 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 				}
 				else
 				{
-					cout << "batch processor done, flushing batch" << endl;
+					cout << "batch processor not running, flushing batch in place" << endl;
 
-					int result = flushBatch(postings);
+					int result = flush(postings);
 
 					batchSize = 0;
 					postings.clear();

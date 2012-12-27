@@ -145,6 +145,7 @@ public:
 	}
 
 
+	// this is not good - if you call this from another thread that means that you'll be waiting for a while for this to finish
 	void flushBatch(){
 	   m.Lock();
 	   while (batchsize > 0){
