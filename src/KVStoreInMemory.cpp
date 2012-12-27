@@ -93,9 +93,19 @@ namespace KVStore
 
 			Status KVStoreInMemory::Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
+				unsigned int countMissed = 0;
+
 				for (auto write : writes)
 				{
-					Put(write.first, write.second);
+					if (!Put(write.first, write.second).ok())
+					{
+						++countMissed;
+					}
+				}
+
+				if (countMissed)
+				{
+					return Status::Corruption();
 				}
 
 				return Status::OK();
