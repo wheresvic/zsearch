@@ -140,25 +140,28 @@ std::string DocumentImpl::encodeForXml( const std::string &sSrc )
 
     for( string::const_iterator iter = sSrc.begin(); iter!=sSrc.end(); iter++ )
     {
-         unsigned char c = (unsigned char)*iter;
+		unsigned char c = (unsigned char)*iter;
 
-         switch( c )
+         switch(c)
          {
-             case '&': sRet << "&amp;"; break;
-             case '<': sRet << "&lt;"; break;
-             case '>': sRet << "&gt;"; break;
-             case '"': sRet << "&quot;"; break;
-             case '\'': sRet << "&apos;"; break;
+			case '&': sRet << "&amp;"; break;
+			case '<': sRet << "&lt;"; break;
+			case '>': sRet << "&gt;"; break;
+			case '"': sRet << "&quot;"; break;
+			case '\'': sRet << "&apos;"; break;
 
-             default:
-              if ( c<32 || c>127 )
-              {
-                   sRet << "&#" << (unsigned int)c << ";";
-              }
-              else
-              {
-                   sRet << c;
-              }
+			default:
+				// sRet << c; break;
+
+				if ( c<32 || c>127 )
+				{
+					sRet << "&#" << (unsigned int)c << ";";
+				}
+				else
+				{
+					sRet << c;
+				}
+
          }
     }
 

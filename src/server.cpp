@@ -175,7 +175,9 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 						std::stringstream ss;
 						document->write(ss);
 						const std::string docStr = ss.str();
-						evbuffer_add(evb,docStr.data(),docStr.size());
+						cout << docStr << endl;
+
+						evbuffer_add(evb, docStr.data(), docStr.size());
 						found = true;
 					}
 
@@ -186,14 +188,18 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 			if (found)
 			{
 				evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/xml");
+				evhttp_send_reply(req, 200, "OK", evb);
 			}
 			else
 			{
+				/*
 				evbuffer_add_printf(evb, "Document not found or invalid docId");
 				evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
+				*/
+
+				evhttp_send_error(req, 404, "Document not found.");
 			}
 
-			evhttp_send_reply(req, 200, "OK", evb);
 		}
 		else
 		{

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import codecs
 import httplib, urllib
 import os, shutil
 
@@ -25,9 +26,16 @@ for file in listing:
 	filename = os.path.join(path, file)
 	
 	if (os.path.isfile(filename)):
-		
+	
+		if (filename != '../data/load/document_42772.txt'):		
+			continue
+
 		print filename
-		linestring = open(filename, 'r').read()
+		# f = codecs.open(filename, "r", "utf-8")
+		linestring = open(filename, "r").read()
+	
+		print linestring
+
 		# params = urllib.urlencode({'data': escape(linestring)})
 		params = urllib.urlencode({'data' : linestring})
 		# params = {'data' : linestring}

@@ -12,5 +12,15 @@ def printText(txt):
 z = zsearch("http://localhost:8080")
 print z
 
-print z.getDocument(1)
+d = z.getDocument(1)
+
+for key, value in d.iteritems():
+	print key.encode('utf-8')
+	print value.encode('utf-8')
+
+data = {'input' : 'snoop < dawg', 'empty' : ''}
+
+z.addDocument(data)
+
+d = z.getDocument(-1)
 
