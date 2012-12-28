@@ -35,6 +35,9 @@ all: document_test query_parser_test xml_test inverted_index_test compressed_set
 thread_test : thread_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 
+document_test : document_test.cpp $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
+
 query_parser_test : query_parser_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 

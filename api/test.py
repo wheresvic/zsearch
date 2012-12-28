@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os, shutil
 from zsearch import zsearch
@@ -15,12 +16,22 @@ print z
 d = z.getDocument(1)
 
 for key, value in d.iteritems():
-	print key.encode('utf-8')
-	print value.encode('utf-8')
+	print key
+	print value
 
-data = {'input' : 'snoop < dawg', 'empty' : ''}
+data = {'input' : 'snoop < dawg', 'complex' : '72.8/km²'}
 
-z.addDocument(data)
+docId = z.addDocument(data)
+
+print docId
+
+d = z.getDocument(docId)
+
+for key, value in d.iteritems():
+	print key
+	print value
+
 
 d = z.getDocument(-1)
+
 

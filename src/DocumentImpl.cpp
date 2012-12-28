@@ -7,8 +7,10 @@
 #include <vector>
 #include <iostream>
 
+
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
+
 #include "DocumentImpl.h"
 #include "Constants.hpp"
 
@@ -105,10 +107,10 @@ void DocumentImpl::write(ostream& out)
 		rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, (it->first).c_str(), (it->second).c_str());
 		root->append_node(node);
 	}
-
-	rapidxml::print(std::back_inserter(document), doc, 0);
-	out << document;
 	*/
+
+	// rapidxml::print(std::back_inserter(document), doc);
+	// out << document;
 
 	/*
 	for (rapidxml::xml_node<>* n = doc.first_node("document")->first_node(); n; n = n->next_sibling())
@@ -142,8 +144,8 @@ std::string DocumentImpl::encodeForXml( const std::string &sSrc )
     {
 		unsigned char c = (unsigned char)*iter;
 
-         switch(c)
-         {
+		switch(c)
+		{
 			case '&': sRet << "&amp;"; break;
 			case '<': sRet << "&lt;"; break;
 			case '>': sRet << "&gt;"; break;
@@ -151,8 +153,9 @@ std::string DocumentImpl::encodeForXml( const std::string &sSrc )
 			case '\'': sRet << "&apos;"; break;
 
 			default:
-				// sRet << c; break;
+				sRet << c; break;
 
+				/*
 				if ( c<32 || c>127 )
 				{
 					sRet << "&#" << (unsigned int)c << ";";
@@ -161,8 +164,8 @@ std::string DocumentImpl::encodeForXml( const std::string &sSrc )
 				{
 					sRet << c;
 				}
-
-         }
+				*/
+		}
     }
 
     return sRet.str();

@@ -8,10 +8,13 @@ from xml.sax.saxutils import escape
 
 from xml.dom.minidom import *
 
+'''
+TODO: add error handling and standardize errors returned from server
+'''
 class zsearch:
 
 	def __init__(self, url):
-		
+
 		if (url[len(url) - 1] == '/'):
 			self.url = url
 		else:
@@ -22,22 +25,22 @@ class zsearch:
 	def __str__(self):
 		return "zearch " + self.url
 
-	def __del__(self):	
+	def __del__(self):
 		print "destroying zsearch"
 
 	def getDocument(self, id):
 		params = urllib.urlencode({'id' : str(id)})
 		url = self.url + 'doc?' + params
 		print url
-		
+
 		data = dict()
-		
+
 		try:
 
 			response = urllib2.urlopen(url)
 			text = response.read()
-		
-			# http://www.evanjones.ca/python-utf8.html		
+
+			# http://www.evanjones.ca/python-utf8.html
 			#text = text.lstrip( unicode( codecs.BOM_UTF8, "utf8" ) )
 			#doc = parseString(text.encode("utf-8"))
 
@@ -45,9 +48,9 @@ class zsearch:
 
 			roots = doc.getElementsByTagName("document")
 
-		
+
 			for node in roots[0].childNodes:
-			
+
 				field = node.tagName
 				value = node.firstChild.nodeValue
 
@@ -58,21 +61,21 @@ class zsearch:
 		except urllib2.HTTPError as err:
 
 			if err.code == 404:
-				pass	
-			else:	
+				pass
+			else:
 				pass
 
 			#TODO: raise custom exception here
 			raise err
-	
+
 		return data
 
 	def addDocument(self, data):
-		
+
 		if (len(data)):
 
-			doc = xml.dom.minidom.Document()	
-			
+			doc = xml.dom.minidom.Document()
+
 			root = doc.createElement("document")
 			doc.appendChild(root)
 
@@ -82,7 +85,20 @@ class zsearch:
 				text = doc.createTextNode(value)
 				field.appendChild(text)
 				root.appendChild(field)
-			
 
-			print(doc.toprettyxml())
+			params = {'data' : doc.toxml()}
+			print params
+
+			postData = urllib.urlencode(params)
+			postData = postData.encode('utf-8')
+
+			print postData
+			url = self.url + "index";
+
+			print url
+			response = urllib2.urlopen(url, postData)
+			docId = response.read()
+
+			return docId
+
 

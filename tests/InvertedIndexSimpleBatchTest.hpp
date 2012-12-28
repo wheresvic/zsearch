@@ -86,7 +86,7 @@ struct InvertedIndexSimpleBatchTest : tpunit::TestFixture
 
 		ASSERT_TRUE(invertedIndex.exist(1));
 
-		invertedIndex.flush();
+		invertedIndex.flushBatch();
 
 		shared_ptr<Set> set;
 		invertedIndex.get(1, set);
@@ -113,7 +113,7 @@ struct InvertedIndexSimpleBatchTest : tpunit::TestFixture
 		invertedIndex.add(1, 44);
 		ASSERT_FALSE(invertedIndex.exist(1));
 
-		invertedIndex.flush();
+		invertedIndex.flushBatch();
 
 		ASSERT_TRUE(invertedIndex.exist(1));
 	}

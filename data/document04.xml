@@ -2,5 +2,5 @@
 <document>
 	<title>Input document</title>
 	<input1> some &lt; text</input1>
-	<input1> some more text</input1>
+	<input2>72.8/km²</input2>
 </document>

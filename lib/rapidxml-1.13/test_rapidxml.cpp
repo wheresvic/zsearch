@@ -34,5 +34,7 @@ int main()
 		cout << n->name() << " : " << v << '\n';
 	}
 
+	// rapidxml::print(std::back_inserter(document), doc);
+
 	return 0;
 }
