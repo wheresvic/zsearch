@@ -211,6 +211,11 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			flush(postings);
 		}
 
+		void setMaxBatchSize(unsigned int newSize)
+		{
+			maxBatchSize = newSize;
+		}
+
 		/**
 		 * Perhaps we shouldn't be exposing this method
 		 */
@@ -257,7 +262,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 		int add(unsigned int wordId, unsigned int docid)
 		{
-			cout << "adding item" << endl;
+			// cout << "adding item" << endl;
 
 			unique_lock<mutex> lock(m);
 
@@ -280,7 +285,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			{
 				if (!done)
 				{
-					cout << "notifying batch processor" << endl;
+					// cout << "notifying batch processor" << endl;
 
 					dataReady = true;
 					cond.notify_one();

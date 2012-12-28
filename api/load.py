@@ -27,8 +27,8 @@ for file in listing:
 
 	if (os.path.isfile(filename)):
 
-		if (filename != '../data/load/document_42772.txt'):
-			continue
+		#if (filename != '../data/load/document_42772.txt'):
+		#	continue
 
 		print filename
 		# f = codecs.open(filename, "r", "utf-8")

@@ -175,7 +175,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 						std::stringstream ss;
 						document->write(ss);
 						const std::string docStr = ss.str();
-						cout << docStr << endl;
+						// cout << docStr << endl;
 
 						evbuffer_add(evb, docStr.data(), docStr.size());
 						found = true;
@@ -468,7 +468,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			std::string key(param->key);
 			std::string value(param->value);
 
-			std::cout << value << std::endl;
+			// std::cout << value << std::endl;
 
 			evb = evbuffer_new();
 
@@ -719,6 +719,7 @@ int main(int argc, char **argv)
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
 	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);
+	engine->setMaxBatchSize(200);
 
 	unsigned short port = 8080;
 

@@ -48,6 +48,11 @@ class Engine
 			invertedIndex.flushBatch();
         }
 
+        void setMaxBatchSize(unsigned int newSize)
+        {
+			invertedIndex.setMaxBatchSize(newSize);
+		}
+
 		/*
         void Compact()
         {

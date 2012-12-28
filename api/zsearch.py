@@ -1,11 +1,7 @@
 
-import httplib
 import codecs
 import urllib
 import urllib2
-
-from xml.sax.saxutils import escape
-
 from xml.dom.minidom import *
 
 '''
@@ -28,8 +24,13 @@ class zsearch:
 	def __del__(self):
 		print "destroying zsearch"
 
+	'''
+	@param	id	the documentId to retrieve
+	@return		a dictionary of the field : value pairs
+	'''
 	def getDocument(self, id):
 		params = urllib.urlencode({'id' : str(id)})
+		params = params.encode('utf-8')
 		url = self.url + 'doc?' + params
 		print url
 
@@ -70,6 +71,10 @@ class zsearch:
 
 		return data
 
+	'''
+	@param	data 	dictionary/map of field : value pairs, to be inserted as a single document
+	@return			the docId of the inserted document
+	'''
 	def addDocument(self, data):
 
 		if (len(data)):
@@ -95,10 +100,53 @@ class zsearch:
 			print postData
 			url = self.url + "index";
 
-			print url
+			# print url
 			response = urllib2.urlopen(url, postData)
 			docId = response.read()
 
 			return docId
 
+		else:
 
+			#TODO: raise exception here
+			pass
+
+	'''
+	@param	query	the term to search for
+	@param	field	the field to search for, defaults to None
+	@return	 		a list of documentIds that match the search
+	'''
+	def search(self, query, field = None):
+
+		p = dict()
+		p['q'] = str(query)
+
+		if field is not None:
+			#TODO: add query for field
+			pass
+
+		params = urllib.urlencode(p)
+		params = params.encode('utf-8')
+		url = self.url + 'search?' + params
+		print url
+
+		l = list()
+
+		try:
+
+			response = urllib2.urlopen(url)
+			text = response.read()
+
+			l = (int(x) for x in text.split())
+
+		except urllib2.HTTPError as err:
+
+			if err.code == 404:
+				pass
+			else:
+				pass
+
+			#TODO: raise custom exception here
+			raise err
+
+		return l
