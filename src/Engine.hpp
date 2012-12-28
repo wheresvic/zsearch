@@ -145,8 +145,12 @@ class Engine
 					{
 						// cout << "field: "<< field <<" token: " << "wordid: "<< wordId << endl;
 						shared_ptr<Set> docSet;
-						invertedIndex.get(wordId, docSet);
-						unionSet.push_back(docSet);
+
+						// it is possible that the entry may not have been flushed to the index
+						if (invertedIndex.get(wordId, docSet))
+						{
+							unionSet.push_back(docSet);
+						}
 					}
 				}
 

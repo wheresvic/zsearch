@@ -34,7 +34,7 @@ for file in listing:
 		# f = codecs.open(filename, "r", "utf-8")
 		linestring = open(filename, "r").read()
 
-		print linestring
+		# print linestring
 
 		# params = urllib.urlencode({'data': escape(linestring)})
 		params = urllib.urlencode({'data' : linestring})

@@ -7,13 +7,18 @@ from zsearch import zsearch
 z = zsearch("http://localhost:8080")
 print z
 
-print "<test.py> get document id 1"
-d = z.getDocument(1)
+try:
 
-print "<test.py> print document contents"
-for key, value in d.iteritems():
-	print key
-	print value
+	print "<test.py> get document id 1"
+	d = z.getDocument(1)
+
+	print "<test.py> print document contents"
+	for key, value in d.iteritems():
+		print key
+		print value
+
+except Exception as err:
+	print err
 
 data = {'input' : 'snoop < dawg', 'complex' : '72.8/km²'}
 print "<test.py> add document", data
