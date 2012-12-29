@@ -137,5 +137,18 @@ namespace KVStore
 			}
 
 
+			Status KVStoreLevelDb::Write(KVStoreLevelDBBatch batch)
+			{
+				leveldb::Status s = db->Write(leveldb::WriteOptions(), &(batch.batch));
+
+				if (s.ok())
+				{
+					return Status::OK();
+				}
+
+				return Status::IOError();
+			}
+
+
 } // namespace KVStore
 

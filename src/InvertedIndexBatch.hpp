@@ -23,7 +23,7 @@
 
 
 #include "varint/ISetFactory.h"
-#include "KVStoreLevelDBBatch.h"
+#include "KVStoreLevelDBBatch.hpp"
 
 using google::dense_hash_map;
 
@@ -116,6 +116,16 @@ public:
 		consumerThread.join();
 	}
 
+	void shutDownBatchProcessor()
+	{
+		// TODO
+	}
+
+	void setMaxBatchSize(unsigned int newSize)
+	{
+		// TODO
+	}
+
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
 	{
 		string bitmap;
@@ -181,7 +191,7 @@ public:
 			vec.clear();
 		}
 
-		// store->Write(batch);
+		store->Write(batch);
 		batch.Clear();
 		return 1;
 	}

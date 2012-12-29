@@ -17,16 +17,13 @@ Design
 ======
 
 Engine 
-	-> tokenizer
-	
+	-> tokenizer	
 	-> documentStore
-	
 	-> invertedIndex
 		-> KVStore
 			-> InMemory
 			-> LevelDb
 		-> setFactory
-
 	-> setFactory
-	
 	-> wordIndex
+
