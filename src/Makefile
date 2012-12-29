@@ -10,7 +10,7 @@ CC = g++
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 
-BUILD_OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreInMemory.o $(BUILD_DIR)/KVStoreLevelDb.o
+BUILD_OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreLevelDb.o
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 

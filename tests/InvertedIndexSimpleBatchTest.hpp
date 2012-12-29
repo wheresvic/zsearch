@@ -1,7 +1,7 @@
 
 #include "src/InvertedIndexSimpleBatch.hpp"
 #include "lib/tpunit++.hpp"
-#include "src/KVStoreInMemory.h"
+#include "src/KVStoreInMemory.hpp"
 #include "varint/SetFactory.h"
 #include "varint/BasicSetFactory.h"
 #include "varint/Set.h"

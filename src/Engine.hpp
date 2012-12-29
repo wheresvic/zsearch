@@ -38,16 +38,25 @@ class Engine
 
 		}
 
+		/**
+		 *
+		 */
 		void disableBatching()
 		{
 			invertedIndex.shutDownBatchProcessor();
 		}
 
+		/**
+		 *
+		 */
 		void flushBatch()
         {
 			invertedIndex.flushBatch();
         }
 
+		/**
+		 *
+		 */
         void setMaxBatchSize(unsigned int newSize)
         {
 			invertedIndex.setMaxBatchSize(newSize);
@@ -63,7 +72,10 @@ class Engine
         ~Engine()
         { }
 
-
+		/**
+		 * @param	document
+		 * @return				docId of newly inserted document
+		 */
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
 			documentStore->addDoc(docId, document);
@@ -109,9 +121,62 @@ class Engine
 			return docId++;
 		}
 
+		/**
+		 * @param 	docId
+		 */
+		void deleteDocument(unsigned int docId)
+		{
+			/*
+			documentStore->addDoc(docId, document);
+
+			// we create a set of word in the document
+			// to avoid duplicate pair<wordid,docid>
+			set<unsigned int> documentWordId;
+
+			auto& entries = document->getEntries();
+
+			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
+			{
+				const string& field = iter->first;
+				const string& value = iter->second;
+
+				fields.insert(field);
+
+				tokenizer->setString(value);
+				while (tokenizer->nextToken())
+				{
+				    unsigned int id = 0;
+				    const string& token = tokenizer->getToken();
+
+                    if(wordIndex.Get(field,token,id))
+                    {
+						documentWordId.insert(id);
+					}
+					else
+					{
+					   	wordIndex.Put(field,token,wordId);
+					    documentWordId.insert(wordId++);
+					}
+				}
+
+
+			} // end looping through entries
+
+			for (auto value : documentWordId)
+			{
+				invertedIndex.add(value, docId);
+			}
+
+			return docId++;
+			*/
+		}
+
 
 		/**
-		 * Return documents that contain all the words in the query
+		 * @param	query
+		 * @param	start
+		 * @param	offset
+		 * @return			a vector of documentIds that contain all the words in the query
 		 */
 		vector<unsigned int> search(const string& query, unsigned int start, unsigned int offset) const
 		{

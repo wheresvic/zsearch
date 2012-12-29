@@ -12,7 +12,7 @@
 #include "TokenizerImpl.h"
 #include "DocumentStoreSimple.h"
 #include "KVStoreLevelDb.h"
-#include "KVStoreInMemory.h"
+#include "KVStoreInMemory.hpp"
 #include "Engine.hpp"
 #include "Constants.hpp"
 #include "Word.hpp"
@@ -62,7 +62,7 @@ int main()
 	char documentDelimiter = ' ';
 	int documentId = 500;
 
-	shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+	shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
