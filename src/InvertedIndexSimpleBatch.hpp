@@ -306,6 +306,32 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			return 1;
 		}
 
+		int remove(unsigned int wordId, unsigned int docId)
+		{
+			unique_lock<mutex> lock(m);
+
+			auto iter = postings.find(wordId);
+
+			if (iter != postings.end())
+			{
+				(iter->second).erase(docId);
+
+				return 1;
+			}
+
+			lock.unlock();
+
+			shared_ptr<Set> set;
+
+			if (get(wordId, set))
+			{
+				set->removeDocId(docId);
+				return 1;
+			}
+
+			return 0;
+		}
+
 
 		bool exist(unsigned int wordId)
 		{

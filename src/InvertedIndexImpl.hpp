@@ -87,6 +87,22 @@ class InvertedIndexImpl : public IInvertedIndex
 			return 1;
 		}
 
+		int remove(unsigned int wordId, unsigned int docId)
+		{
+			shared_ptr<Set> set;
+
+			if (get(wordId, set))
+			{
+				if (set->find(docId))
+				{
+					set->removeDocId(docId);
+					return 1;
+				}
+			}
+
+			return 0;
+		}
+
 		int flushBatch()
 		{
 			return 1;

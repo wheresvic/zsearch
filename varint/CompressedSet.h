@@ -105,6 +105,8 @@ public:
 
     CompressedSet unorderedAdd(unsigned int docId);
 
+	void removeDocId(unsigned int docId);
+
     CompressedSet removeDoc(unsigned int docId);
 
     void compactBaseListForOnlyCompBlocks();

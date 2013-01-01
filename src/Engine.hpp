@@ -99,13 +99,13 @@ class Engine
 				    unsigned int id = 0;
 				    const string& token = tokenizer->getToken();
 
-                    if(wordIndex.Get(field,token,id))
+                    if (wordIndex.Get(field, token, id))
                     {
 						documentWordId.insert(id);
 					}
 					else
 					{
-					   	wordIndex.Put(field,token,wordId);
+					   	wordIndex.Put(field, token, wordId);
 					    documentWordId.insert(wordId++);
 					}
 				}
@@ -126,8 +126,13 @@ class Engine
 		 */
 		void deleteDocument(unsigned int docId)
 		{
-			/*
-			documentStore->addDoc(docId, document);
+			shared_ptr<IDocument> document;
+
+			// get the document to be deleted
+			if (!documentStore->Get(docId, document))
+			{
+				return;
+			}
 
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
@@ -140,22 +145,19 @@ class Engine
 				const string& field = iter->first;
 				const string& value = iter->second;
 
-				fields.insert(field);
-
 				tokenizer->setString(value);
 				while (tokenizer->nextToken())
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer->getToken();
 
-                    if(wordIndex.Get(field,token,id))
+                    if (wordIndex.Get(field, token, id))
                     {
 						documentWordId.insert(id);
 					}
 					else
 					{
-					   	wordIndex.Put(field,token,wordId);
-					    documentWordId.insert(wordId++);
+					   	// TODO: this is a very weird case ...
 					}
 				}
 
@@ -167,8 +169,8 @@ class Engine
 				invertedIndex.add(value, docId);
 			}
 
-			return docId++;
-			*/
+			// TODO: fix Set.h to add removeDocId implementation
+			// documentStore->removeDoc(docId);
 		}
 
 
@@ -312,9 +314,9 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch invertedIndex;
+		// InvertedIndexBatch invertedIndex;
 		// InvertedIndexImpl invertedIndex;
-		// InvertedIndexSimpleBatch invertedIndex;
+		InvertedIndexSimpleBatch invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;

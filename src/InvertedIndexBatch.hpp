@@ -227,6 +227,10 @@ public:
 		return 1;
 	}
 
+	int remove(unsigned int wordId, unsigned int docId)
+	{
+		throw -21;
+	}
 
 	int Compact(){
 		store->Compact();

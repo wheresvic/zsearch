@@ -57,7 +57,7 @@
             int baseListForOnlyCompBlocksSize = baseListForOnlyCompBlocks.size();
             out.write((char*)&baseListForOnlyCompBlocksSize,4);
             out.write((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
-            
+
             //write compressed blocks
             sequenceOfCompBlocks.write(out);
         }
@@ -65,8 +65,8 @@
     }
 
     void CompressedSet::read(istream & in)
-	{ 
-		
+	{
+
         //read totalDocIdNum
         in.read((char*)&totalDocIdNum,4);
 		if (totalDocIdNum>0)
@@ -79,17 +79,17 @@
 		        //read base (skipping info)
 		        int baseListForOnlyCompBlocksSize = 0;
 		       	in.read((char*)&baseListForOnlyCompBlocksSize,4);
-               	
+
 		       	baseListForOnlyCompBlocks.clear();
 		       	baseListForOnlyCompBlocks.resize(baseListForOnlyCompBlocksSize);
 		       	in.read((char*)&baseListForOnlyCompBlocks[0],baseListForOnlyCompBlocksSize*4);
 		       	//lastAdded = baseListForOnlyCompBlocks[baseListForOnlyCompBlocks.size()-1];
-               	
-               	
+
+
 		       	//write compressed blocks
 		       	sequenceOfCompBlocks.read(in);
 			}
-		} 
+		}
     }
 
     shared_ptr<Set::Iterator>  CompressedSet::iterator() const {
@@ -159,7 +159,7 @@
         //the last docId of the block
 		baseListForOnlyCompBlocks.push_back(currentNoCompBlock[sizeOfCurrentNoCompBlock-1]);
        // baseListForOnlyCompBlocks.push_back(lastAdded);
-     
+
         // compress currentNoCompBlock[] (excluding the input docId),
         shared_ptr<CompressedDeltaChunk> compRes = PForDeltaCompressCurrentBlock();
         sequenceOfCompBlocks.add(compRes);
@@ -202,6 +202,21 @@
 	}
 	return set;
   }
+
+	void CompressedSet::removeDocId(unsigned int docId)
+	{
+		// TODO:
+
+		/*
+		CompressedSet set;
+		set = this->removeDoc(docId);
+		this->swap(set);
+		*/
+
+		// or fix the interface to be able to return Set instead of CompressedSet
+
+		throw -17;
+	}
 
   void CompressedSet::compactBaseListForOnlyCompBlocks(){
 	if (baseListForOnlyCompBlocks.size() != baseListForOnlyCompBlocks.capacity()) {

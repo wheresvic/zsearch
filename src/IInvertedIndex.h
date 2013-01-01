@@ -9,6 +9,7 @@ class IInvertedIndex
 
 		virtual int get(unsigned int wordId, std::shared_ptr<Set>& outset) const = 0;
 		virtual int add(unsigned int wordId, unsigned int docid) = 0;
+		virtual int remove(unsigned int wordId, unsigned int docId) = 0;
 
 		// Virtual destructor
 		virtual ~IInvertedIndex() { }
