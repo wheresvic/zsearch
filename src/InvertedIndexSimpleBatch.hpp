@@ -308,6 +308,8 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 		int remove(unsigned int wordId, unsigned int docId)
 		{
+			int ret = 0;
+
 			unique_lock<mutex> lock(m);
 
 			auto iter = postings.find(wordId);
@@ -315,9 +317,10 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			if (iter != postings.end())
 			{
 				(iter->second).erase(docId);
-
-				return 1;
+				ret = 1;
 			}
+
+			// is it possible that the same wordId, docId combo also exists in the index?
 
 			lock.unlock();
 
@@ -326,10 +329,10 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			if (get(wordId, set))
 			{
 				set->removeDocId(docId);
-				return 1;
+				ret = put(wordId, set);
 			}
 
-			return 0;
+			return ret;
 		}
 
 

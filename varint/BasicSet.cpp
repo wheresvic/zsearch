@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "BasicSet.h"
-    
+
 	BasicSet::BasicSet(const BasicSet& other)
 	{
 	    docs = other.docs;
@@ -22,7 +22,7 @@
 	{
 		assert(false);
     }
- 
+
     BasicSet::BasicSet()
 	{ }
 
@@ -32,7 +32,7 @@
 
     void BasicSet::write(ostream & out)
 	{
-		for (auto val : docs) 
+		for (auto val : docs)
 		{
 			out << val << " ";
 		}
@@ -41,7 +41,7 @@
     void BasicSet::read(istream &in)
 	{
 		docs.clear();
-	
+
 		unsigned int docId;
 		while(in >> docId)
 		{
@@ -49,7 +49,7 @@
 		}
     }
 
-    shared_ptr<Set::Iterator> BasicSet::iterator() const 
+    shared_ptr<Set::Iterator> BasicSet::iterator() const
 	{
 		shared_ptr<Set::Iterator> it(new BasicSet::Iterator(this));
 		return it;
@@ -59,9 +59,14 @@
 	/**
 	 * Add document to this set
 	 */
-	void BasicSet::addDoc(unsigned int docId) 
+	void BasicSet::addDoc(unsigned int docId)
 	{
-		docs.insert(docId);		
+		docs.insert(docId);
+	}
+
+	void BasicSet::addDocs(unsigned int* docids,size_t start,size_t len)
+	{
+		throw -1;
 	}
 
 	BasicSet BasicSet::unorderedAdd(unsigned int docId)
@@ -77,23 +82,28 @@
 				inserted = true;
 				set.addDoc(docId);
 			}
-			
+
 			set.addDoc(val);
 		}
-		
+
 		if (!inserted)
 		{
 			set.addDoc(docId);
 		}
-		
+
 		return set;
+	}
+
+	void BasicSet::removeDocId(unsigned int docId)
+	{
+		docs.erase(docId);
 	}
 
 	BasicSet BasicSet::removeDoc(unsigned int docId)
 	{
 		BasicSet set;
 		BasicSet::Iterator it(this);
-		
+
 		while (it.nextDoc() != NO_MORE_DOCS )
 		{
 			unsigned int val = it.docID();
@@ -112,16 +122,16 @@
      * Gets the number of ids in the set
      * @return docset size
      */
-    unsigned int BasicSet::size() const 
+    unsigned int BasicSet::size() const
 	{
 		return docs.size();
     }
 
-    inline bool BasicSet::find(unsigned int target) const 
+    inline bool BasicSet::find(unsigned int target) const
 	{
 		if (docs.find(target) != docs.end())
 			return true;
-			
+
 		return false;
     }
 
@@ -129,25 +139,25 @@
 	BasicSet::Iterator::Iterator(const BasicSet* const parentSet)
 	{
 		set = parentSet;
-		cursor = (parentSet->docs).begin();		
+		cursor = (parentSet->docs).begin();
 	}
 
 	BasicSet::Iterator::Iterator(const BasicSet::Iterator& other)
 	{
-		cursor = other.cursor;    		
-		set = other.set;    
+		cursor = other.cursor;
+		set = other.set;
 	}
 
 	BasicSet::Iterator& BasicSet::Iterator::operator=(const BasicSet::Iterator& other)
 	{
-		cursor = other.cursor;		
+		cursor = other.cursor;
 		set = other.set;
 		return *this;
 	}
 
 	BasicSet::Iterator::~Iterator()
 	{
-		
+
 	}
 
     unsigned int BasicSet::Iterator::nextDoc()
@@ -157,12 +167,12 @@
 			init = true;
 			return *cursor;;
 		}
-	
-		if ((cursor != (set->docs).end()) && (++cursor != (set->docs).end())) 
+
+		if ((cursor != (set->docs).end()) && (++cursor != (set->docs).end()))
 		{
 			return *cursor;
         }
-		
+
         return NO_MORE_DOCS;
     }
 
@@ -170,23 +180,23 @@
 	{
         if (cursor != (set->docs).end())
 			return *cursor;
-		
+
 		return NO_MORE_DOCS;
     }
 
 	// Advances to the first beyond the current
-    // whose value is greater than or equal to target.    
+    // whose value is greater than or equal to target.
     unsigned int BasicSet::Iterator::Advance(unsigned int target)
 	{
 		while (cursor != (set->docs).end())
 		{
 			if ((*cursor++ >= target) && (cursor != (set->docs).end()))
 			{
-				return *cursor;				
+				return *cursor;
 			}
 		}
-		
+
 		return NO_MORE_DOCS;
     }
 
-     
+

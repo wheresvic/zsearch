@@ -166,11 +166,10 @@ class Engine
 
 			for (auto value : documentWordId)
 			{
-				invertedIndex.add(value, docId);
+				invertedIndex.remove(value, docId);
 			}
 
-			// TODO: fix Set.h to add removeDocId implementation
-			// documentStore->removeDoc(docId);
+			documentStore->removeDoc(docId);
 		}
 
 
@@ -208,14 +207,15 @@ class Engine
 				{
 					unsigned int wordId = 0;
 
-					if(wordIndex.Get(field, token, wordId))
+					if (wordIndex.Get(field, token, wordId))
 					{
-						// cout << "field: "<< field <<" token: " << "wordid: "<< wordId << endl;
+						cout << "field: " << field << " token: " << token << " wordid: " << wordId << endl;
 						shared_ptr<Set> docSet;
 
 						// it is possible that the entry may not have been flushed to the index
 						if (invertedIndex.get(wordId, docSet))
 						{
+							cout << "found" << endl;
 							unionSet.push_back(docSet);
 						}
 					}

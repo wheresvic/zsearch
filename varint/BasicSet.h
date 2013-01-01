@@ -9,25 +9,25 @@ using namespace std;
 
 class BasicSet;
 
-class BasicSet : public Set 
+class BasicSet : public Set
 {
 
 	public:
-	
-		class Iterator : public Set::Iterator 
+
+		class Iterator : public Set::Iterator
 		{
 			private:
-				set<unsigned int>::iterator cursor;				
+				set<unsigned int>::iterator cursor;
 				// parent
 				const BasicSet* set;
-				
+
 				bool init = false;
-			
+
 			public:
-		
+
 				Iterator(const BasicSet* parentSet);
 				Iterator(const BasicSet::Iterator& other);
-				
+
 				// assignator operator disabled for now
 				BasicSet::Iterator& operator=(const BasicSet::Iterator& rhs);
 				~Iterator();
@@ -35,17 +35,17 @@ class BasicSet : public Set
 			    unsigned int docID();
 			    unsigned int nextDoc();
 				unsigned int Advance(unsigned int target);
-			
+
 		};
 
 	private:
-    
+
 		const BasicSet& operator=(const BasicSet& other);
-		
+
 		set<unsigned int> docs;
 
 	public:
-		
+
 		BasicSet(const BasicSet& other);
 
 		/**
@@ -74,14 +74,18 @@ class BasicSet : public Set
 		 */
 		void addDoc(unsigned int docId);
 
+		void addDocs(unsigned int* docids,size_t start,size_t len);
+
 		BasicSet unorderedAdd(unsigned int docId);
+
+		void removeDocId(unsigned int docId);
 
 		BasicSet removeDoc(unsigned int docId);
 
 		void compact();
 
 		void initSet();
-		
+
 		/**
 		 * Gets the number of ids in the set
 		 * @return docset size
@@ -93,4 +97,4 @@ class BasicSet : public Set
 
 };
 
-#endif 
+#endif

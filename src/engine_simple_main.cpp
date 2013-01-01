@@ -63,6 +63,8 @@ int main()
 	int documentId = 500;
 
 	shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
+	// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
@@ -107,6 +109,9 @@ int main()
 	string query = "some  more text";
 	search(query, engine, 0, 0);
 
+	// engine.deleteDocument(2);	// deletes some more text
+	search(query, engine, 0, 0);
+
 	query = "série";
 	search(query, engine, 0, 0);
 
@@ -117,6 +122,9 @@ int main()
 	search(query, engine, 5, 5);
 	search(query, engine, 4, 7);
 	search(query, engine, 2, 0);
+
+
+
 
 	return 0;
 }

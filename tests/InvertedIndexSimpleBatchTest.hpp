@@ -64,6 +64,7 @@ struct InvertedIndexSimpleBatchTest : tpunit::TestFixture
 		invertedIndex.add(1, 9);
 
 		ASSERT_TRUE(invertedIndex.exist(1));
+
 	}
 
 
@@ -100,6 +101,25 @@ struct InvertedIndexSimpleBatchTest : tpunit::TestFixture
 			cout << it->docID() << " ";
 			ASSERT_TRUE(i == it->docID());
 			++i;
+		}
+
+		cout << endl;
+
+		ASSERT_TRUE(1 == invertedIndex.remove(1, 7));
+		ASSERT_TRUE(1 == invertedIndex.remove(1, 13));
+
+		shared_ptr<Set> set_;
+		invertedIndex.get(1, set_);
+
+		shared_ptr<Set::Iterator> it_ = set_->iterator();
+
+		unsigned int i_ = 8;
+
+		while(it_->nextDoc() != NO_MORE_DOCS)
+		{
+			cout << it_->docID() << " ";
+			ASSERT_TRUE(i_ == it_->docID());
+			++i_;
 		}
 
 	}

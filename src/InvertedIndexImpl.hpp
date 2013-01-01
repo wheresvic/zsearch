@@ -96,7 +96,7 @@ class InvertedIndexImpl : public IInvertedIndex
 				if (set->find(docId))
 				{
 					set->removeDocId(docId);
-					return 1;
+					return put(wordId, set);
 				}
 			}
 

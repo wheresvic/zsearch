@@ -27,6 +27,7 @@ struct InvertedIndexImplTest : tpunit::TestFixture
 		InvertedIndexImpl invertedIndex(invertedIndexStore, setFactory);
 		invertedIndex.add(1, 44);
 		ASSERT_TRUE(invertedIndex.exist(1));
+		ASSERT_TRUE(1 == invertedIndex.remove(1, 44));
 	}
 
 	void testCompressedSet()
@@ -37,5 +38,5 @@ struct InvertedIndexImplTest : tpunit::TestFixture
 		invertedIndex.add(1, 44);
 		ASSERT_TRUE(invertedIndex.exist(1));
 	}
-	
+
 };

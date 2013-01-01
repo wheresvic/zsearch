@@ -18,17 +18,21 @@ public:
 		virtual ~Iterator() {};
 	};
 	virtual std::shared_ptr<Iterator> iterator()  const = 0;
-	virtual void addDocs(unsigned int* docids,size_t start,size_t len) {};
-	virtual void addDoc(unsigned int docId) {};
-	virtual void removeDocId(unsigned int docId) {};
+
+	virtual void addDocs(unsigned int* docids,size_t start,size_t len) { throw -101; };
+	virtual void addDoc(unsigned int docId) { throw -102; };
+	virtual void removeDocId(unsigned int docId) { throw -103; };
 	// Free up unused memory in dynamic collection
-	virtual void compact() {};
+	virtual void compact() { throw -104; };
 
 	virtual bool find(unsigned int target) const = 0;
+
+	virtual void write(std::ostream & out) { throw -105; };
+	virtual void read(std::istream & in) { throw -106; };
+	// virtual void size(std::istream & in) = 0;
+
+	virtual unsigned int size() const = 0;
+
 	virtual ~Set() {}
-	virtual void write(std::ostream & out){}
-	virtual void read(std::istream & in){}
-	virtual void size(std::istream & in){}
-	virtual unsigned int size() const =0;
 };
 #endif  // ABSTRACT_SET_H__
