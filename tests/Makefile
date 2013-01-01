@@ -14,7 +14,7 @@ LEVELDB_DIR = ../leveldb-1.7.0
 
 OBJECTS = $(BUILD_DIR)/DocumentImpl.o $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreLevelDb.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I..
+CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include

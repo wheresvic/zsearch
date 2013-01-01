@@ -62,7 +62,7 @@
 
 #include "DocumentStoreSimple.h"
 #include "TokenizerImpl.h"
-#include "DocumentImpl.h"
+#include "DocumentImpl.hpp"
 #include "KVStoreLevelDb.h"
 #include "Constants.hpp"
 #include "Engine.hpp"

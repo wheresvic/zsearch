@@ -8,7 +8,7 @@
 
 // #include "../varint/CompressedSet.h"
 
-#include "DocumentImpl.h"
+#include "DocumentImpl.hpp"
 #include "TokenizerImpl.h"
 #include "DocumentStoreSimple.h"
 #include "KVStoreLevelDb.h"

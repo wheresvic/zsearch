@@ -9,7 +9,7 @@
 #include <sstream>
 
 #include "lib/tpunit++.hpp"
-#include "src/DocumentImpl.h"
+#include "src/DocumentImpl.hpp"
 #include "TestUtils.hpp"
 
 using namespace std;
