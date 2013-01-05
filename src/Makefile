@@ -19,7 +19,7 @@ HEADERS = Constants.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hp
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include 
+CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include -DOS_MACOSX
 LIBS = -L/opt/local/lib -lleveldb -lm -levent
 endif
 
