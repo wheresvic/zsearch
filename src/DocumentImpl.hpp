@@ -101,7 +101,7 @@ class DocumentImpl : public IDocument
 			// for some weird reason rapidxml_print is not working ...
 			// either fix or consider using another xml library
 
-			/*
+			
 			string document;
 
 			rapidxml::xml_document<> doc;
@@ -113,10 +113,10 @@ class DocumentImpl : public IDocument
 				rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, (it->first).c_str(), (it->second).c_str());
 				root->append_node(node);
 			}
-			*/
+			
 
-			// rapidxml::print(std::back_inserter(document), doc);
-			// out << document;
+			rapidxml::print(std::back_inserter(document), doc);
+			out << document;
 
 			/*
 			for (rapidxml::xml_node<>* n = doc.first_node("document")->first_node(); n; n = n->next_sibling())
@@ -127,6 +127,7 @@ class DocumentImpl : public IDocument
 			}
 			*/
 
+            /*
 			out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 			out << "<document>";
 
@@ -138,7 +139,7 @@ class DocumentImpl : public IDocument
 			}
 
 			out << "</document>";
-
+            */
 		}
 
 	private:

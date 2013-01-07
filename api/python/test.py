@@ -20,6 +20,20 @@ try:
 except Exception as err:
 	print err
 
+data = {'input' : 'victor &amp; parmar &Eacute;'}
+print "<test.py> add document", data
+docId = z.addDocument(data)
+print "<test.py> returned docId:" + docId
+
+print "<test.py> retrieve inserted document"
+d = z.getDocument(docId)
+
+print "<test.py> print document contents"
+for key, value in d.iteritems():
+	print key
+	print value
+
+
 data = {'input' : 'snoop < dawg', 'complex' : '72.8/km²'}
 print "<test.py> add document", data
 docId = z.addDocument(data)
@@ -32,6 +46,8 @@ print "<test.py> print document contents"
 for key, value in d.iteritems():
 	print key
 	print value
+
+
 
 print "<test.py> search for 'some'"
 docIds = z.search("some")
