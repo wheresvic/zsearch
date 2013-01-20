@@ -38,7 +38,7 @@ You can clone this repo and simply execute:
     git clone git://github.com/victorparmar/zsearch.git
     cd zsearch
     ./buildall.sh
-	TODO: running
+	./build/server ./src
 
 ## License
 

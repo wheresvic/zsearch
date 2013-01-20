@@ -1,10 +1,13 @@
 
-Github
+Main page
+- 
 
-License - Mozilla
+Demo
+- 
 
-Cloning and running 
+Quick start
+- 
 
-Dependencies
-
+Tutorial
+- 
 
