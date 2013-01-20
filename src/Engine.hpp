@@ -10,7 +10,7 @@
 #include "Word.hpp"
 
 #include "InvertedIndexBatch.hpp"
-#include "InvertedIndexSimpleBatch.hpp"
+// #include "InvertedIndexSimpleBatch.hpp"
 #include "InvertedIndexImpl.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
@@ -83,6 +83,8 @@ class Engine
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
 			set<unsigned int> documentWordId;
+
+			// TODO: Add SparesetSet for better performance
 
 			auto& entries = document->getEntries();
 
@@ -314,9 +316,9 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		// InvertedIndexBatch invertedIndex;
+		InvertedIndexBatch invertedIndex;
 		// InvertedIndexImpl invertedIndex;
-		InvertedIndexSimpleBatch invertedIndex;
+		// InvertedIndexSimpleBatch invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;

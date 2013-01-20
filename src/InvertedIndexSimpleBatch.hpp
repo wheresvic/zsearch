@@ -360,4 +360,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 };
 
+blabla
+
 #endif

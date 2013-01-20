@@ -44,7 +44,7 @@ namespace KVStore
 
 			Status Delete(const std::string& key);
 			
-			Status Write(KVStoreLevelDBBatch batch);
+			Status Write(KVStoreLevelDBBatch& batch);
 
 			void Compact();
 

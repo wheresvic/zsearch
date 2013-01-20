@@ -52,10 +52,12 @@ class zsearch:
 
 			for node in roots[0].childNodes:
 
-				field = node.tagName
-				value = node.firstChild.nodeValue
+				if (node.nodeType != node.TEXT_NODE):
+			
+					field = node.tagName
+					value = node.firstChild.nodeValue
 
-				data[field] = value
+					data[field] = value
 
 			# print field.encode('utf-8') + " " + value.encode('utf-8')
 
