@@ -21,8 +21,9 @@ TODO
 
 ## Contact
 
--   [Homepage] http://victorparmar.github.com/zsearch/
--   [email](victorparmar@gmail.com) at Victor, (maximecaron@gmail.com) at Maxime
+-   [Homepage] (http://victorparmar.github.com/zsearch/)
+-   [Victor] (victorparmar@gmail.com)
+-   [Maxime] (maximecaron@gmail.com)
 
 ## Dependencies
 
