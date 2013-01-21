@@ -21,7 +21,7 @@ TODO
 
 ## Contact
 
--   [Homepage]
+-   [Homepage] http://victorparmar.github.com/zsearch/
 -   [email](victorparmar@gmail.com) at Victor, (maximecaron@gmail.com) at Maxime
 
 ## Dependencies
@@ -29,6 +29,7 @@ TODO
 All of the following:
 
 -	[g++] (http://gcc.gnu.org/) >= 4.7.2
+-	[libevent2] (http://libevent.org/) >= 2.0.19
 -   [Python](http://python.org/) >= 2.7
 
 ## Cloning and Running
