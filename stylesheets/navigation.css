@@ -1,0 +1,41 @@
+
+#nav1 
+{
+	/* font-size: 24px; */
+	text-transform: uppercase;
+	margin-bottom: 20px;
+}
+
+#nav1 ul 
+{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	/* text-align: center; */
+}
+
+#nav1 li 
+{
+	/* float: left; */
+	/* display: inline; */
+	padding: 5px 0 5px 0;
+}
+
+#nav1 li a 
+{
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 5px solid #e3e3e3;
+}
+
+#nav1 li a:hover 
+{
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 5px solid #39c;
+}
+
+#nav1 li.focus a 
+{
+	border-bottom: 5px solid #39c;
+}
