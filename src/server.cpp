@@ -1,11 +1,3 @@
-/*
-  A trivial static http webserver using Libevent's evhttp.
-
-  This is not the best code in the world, and it does some fairly stupid stuff
-  that you would never want to do in a production webserver. Caveat hackor!
-
- */
-
 
 #include <stdio.h>
 #include <iostream>
@@ -15,23 +7,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef _WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
-#include <io.h>
-#include <fcntl.h>
 #ifndef S_ISDIR
 #define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
 #endif
-#else
+
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
-#endif
 
 #include <event2/event.h>
 #include <event2/http.h>
@@ -44,14 +29,6 @@
 # ifdef _XOPEN_SOURCE_EXTENDED
 #  include <arpa/inet.h>
 # endif
-#endif
-
-#ifdef _WIN32
-#define stat _stat
-#define fstat _fstat
-#define open _open
-#define close _close
-#define O_RDONLY _O_RDONLY
 #endif
 
 #include <string>
@@ -70,12 +47,6 @@
 #include "varint/SetFactory.h"
 #include "varint/BasicSetFactory.h"
 
-static const std::string POST_HTM = "/post.htm";
-static const std::string SEARCH_PATH = "/search";
-static const std::string POST_PATH = "/post";
-static const std::string DOC_PATH = "/doc";
-static const std::string INDEX_PATH = "/index";
-static const std::string ROOT = "/";
 
 static Engine *engine;
 
@@ -162,7 +133,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 
 				printf("%s\n%s\n", key.c_str(), value.c_str());
 
-				if (key.compare(zsearch::DOC_ID_KEY) == 0)
+				if (key.compare(zsearch::server::DOC_ID_KEY) == 0)
 				{
 					std::cout << "retrieving document " << value << std::endl;
 
@@ -293,7 +264,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 
 				std::cout << key << " " << value << std::endl;
 
-				if (key.compare(zsearch::GET_SEARCH_QUERY_KEY) == 0)
+				if (key.compare(zsearch::server::GET_SEARCH_QUERY_KEY) == 0)
 				{
 					query = value;
 				}
@@ -473,7 +444,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 			evb = evbuffer_new();
 
 			// check that the first key is data
-			if (key.compare(zsearch::POST_DATA_KEY) == 0)
+			if (key.compare(zsearch::server::POST_DATA_KEY) == 0)
 			{
 				try
 				{
@@ -506,46 +477,6 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 		{
 			evhttp_send_error(req, HTTP_BADREQUEST, 0);
 		}
-
-		// this will segfault
-		/*
-		evb = evbuffer_new();
-
-		std::string keyCompare = zsearch::POST_DATA_KEY + "=";
-
-		if (keyCompare.compare(postData.substr(0, 5)) == 0)
-		{
-			// data=
-			std::string value = postData.substr(5);
-			std::cout << value << std::endl;
-
-			try
-			{
-				std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
-				std::cout << "made document" << std::endl;
-				unsigned int docId = engine->addDocument(document);
-				std::cout << "Added document: " << docId << std::endl;
-				evbuffer_add_printf(evb, "%u", docId);
-			}
-			catch (const std::string& e)
-			{
-				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-				evbuffer_add_printf(evb, e.c_str());
-			}
-			catch (const std::exception& e)
-			{
-				evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-				evbuffer_add_printf(evb, e.what());
-			}
-		}
-		else
-		{
-			evbuffer_add_printf(evb, "Invalid post data, first key must be in the form of data -> {xml}. See documentation for more details\n");
-		}
-
-		evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
-		evhttp_send_reply(req, 200, "OK", evb);
-		*/
 
 		evhttp_clear_headers(&params);
 
@@ -603,7 +534,7 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 		path = evhttp_uri_get_path(decoded);
 		if (!path)
 		{
-			path = ROOT.c_str();
+			path = zsearch::server::ROOT.c_str();
 		}
 
 		// We need to decode it, to see what path the user really wanted
@@ -623,7 +554,7 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 			// add headers
 			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
 
-			if (POST_HTM.compare(decoded_path) == 0)
+			if (zsearch::server::POST_HTM.compare(decoded_path) == 0)
 			{
 				len = strlen(decoded_path)+strlen(docroot)+2;
 				whole_path = (char *) malloc(len);
@@ -668,9 +599,9 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 			else // if (ROOT.compare(decoded_path) == 0)
 			{
 				evbuffer_add_printf(evb, "Invalid request <br />\n");
-				evbuffer_add_printf(evb, "%s to post data manually or %s to post via api<br />\n", POST_HTM.c_str(), INDEX_PATH.c_str());
-				evbuffer_add_printf(evb, "%s to search <br />\n", SEARCH_PATH.c_str());
-				evbuffer_add_printf(evb, "%s to get document by id <br />\n", DOC_PATH.c_str());
+				evbuffer_add_printf(evb, "%s to post data manually or %s to post via api<br />\n", zsearch::server::POST_HTM.c_str(), zsearch::server::INDEX_PATH.c_str());
+				evbuffer_add_printf(evb, "%s to search <br />\n", zsearch::server::SEARCH_PATH.c_str());
+				evbuffer_add_printf(evb, "%s to get document by id <br />\n", zsearch::server::DOC_PATH.c_str());
 			}
 		}
 
@@ -719,17 +650,11 @@ int main(int argc, char **argv)
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
 	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);
-	engine->setMaxBatchSize(200);
+	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 
-	unsigned short port = 8080;
-
-#ifdef _WIN32
-	WSADATA WSAData;
-	WSAStartup(0x101, &WSAData);
-#else
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		return (1);
-#endif
+
 	if (argc < 2)
 	{
 		syntax();
@@ -754,23 +679,23 @@ int main(int argc, char **argv)
 	// The /dump URI will dump all requests to stdout and say 200 ok
 	// evhttp_set_cb(http, "/dump", dump_request_cb, NULL);
 
-	evhttp_set_cb(http, SEARCH_PATH.c_str(), search_request_cb, NULL);
-	evhttp_set_cb(http, DOC_PATH.c_str(), doc_request_cb, NULL);
-	evhttp_set_cb(http, INDEX_PATH.c_str(), post_request_cb, NULL);
+	evhttp_set_cb(http, zsearch::server::SEARCH_PATH.c_str(), search_request_cb, NULL);
+	evhttp_set_cb(http, zsearch::server::DOC_PATH.c_str(), doc_request_cb, NULL);
+	evhttp_set_cb(http, zsearch::server::INDEX_PATH.c_str(), post_request_cb, NULL);
 
 	// We want to accept arbitrary requests, so we need to set a "generic"
 	evhttp_set_gencb(http, generic_request_cb, argv[1]);
 
 	// Now we tell the evhttp what port to listen on
-	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", port);
+	handle = evhttp_bind_socket_with_handle(http, "0.0.0.0", zsearch::server::PORT);
 
 	if (!handle)
 	{
-		fprintf(stderr, "couldn't bind to port %d. Exiting.\n", (int)port);
+		fprintf(stderr, "couldn't bind to port %d. Exiting.\n", zsearch::server::PORT);
 		return 1;
 	}
 
-	printf("Listening on 0.0.0.0:%d\n", port);
+	printf("Listening on 0.0.0.0:%d\n", zsearch::server::PORT);
 
 	event_base_dispatch(base);
 

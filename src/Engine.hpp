@@ -211,13 +211,13 @@ class Engine
 
 					if (wordIndex.Get(field, token, wordId))
 					{
-						cout << "field: " << field << " token: " << token << " wordid: " << wordId << endl;
+						// cout << "field: " << field << " token: " << token << " wordid: " << wordId << endl;
 						shared_ptr<Set> docSet;
 
 						// it is possible that the entry may not have been flushed to the index
 						if (invertedIndex.get(wordId, docSet))
 						{
-							cout << "found" << endl;
+							// cout << "found" << endl;
 							unionSet.push_back(docSet);
 						}
 					}
