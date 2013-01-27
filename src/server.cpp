@@ -261,9 +261,33 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 				{
 					query = value;
 				}
+
+				if (key.compare(zsearch::server::GET_SEARCH_START_KEY) == 0)
+				{
+					try
+					{
+						start = ZUtil::getUInt(value);
+					}
+					catch (const string& e)
+					{
+						// do nothing
+					}
+				}
+
+				if (key.compare(zsearch::server::GET_SEARCH_OFFSET_KEY) == 0)
+				{
+					try
+					{
+						offset = ZUtil::getUInt(value);
+					}
+					catch (const string& e)
+					{
+						// do nothing
+					}
+				}
 			}
 
-			std::cout << "searching for " << query << std::endl;
+			std::cout << "searching for " << query << " with start " << start << " and offset " << offset << std::endl;
 
 			auto docIdSet = engine->search(query, start, offset);
 
