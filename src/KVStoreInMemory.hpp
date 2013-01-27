@@ -9,6 +9,7 @@
 
 #include "IKVStore.h"
 #include "KVStoreLevelDBBatch.hpp"
+#include "ZUtil.hpp"
 
 namespace KVStore
 {
@@ -16,13 +17,6 @@ namespace KVStore
 	class KVStoreInMemory : public IKVStore
 	{
 		private:
-
-			void ConvertUint64ToString(std::string& dst, uint64_t v)
-			{
-				std::stringstream ss;
-				ss << v;
-				dst = ss.str();
-			}
 
 			std::map<std::string, std::string> store;
 
@@ -54,8 +48,7 @@ namespace KVStore
 
 			Status Put(uint64_t key, const std::string& value)
 			{
-				std::string strKey;
-				ConvertUint64ToString(strKey, key);
+				std::string strKey = ZUtil::getString(key);
 				return Put(strKey, value);
 			}
 
@@ -79,8 +72,7 @@ namespace KVStore
 
 			Status Get(uint64_t key, std::string& value)
 			{
-				std::string strKey;
-				ConvertUint64ToString(strKey, key);
+				std::string strKey = ZUtil::getString(key);
 				return Get(strKey, &value);
 			}
 
@@ -122,7 +114,7 @@ namespace KVStore
 				return Status::OK();
 			}
 
-			Status Write(KVStoreLevelDBBatch batch)
+			Status Write(KVStoreLevelDBBatch& batch)
 			{
 				return Status::NotSupported();
 			}

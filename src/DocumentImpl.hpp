@@ -98,10 +98,6 @@ class DocumentImpl : public IDocument
 
 		void write(ostream& out)
 		{
-			// for some weird reason rapidxml_print is not working ...
-			// either fix or consider using another xml library
-
-			
 			string document;
 
 			rapidxml::xml_document<> doc;
@@ -113,73 +109,14 @@ class DocumentImpl : public IDocument
 				rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, (it->first).c_str(), (it->second).c_str());
 				root->append_node(node);
 			}
-			
 
 			rapidxml::print(std::back_inserter(document), doc);
 			out << document;
-
-			/*
-			for (rapidxml::xml_node<>* n = doc.first_node("document")->first_node(); n; n = n->next_sibling())
-			{
-				string field(n->name());
-				string value(n->value());
-				std::cout << field << " " << value << std::endl;
-			}
-			*/
-
-            /*
-			out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-			out << "<document>";
-
-			for (auto it = entries.begin(); it != entries.end(); ++it)
-			{
-				out << "<" << it->first << ">";
-				out << encodeForXml(it->second);
-				out << "</" << it->first << ">";
-			}
-
-			out << "</document>";
-            */
 		}
 
 	private:
 
 		map<string, string> entries;
-
-		std::string encodeForXml( const std::string &sSrc )
-		{
-			ostringstream sRet;
-
-			for( string::const_iterator iter = sSrc.begin(); iter!=sSrc.end(); iter++ )
-			{
-				unsigned char c = (unsigned char)*iter;
-
-				switch(c)
-				{
-					case '&': sRet << "&amp;"; break;
-					case '<': sRet << "&lt;"; break;
-					case '>': sRet << "&gt;"; break;
-					case '"': sRet << "&quot;"; break;
-					case '\'': sRet << "&apos;"; break;
-
-					default:
-						sRet << c; break;
-
-						/*
-						if ( c<32 || c>127 )
-						{
-							sRet << "&#" << (unsigned int)c << ";";
-						}
-						else
-						{
-							sRet << c;
-						}
-						*/
-				}
-			}
-
-			return sRet.str();
-		}
 
 };
 

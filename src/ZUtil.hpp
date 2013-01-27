@@ -17,6 +17,20 @@ class ZUtil
 {
 	public:
 
+		static string getString(uint64_t v)
+		{
+			std::stringstream ss;
+			ss << v;
+			return ss.str();
+		}
+
+		static string getString(int number)
+		{
+		   stringstream ss;
+		   ss << number;
+		   return ss.str();
+		}
+
 		static int getInt(const std::string& str)
 		{
 			int x;
@@ -45,13 +59,6 @@ class ZUtil
 			}
 
 			return x;
-		}
-
-		static string getString(int number)
-		{
-		   stringstream ss;
-		   ss << number;
-		   return ss.str();
 		}
 
 		static string printTimeTaken(const std::chrono::nanoseconds& ns)
