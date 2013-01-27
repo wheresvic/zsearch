@@ -53,7 +53,7 @@ class zsearch:
 			for node in roots[0].childNodes:
 
 				if (node.nodeType != node.TEXT_NODE):
-			
+
 					field = node.tagName
 					value = node.firstChild.nodeValue
 
@@ -118,10 +118,29 @@ class zsearch:
 	@param	field	the field to search for, defaults to None
 	@return	 		a list of documentIds that match the search
 	'''
-	def search(self, query, field = None):
+	def search(self, query, start = 0, offset = 0, field = None):
+
+		l = list()
+
+		s = 0
+		o = 0
+
+		msg = "Invalid start (" + str(start) + ") and/or offset (" + str(offset) + "). They both need to be unsigned integers."
+
+		try:
+			s = int(start)
+			o = int(offset)
+
+			if (s < 0 or o < 0):
+				raise Exception(msg)
+
+		except ValueError:
+			raise Exception(msg)
 
 		p = dict()
 		p['q'] = str(query)
+		p['s'] = s
+		p['o'] = o
 
 		if field is not None:
 			#TODO: add query for field
@@ -131,8 +150,6 @@ class zsearch:
 		params = params.encode('utf-8')
 		url = self.url + 'search?' + params
 		print url
-
-		l = list()
 
 		try:
 
