@@ -43,6 +43,7 @@
 #include "KVStoreLevelDb.h"
 #include "Constants.hpp"
 #include "Engine.hpp"
+#include "ZUtil.hpp"
 #include "varint/BasicSet.h"
 #include "varint/SetFactory.h"
 #include "varint/BasicSetFactory.h"
@@ -52,29 +53,7 @@ static Engine *engine;
 
 char uri_root[512];
 
-static unsigned int getDocIdFromString(const std::string& strDocId)
-{
-	unsigned int docId;
-	stringstream ss(strDocId);
-	ss >> docId;
-	return docId;
-}
 
-static void printTimeTaken(const std::chrono::nanoseconds& ns)
-{
-	if (ns.count() >= 1000000000)
-	{
-		std::cout << "function returned in " << std::chrono::duration_cast<std::chrono::seconds>(ns).count() << "s" << std::endl;
-	}
-	else if (ns.count() >= 1000000)
-	{
-		std::cout << "function returned in " << std::chrono::duration_cast<std::chrono::milliseconds>(ns).count() << "ms" << std::endl;
-	}
-	else
-	{
-		std::cout << "function returned in " << ns.count() << "ns" << std::endl;
-	}
-}
 
 /**
  * Callback used for doc request
@@ -135,24 +114,38 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 
 				if (key.compare(zsearch::server::DOC_ID_KEY) == 0)
 				{
-					std::cout << "retrieving document " << value << std::endl;
+					unsigned int docId = 0;
 
-					unsigned int docId = getDocIdFromString(value);
-
-					std::shared_ptr<IDocument> document;
-
-					if (engine->getDoc(docId, document))
+					try
 					{
-						std::stringstream ss;
-						document->write(ss);
-						const std::string docStr = ss.str();
-						// cout << docStr << endl;
+						docId = ZUtil::getUInt(value);
 
-						evbuffer_add(evb, docStr.data(), docStr.size());
-						found = true;
+						std::cout << "retrieving document " << value << std::endl;
+
+						std::shared_ptr<IDocument> document;
+
+						if (engine->getDoc(docId, document))
+						{
+							std::stringstream ss;
+							document->write(ss);
+							const std::string docStr = ss.str();
+							// cout << docStr << endl;
+
+							evbuffer_add(evb, docStr.data(), docStr.size());
+							found = true;
+						}
 					}
 
-					break;
+					// TODO: consider splitting out the errors so we know if the problem is getting the docId or in the engine
+
+					catch (const std::string& e)
+					{
+						// no need to do anything here
+						// evbuffer_add_printf(evb, "Invalid docId\n");
+						// evbuffer_add_printf(evb, e.c_str());
+					}
+
+					break; // break out of looping through parameters
 				}
 			}
 
@@ -193,7 +186,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
-	printTimeTaken(timeTaken);
+	std::cout << ZUtil::printTimeTaken(timeTaken) << std::endl;
 }
 
 /**
@@ -322,7 +315,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
-	printTimeTaken(timeTaken);
+	std::cout << ZUtil::printTimeTaken(timeTaken) << std::endl;
 }
 
 /**
@@ -488,7 +481,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
-	printTimeTaken(timeTaken);
+	std::cout << ZUtil::printTimeTaken(timeTaken) << std::endl;
 }
 
 /**
@@ -629,14 +622,10 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	std::chrono::nanoseconds timeTaken = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0);
-	printTimeTaken(timeTaken);
+	std::cout << ZUtil::printTimeTaken(timeTaken) << std::endl;
 }
 
 
-static void syntax(void)
-{
-	fprintf(stdout, "Syntax: http-server <docroot>\n");
-}
 
 int main(int argc, char **argv)
 {
@@ -657,7 +646,7 @@ int main(int argc, char **argv)
 
 	if (argc < 2)
 	{
-		syntax();
+		fprintf(stdout, "Syntax: http-server <docroot>\n");
 		return 1;
 	}
 

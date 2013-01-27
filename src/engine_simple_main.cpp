@@ -16,6 +16,7 @@
 #include "Engine.hpp"
 #include "Constants.hpp"
 #include "Word.hpp"
+#include "ZUtil.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
 #include "varint/SetFactory.h"
@@ -23,12 +24,6 @@
 
 using namespace std;
 
-string convertInt(int number)
-{
-   stringstream ss;
-   ss << number;
-   return ss.str();
-}
 
 void search(const string& query, const Engine& engine, unsigned int start, unsigned int offset)
 {
@@ -79,7 +74,7 @@ int main()
 	while (getline(cin, input))
 	{
 		// cout << input;
-		string title = convertInt(documentId++);
+		string title = ZUtil::getString(documentId++);
 		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
 		// doc->setTitle(title);
 		doc->addEntry("title", title);
