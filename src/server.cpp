@@ -38,6 +38,7 @@
 #include <chrono>
 
 #include "DocumentStoreSimple.h"
+#include "DocumentStoreLevelDb.hpp"
 #include "TokenizerImpl.h"
 #include "DocumentImpl.hpp"
 #include "KVStoreLevelDb.h"
@@ -659,7 +660,11 @@ int main(int argc, char **argv)
 
     std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-	std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
+	// std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
+	
+	shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/DocumentStore");
+	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreKV);
+	
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
 	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);

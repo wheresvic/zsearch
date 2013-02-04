@@ -17,6 +17,27 @@ class ZUtil
 {
 	public:
 
+		static char* EncodeVarint64(char* dst, uint64_t v)
+		{
+			static const unsigned int B = 128;
+			unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
+			while (v >= B)
+			{
+				*(ptr++) = (v & (B-1)) | B;
+				v >>= 7;
+			}
+
+			*(ptr++) = static_cast<unsigned char>(v);
+			return reinterpret_cast<char*>(ptr);
+		}
+
+		static void PutVarint64(std::string& dst, uint64_t v)
+		{
+			char buf[10];
+			char* ptr = EncodeVarint64(buf, v);
+			dst.append(buf, ptr - buf);
+		}
+	
 		static string getString(uint64_t v)
 		{
 			std::stringstream ss;

@@ -11,6 +11,7 @@
 #include "DocumentImpl.hpp"
 #include "TokenizerImpl.h"
 #include "DocumentStoreSimple.h"
+#include "DocumentStoreLevelDb.hpp"
 #include "KVStoreLevelDb.h"
 #include "KVStoreInMemory.hpp"
 #include "Engine.hpp"
@@ -61,7 +62,11 @@ int main()
 	// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
 
 	shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
+	
+	// shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
+	shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/DocumentStore");
+	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreKV);
+	
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
 	Engine engine(tokenizer, documentStore, invertedIndexStore, setFactory);

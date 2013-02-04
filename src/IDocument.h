@@ -16,6 +16,8 @@ class IDocument
 {
 	public:
 
+		virtual void construct(const string& xml) = 0;
+	
 		virtual void addEntry(const string& key, const string& value) = 0;
 
 		virtual const map<string, string>& getEntries() = 0;

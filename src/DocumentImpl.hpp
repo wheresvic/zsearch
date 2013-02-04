@@ -30,8 +30,10 @@ class DocumentImpl : public IDocument
 
 		}
 
-		DocumentImpl(const string& xml)
+		void construct(const string& xml)
 		{
+			entries.clear();
+		
 			vector<char> xmlVec;
 			copy (xml.begin(), xml.end(), back_inserter(xmlVec));
 			xmlVec.push_back('\0');
@@ -77,6 +79,11 @@ class DocumentImpl : public IDocument
 			}
 
 			throw message;
+		}
+		
+		DocumentImpl(const string& xml)
+		{
+			construct(xml);
 		}
 
 		void addEntry(const string& key, const string& value)

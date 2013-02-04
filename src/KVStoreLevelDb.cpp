@@ -7,31 +7,11 @@
 #include <iostream>
 #include <vector>
 #include "KVStoreLevelDb.h"
+#include "ZUtil.hpp"
 
 namespace KVStore
 {
-	        char* KVStoreLevelDb::EncodeVarint64(char* dst, uint64_t v)
-	        {
-	        	static const unsigned int B = 128;
-	        	unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
-	        	while (v >= B)
-	        	{
-	        		*(ptr++) = (v & (B-1)) | B;
-	        		v >>= 7;
-	        	}
-
-	        	*(ptr++) = static_cast<unsigned char>(v);
-	        	return reinterpret_cast<char*>(ptr);
-	        }
-
-	        void KVStoreLevelDb::PutVarint64(std::string& dst, uint64_t v)
-	        {
-	        	char buf[10];
-	        	char* ptr = EncodeVarint64(buf, v);
-	        	dst.append(buf, ptr - buf);
-	        }
-
-			KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
+	        KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
 			{
 				db = NULL;
 
@@ -47,7 +27,7 @@ namespace KVStore
 			Status KVStoreLevelDb::Open()
 			{
 				leveldb::Options options;
-			//	options.write_buffer_size = 300<<20;
+				options.write_buffer_size = 16777216; // 16Mb
 				options.create_if_missing = true;
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 				return Status::OK();
@@ -69,7 +49,7 @@ namespace KVStore
 			Status KVStoreLevelDb::Put(uint64_t key, const std::string& value)
 			{
 				std::string keystr;
-				PutVarint64(keystr, key);
+				ZUtil::PutVarint64(keystr, key);
 				return Put(keystr, value);
 			}
 
@@ -92,10 +72,17 @@ namespace KVStore
 			Status KVStoreLevelDb::Get(uint64_t key, std::string& value)
 			{
 				std::string keystr;
-				PutVarint64(keystr, key);
+				ZUtil::PutVarint64(keystr, key);
 				return Get(keystr, &value);
 			}
 
+			Status KVStoreLevelDb::Delete(uint64_t key)
+			{
+				std::string keystr;
+				ZUtil::PutVarint64(keystr, key);
+				return Delete(keystr);
+			}
+			
 			Status KVStoreLevelDb::Delete(const std::string& key)
 			{
 				leveldb::Status s = db->Delete(leveldb::WriteOptions(), key);
@@ -121,7 +108,7 @@ namespace KVStore
 				for (auto kv : writes)
 				{
 					std::string keystr;
-					PutVarint64(keystr, kv.first);
+					ZUtil::PutVarint64(keystr, kv.first);
 					batch.Put(keystr, kv.second);
 				}
 

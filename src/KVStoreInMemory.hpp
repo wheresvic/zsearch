@@ -76,6 +76,12 @@ namespace KVStore
 				return Get(strKey, &value);
 			}
 
+			Status Delete(uint64_t key)
+			{
+				std::string strKey = ZUtil::getString(key);
+				return Delete(strKey);
+			}
+			
 			Status Delete(const std::string& key)
 			{
 				auto iter = store.find(key);
