@@ -67,9 +67,11 @@ int main()
 	shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/DocumentStore");
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreKV);
 	
+	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/WordIndexStore");
+		
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	Engine engine(tokenizer, documentStore, invertedIndexStore, setFactory);
+	Engine engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
 	engine.disableBatching();
 

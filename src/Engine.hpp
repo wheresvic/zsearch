@@ -17,6 +17,7 @@
 #include "varint/LazyAndSet.h"
 #include "IKVStore.h"
 #include "WordIndex.hpp"
+#include "WordIndexLevelDb.hpp"
 #include "varint/ISetFactory.h"
 #include <chrono>
 
@@ -28,10 +29,12 @@ class Engine
 
 		Engine(shared_ptr<ITokenizer> tokenizer,
 				shared_ptr<IDocumentStore> documentStore,
+				shared_ptr<KVStore::IKVStore> wordIndexStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore,
 				shared_ptr<ISetFactory> setFactory) :
 			tokenizer(tokenizer),
 			documentStore(documentStore),
+			wordIndex(wordIndexStore),
 			invertedIndex(invertedIndexStore, setFactory),
 			setFactory(setFactory)
 		{
@@ -306,15 +309,16 @@ class Engine
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;
 
-		// store all the words
-		WordIndex wordIndex;
-
 		// store all the fields
 		set<string> fields;
 
 		// store all the documents
 		shared_ptr<IDocumentStore> documentStore;
 
+		// store all the words
+		// WordIndex wordIndex;
+		WordIndexLevelDb wordIndex;
+		
 		// inverted index that maps words(wordId) to documents that contain it
 		InvertedIndexBatch invertedIndex;
 		// InvertedIndexImpl invertedIndex;

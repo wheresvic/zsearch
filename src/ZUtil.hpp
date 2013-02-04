@@ -52,6 +52,13 @@ class ZUtil
 		   return ss.str();
 		}
 
+		static string getString(unsigned int number)
+		{
+		   stringstream ss;
+		   ss << number;
+		   return ss.str();
+		}
+		
 		static int getInt(const std::string& str)
 		{
 			int x;

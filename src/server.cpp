@@ -665,9 +665,11 @@ int main(int argc, char **argv)
 	shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/DocumentStore");
 	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreKV);
 	
+	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/WordIndexStore");
+	
 	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 
-	engine = new Engine(tokenizer, documentStore, invertedIndexStore, setFactory);
+	engine = new Engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
