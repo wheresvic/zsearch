@@ -34,6 +34,9 @@ struct postingComp {
   }
 };
 
+// The Goal of this file is to Sort and flush the list of (wordid,docid) pairs   
+// each time it reaches its maximum in-memory size using KVStore batching support
+// but also avoid unserilizing a dccumenSet each time we add a new docID.
 class InvertedIndexBatch : public IInvertedIndex
 {
 private:
@@ -224,6 +227,9 @@ public:
 		batchsize +=1;
 		cond_var.Signal();
 		m.Unlock();
+		if (batchsize > maxbatchsize){
+		    flushBatch();	
+		}
 		return 1;
 	}
 
