@@ -49,7 +49,8 @@ public:
 	  //  }
 		//If sparse[i] >= n then i is definetly not in the set and it doesn't matter what sparse[i] is set to.
 		//otherwise sparse can have any arbitrary values so we need to verify that  dense[sparse[i]] == i
-		return sparse[i] < n && dense[sparse[i]] == i;
+		const unsigned int v = sparse[i];
+		return v < n && dense[v] == i;
 	}
 	
 	/**
