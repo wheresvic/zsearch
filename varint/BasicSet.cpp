@@ -51,7 +51,7 @@
 
     shared_ptr<Set::Iterator> BasicSet::iterator() const
 	{
-		shared_ptr<Set::Iterator> it(new BasicSet::Iterator(this));
+		shared_ptr<Set::Iterator> it = make_shared<BasicSet::Iterator>(this);
 		return it;
     }
 

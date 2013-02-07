@@ -1,6 +1,7 @@
-#ifndef WORDINDEXLEVELDB_H
-#define WORDINDEXLEVELDB_H
+#ifndef WORDINDEXKVSTORE_H
+#define WORDINDEXKVSTORE_H
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -11,7 +12,7 @@
 
 using namespace std;
 
-class WordIndexLevelDb
+class WordIndexKVStore
 {
 	private:
 		
@@ -19,9 +20,14 @@ class WordIndexLevelDb
 
 	public:
 
-		WordIndexLevelDb(std::shared_ptr<KVStore::IKVStore> store) : store(store)
+		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : store(store)
 		{
-			store->Open();
+			// store->Open();
+		}
+		
+		~WordIndexKVStore()
+		{
+			std::cerr << "Destroyed WordIndexKVStore" << std::endl;
 		}
 
 		int Put(const std::string& field, const std::string& token, unsigned int value)
@@ -59,10 +65,7 @@ class WordIndexLevelDb
 			}
 
 			return 0;
-		}
-
-		~WordIndexLevelDb()
-		{  }
+		}		
 };
 
 #endif // WORDINDEX_H

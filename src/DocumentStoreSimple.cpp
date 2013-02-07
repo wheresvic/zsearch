@@ -1,5 +1,6 @@
 
 #include "DocumentStoreSimple.h"
+#include <iostream>
 #include <map>
 #include <memory>
 
@@ -7,6 +8,11 @@ using namespace std;
 
 DocumentStoreSimple::DocumentStoreSimple() {
 	// store.Open("/tmp/DocumentStore");	
+}
+
+DocumentStoreSimple::~DocumentStoreSimple()
+{
+	std::cerr << "Destroyed DocumentStoreSimple" << std::endl;
 }
 
 void DocumentStoreSimple::addDoc(unsigned int docId, const shared_ptr<IDocument>& doc) {

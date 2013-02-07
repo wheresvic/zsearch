@@ -120,6 +120,26 @@ namespace KVStore
 				return Status::OK();
 			}
 
+			Status Put(const std::vector<std::pair<std::string, std::string>>& writes)
+			{
+				unsigned int countMissed = 0;
+
+				for (auto write : writes)
+				{
+					if (!Put(write.first, write.second).ok())
+					{
+						++countMissed;
+					}
+				}
+
+				if (countMissed)
+				{
+					return Status::Corruption();
+				}
+
+				return Status::OK();
+			}
+			
 			Status Write(KVStoreLevelDBBatch& batch)
 			{
 				return Status::NotSupported();

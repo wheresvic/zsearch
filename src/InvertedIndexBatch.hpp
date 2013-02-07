@@ -19,13 +19,10 @@
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
 #include "IKVStore.h"
-#include <sparsehash/dense_hash_map>
 
 
 #include "varint/ISetFactory.h"
 #include "KVStoreLevelDBBatch.hpp"
-
-using google::dense_hash_map;
 
 struct postingComp {
   inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
@@ -233,9 +230,26 @@ public:
 		return 1;
 	}
 	
-	//better batch add that doesnt lock and unlock for each wordid
-	void add(unsigned int docid,set<unsigned int> wordid){
-	   //todo
+	// better batch add that doesnt lock and unlock for each wordid
+	void add(unsigned int docid, const set<unsigned int>& documentWordId)
+	{
+		m.Lock();
+		
+		for (auto value : documentWordId)
+		{
+			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
+			batchsize +=1;			
+		}
+		
+		cond_var.Signal();
+		
+		m.Unlock();
+		
+		if (batchsize > maxbatchsize)
+		{
+			flushBatch();	
+		}
+		
 	}
 
 	int remove(unsigned int wordId, unsigned int docId)

@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <string>
 #include <algorithm>
 #include <locale>
@@ -8,6 +9,12 @@ using namespace std;
 
 TokenizerImpl::TokenizerImpl(const std::string& delimiters) : m_offset(0), m_delimiters(delimiters)
 { }
+
+TokenizerImpl::~TokenizerImpl()
+{ 
+	std::cerr << "Destroyed TokenizerImpl" << std::endl;
+}
+
 
 void TokenizerImpl::setString(const std::string& str)
 {
