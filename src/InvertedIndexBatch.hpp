@@ -232,6 +232,11 @@ public:
 		}
 		return 1;
 	}
+	
+	//better batch add that doesnt lock and unlock for each wordid
+	void add(unsigned int docid,set<unsigned int> wordid){
+	   //todo
+	}
 
 	int remove(unsigned int wordId, unsigned int docId)
 	{
