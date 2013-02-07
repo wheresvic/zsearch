@@ -27,8 +27,8 @@ namespace KVStore
 			Status KVStoreLevelDb::Open()
 			{
 				leveldb::Options options;
-				options.block_cache = leveldb::NewLRUCache(1024*128);
-				options.write_buffer_size =  1024 * 128; // 16777216; // 16Mb
+				// options.block_cache = leveldb::NewLRUCache(1024*128);
+				// options.write_buffer_size =  1024 * 128; // 16777216; // 16Mb
 				options.create_if_missing = true;
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 				return Status::OK();
