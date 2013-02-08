@@ -2,6 +2,7 @@
 #ifndef DOCUMENTSTORELEVELDB_H
 #define DOCUMENTSTORELEVELDB_H
 
+#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
@@ -22,6 +23,11 @@ class DocumentStoreLevelDb : public IDocumentStore
 		DocumentStoreLevelDb(std::shared_ptr<KVStore::IKVStore> store) : store(store)
 		{
 			store->Open();
+		}
+		
+		~DocumentStoreLevelDb()
+		{
+			std::cerr << "Destroyed DocumentStoreLevelDb" << std::endl;
 		}
 		
 		void addDoc(unsigned int docId, const shared_ptr<IDocument>& doc)

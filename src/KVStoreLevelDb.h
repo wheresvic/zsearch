@@ -35,6 +35,8 @@ namespace KVStore
 			Status Put(uint64_t key,const std::string& value);
 
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes);
+			
+			Status Put(const std::vector<std::pair<std::string, std::string>>& writes);
 
 			Status Get(const std::string& key, std::string* value);
 

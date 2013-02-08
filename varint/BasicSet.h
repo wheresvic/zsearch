@@ -28,7 +28,6 @@ class BasicSet : public Set
 				Iterator(const BasicSet* parentSet);
 				Iterator(const BasicSet::Iterator& other);
 
-				// assignator operator disabled for now
 				BasicSet::Iterator& operator=(const BasicSet::Iterator& rhs);
 				~Iterator();
 

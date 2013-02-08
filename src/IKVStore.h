@@ -72,6 +72,7 @@ namespace KVStore
 			virtual Status Put(const std::string& key,const std::string& value) = 0;
 			virtual Status Put(uint64_t key,const std::string& value) = 0;
 			virtual Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes) = 0;
+			virtual Status Put(const std::vector<std::pair<std::string, std::string>>& writes) = 0;
 			virtual Status Get(const std::string& key, std::string* value) = 0;
 			virtual Status Get(const std::string& key, std::string& value) = 0;
 			virtual Status Get(uint64_t key, std::string& value) = 0;

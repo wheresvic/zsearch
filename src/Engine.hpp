@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <string>
 #include <map>
 #include "DocumentStoreSimple.h"
@@ -10,14 +11,13 @@
 #include "Word.hpp"
 
 #include "InvertedIndexBatch.hpp"
-// #include "InvertedIndexSimpleBatch.hpp"
+#include "InvertedIndexSimpleBatch.hpp"
 #include "InvertedIndexImpl.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
 #include "varint/LazyAndSet.h"
 #include "IKVStore.h"
-#include "WordIndex.hpp"
-#include "WordIndexLevelDb.hpp"
+#include "WordIndexKVStore.hpp"
 #include "varint/ISetFactory.h"
 #include <chrono>
 
@@ -73,7 +73,9 @@ class Engine
 		*/
 
         ~Engine()
-        { }
+        { 
+			std::cerr << "Destroyed engine" << std::endl;
+		}
 
 		/**
 		 * @param	document
@@ -118,10 +120,7 @@ class Engine
 
 			} // end looping through entries
 
-			for (auto value : documentWordId)
-			{
-				invertedIndex.add(value, docId);
-			}
+			invertedIndex.add(docId, documentWordId);
 
 			return docId++;
 		}
@@ -316,13 +315,12 @@ class Engine
 		shared_ptr<IDocumentStore> documentStore;
 
 		// store all the words
-		// WordIndex wordIndex;
-		WordIndexLevelDb wordIndex;
+		WordIndexKVStore wordIndex;
 		
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch invertedIndex;
+		// InvertedIndexBatch invertedIndex;
 		// InvertedIndexImpl invertedIndex;
-		// InvertedIndexSimpleBatch invertedIndex;
+		InvertedIndexSimpleBatch invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;

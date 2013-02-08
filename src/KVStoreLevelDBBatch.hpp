@@ -33,17 +33,20 @@ namespace KVStore
     	dst.append(buf, ptr - buf);	
     }
 
-  	void Put(const std::string& key,const std::string& value){
+  	void Put(const std::string& key, const std::string& value)
+	{
 		batch.Put(key, value);
     }
 	
-	void Put(uint64_t key,const std::string& value){
+	void Put(uint64_t key, const std::string& value)
+	{
 		std::string keystr;
 		PutVarint64(keystr, key);
 		batch.Put(keystr, value);
 	}
 		
-	void Delete(const std::string& key){
+	void Delete(const std::string& key)
+	{
 		batch.Delete(key);
 	}
 	

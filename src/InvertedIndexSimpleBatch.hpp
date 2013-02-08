@@ -209,6 +209,8 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			shutDownBatchProcessor();
 
 			flush(postings);
+			
+			std::cerr << "Destroyed InvertedIndexSimpleBatch" << std::endl;
 		}
 
 		void setMaxBatchSize(unsigned int newSize)
@@ -260,6 +262,54 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			return 0;
 		}
 
+		int add(unsigned int docId, const set<unsigned int>& documentWordId)
+		{
+			unique_lock<mutex> lock(m);
+
+			for (auto wordId : documentWordId)
+			{
+				++batchSize;
+
+				auto iter = postings.find(wordId);
+
+				if (iter != postings.end())
+				{
+					(iter->second).insert(docId);
+				}
+				else
+				{
+					set<unsigned int> docIds;
+					docIds.insert(docId);
+					postings.insert(make_pair(wordId, docIds));
+				}
+
+			}
+
+			if (batchSize >= maxBatchSize)
+			{
+				if (!done)
+				{
+					// cout << "notifying batch processor" << endl;
+
+					dataReady = true;
+					cond.notify_one();
+				}
+				else
+				{
+					cout << "batch processor not running, flushing batch in place" << endl;
+
+					int result = flush(postings);
+
+					batchSize = 0;
+					postings.clear();
+
+					return result;
+				}
+			}
+
+			return 1;
+		}
+		
 		int add(unsigned int wordId, unsigned int docid)
 		{
 			// cout << "adding item" << endl;
@@ -360,6 +410,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 };
 
-blabla
+// blabla
 
 #endif

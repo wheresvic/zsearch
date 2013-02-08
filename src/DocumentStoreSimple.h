@@ -14,6 +14,8 @@ class DocumentStoreSimple : public IDocumentStore
 	public:
 		DocumentStoreSimple();
 		
+		~DocumentStoreSimple();
+		
 		void addDoc(unsigned int docId, const shared_ptr<IDocument>& doc);
 
 		void removeDoc(unsigned int docId);

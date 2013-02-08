@@ -11,6 +11,8 @@ class TokenizerImpl : public ITokenizer
 
 		TokenizerImpl(const std::string& delimiters);
 
+		~TokenizerImpl();
+		
 		void setString(const std::string& str);
 
         bool nextToken();

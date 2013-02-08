@@ -14,9 +14,9 @@ BUILD_OBJECTS = $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o 
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp # InvertedIndexSimpleBatch.hpp DocumentStoreLevelDb.hpp ZException.hpp ZUtil.hpp WordIndexLevelDb.hpp
+HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp # InvertedIndexSimpleBatch.hpp DocumentStoreLevelDb.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp
 
-CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
+CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include -DOS_MACOSX
