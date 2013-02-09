@@ -10,6 +10,8 @@
 #include <vector>
 #include <algorithm>
 
+#include <exception>
+
 #include <atomic>
 #include "port_posix.h"
 
@@ -31,7 +33,7 @@ struct postingComp {
   }
 };
 
-// The Goal of this file is to Sort and flush the list of (wordid,docid) pairs   
+// The Goal of this file is to Sort and flush the list of (wordid,docid) pairs
 // each time it reaches its maximum in-memory size using KVStore batching support
 // but also avoid unserilizing a dccumenSet each time we add a new docID.
 class InvertedIndexBatch : public IInvertedIndex
@@ -73,11 +75,18 @@ private:
 
 	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
 	{
-		stringstream ss;
-		set->write(ss);
-		string bitmap = ss.str();
+		try
+		{
+			stringstream ss;
+			set->write(ss);
+			string bitmap = ss.str();
+			batch.Put(wordId,bitmap);
+		}
+		catch (exception ex)
+		{
+			cerr << "batchPut " << ex.what() << endl;
+		}
 
-		batch.Put(wordId,bitmap);
 		return 1;
 	}
 
@@ -86,6 +95,7 @@ public:
 
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
 	 store(store),
+	 batch('i'),
 	 setFactory(setFactory),
 	 cond_var(&m)
 	{
@@ -128,13 +138,20 @@ public:
 
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
 	{
-		string bitmap;
-		if(store->Get(wordId,bitmap).ok())
+		try
 		{
-			stringstream bitmapStream(bitmap);
-			inset = setFactory->createSparseSet();
-			inset->read(bitmapStream);
-			return 1;
+			string bitmap;
+			if(store->Get(wordId,bitmap).ok())
+			{
+				stringstream bitmapStream(bitmap);
+				inset = setFactory->createSparseSet();
+				inset->read(bitmapStream);
+				return 1;
+			}
+		}
+		catch (exception ex)
+		{
+			cerr << "get " << ex.what() << endl;
 		}
 		return 0;
 	}
@@ -225,31 +242,38 @@ public:
 		cond_var.Signal();
 		m.Unlock();
 		if (batchsize > maxbatchsize){
-		    flushBatch();	
+		    flushBatch();
 		}
 		return 1;
 	}
-	
+
 	// better batch add that doesnt lock and unlock for each wordid
 	void add(unsigned int docid, const set<unsigned int>& documentWordId)
 	{
 		m.Lock();
-		
+
 		for (auto value : documentWordId)
 		{
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
-			batchsize +=1;			
+			batchsize +=1;
 		}
-		
+
 		cond_var.Signal();
-		
+
 		m.Unlock();
-		
+
 		if (batchsize > maxbatchsize)
 		{
-			flushBatch();	
+			try
+			{
+				flushBatch();
+			}
+			catch (exception ex)
+			{
+				cerr << "add " << ex.what() << endl;
+			}
 		}
-		
+
 	}
 
 	int remove(unsigned int wordId, unsigned int docId)

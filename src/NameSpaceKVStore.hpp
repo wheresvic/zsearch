@@ -18,17 +18,17 @@ namespace KVStore
 	class NameSpaceKVStore : public IKVStore
 	{
 		private:
-		
+
 			const char ns;
-			std::shared_ptr<KVStore::IKVStore> store;			
-			
+			std::shared_ptr<KVStore::IKVStore> store;
+
 		public:
 
 			NameSpaceKVStore(const char ns, std::shared_ptr<KVStore::IKVStore> store) : IKVStore(""), ns(ns), store(store)
-			{ 
-				
+			{
+
 			}
-			
+
 			~NameSpaceKVStore()
 			{
 				std::cerr << "Destroyed NameSpaceKVStore" << std::endl;
@@ -84,7 +84,7 @@ namespace KVStore
 				keystr.insert(0, 1, ns);
 				return store->Delete(keystr);
 			}
-			
+
 			Status Delete(const std::string& key)
 			{
 				string nkey = key;
@@ -100,7 +100,7 @@ namespace KVStore
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
 				std::vector<std::pair<std::string, std::string>> writesNs;
-				
+
 				for (auto iter : writes)
 				{
 					std::string keystr;
@@ -108,26 +108,26 @@ namespace KVStore
 					keystr.insert(keystr.begin(), ns);
 					writesNs.push_back(pair<std::string, std::string>(keystr, iter.second));
 				}
-			
+
 				return store->Put(writesNs);
 			}
 
 			Status Put(const std::vector<std::pair<std::string, std::string>>& writes)
 			{
 				std::vector<std::pair<std::string, std::string>> writesNs;
-				
+
 				for (auto iter : writes)
 				{
 					std::string keystr = iter.first;
 					writesNs.push_back(pair<std::string, std::string>(keystr, iter.second));
 				}
-			
+
 				return store->Put(writesNs);
 			}
-			
+
 			Status Write(KVStoreLevelDBBatch& batch)
 			{
-				throw ZException("Not implemented!");
+				// throw ZException("Not implemented!");
 				return store->Write(batch);
 			}
 
