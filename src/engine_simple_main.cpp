@@ -71,43 +71,50 @@ void work(string fileName)
 		// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
 
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-		
+
 		// shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
-		
+
 		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/Store");
-		
+
 		storeKV->Open();
-		
+
 		shared_ptr<KVStore::IKVStore> documentStoreNsKV = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
 		// shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreInMemory>("/tmp/DocumentStore");
 		shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreNsKV);
-		
+
 		// shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/WordIndexStore");
 		// shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/WordIndexStore");
-		
+
 		shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
-			
+
 		// shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
 		// shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/InvertedIndex");
 
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
-		
+
 		Engine engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
-		engine.disableBatching();
-		engine.setMaxBatchSize(2500000);
-		
+		// engine.disableBatching();
+		engine.setMaxBatchSize(100000);
+
 		cout << "Made engine!" << endl;
-		
+
 		while (getline(f, input))
 		{
 			// cout << input;
-			
+
+			/*
+			if (documentId > 1000)
+				break;
+			*/
+
 			string title = ZUtil::getString(documentId++);
 			shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
 			// doc->setTitle(title);
 			doc->addEntry("title", title);
 
+			// DO NOT REMOVE
+			/*
 			// parse the input, each line is a single document
 			size_t found = input.find_first_of(documentDelimiter);
 			if (found != string::npos)
@@ -121,12 +128,15 @@ void work(string fileName)
 			{
 				throw "Couldn't split key value!";
 			}
+			*/
+
+			doc->addEntry("memtest", input);
 
 			cout << "Added document: " << engine.addDocument(doc) << endl;
 		}
 
 		f.close();
-		
+
 		// flush
 		engine.flushBatch();
 
@@ -160,9 +170,9 @@ int main(int argc, char **argv)
 	string fileName = argv[1];
 
 	work(fileName);
-	work(fileName);
-	
-	std::this_thread::sleep_for(std::chrono::seconds(60));
+	// work(fileName);
+
+	std::this_thread::sleep_for(std::chrono::seconds(30));
 
 	return 0;
 }

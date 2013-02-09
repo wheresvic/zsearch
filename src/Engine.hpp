@@ -73,7 +73,7 @@ class Engine
 		*/
 
         ~Engine()
-        { 
+        {
 			std::cerr << "Destroyed engine" << std::endl;
 		}
 
@@ -116,7 +116,6 @@ class Engine
 					    documentWordId.insert(wordId++);
 					}
 				}
-
 
 			} // end looping through entries
 
@@ -316,7 +315,7 @@ class Engine
 
 		// store all the words
 		WordIndexKVStore wordIndex;
-		
+
 		// inverted index that maps words(wordId) to documents that contain it
 		// InvertedIndexBatch invertedIndex;
 		// InvertedIndexImpl invertedIndex;

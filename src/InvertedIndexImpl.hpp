@@ -32,7 +32,7 @@ class InvertedIndexImpl : public IInvertedIndex
 		{
 			std::cerr << "Destroyed InvertedIndexImpl" << std::endl;
 		}
-		
+
 		int get(unsigned int wordId, shared_ptr<Set>& outset) const
 		{
 			string bitmap;
@@ -61,6 +61,7 @@ class InvertedIndexImpl : public IInvertedIndex
 			stringstream ss;
 			set->write(ss);
 			string bitmap = ss.str();
+
 			if (store->Put(wordId,bitmap).ok())
 			{
 				return 1;
@@ -68,7 +69,7 @@ class InvertedIndexImpl : public IInvertedIndex
 
 			return 0;
 		}
-		
+
 		void add(unsigned int docId, const set<unsigned int>& documentWordId)
 		{
 			for (auto value : documentWordId)
@@ -79,6 +80,8 @@ class InvertedIndexImpl : public IInvertedIndex
 
 		int add(unsigned int wordId, unsigned int docid)
 		{
+			// return 1;
+
 			if (exist(wordId))
 			{
 				shared_ptr<Set> set;
@@ -123,12 +126,12 @@ class InvertedIndexImpl : public IInvertedIndex
 
 		void shutDownBatchProcessor()
 		{
-			
+
 		}
 
 		void setMaxBatchSize(unsigned int newSize)
 		{
-			
+
 		}
 
 };
