@@ -41,6 +41,7 @@
     void BasicSet::read(istream &in)
 	{
 		docs.clear();
+		set<unsigned int>().swap(docs);
 
 		unsigned int docId;
 		while(in >> docId)
@@ -71,6 +72,7 @@
 
 	BasicSet BasicSet::unorderedAdd(unsigned int docId)
 	{
+		/*
 		BasicSet set;
 		BasicSet::Iterator it(this);
 		bool inserted = false;
@@ -90,6 +92,10 @@
 		{
 			set.addDoc(docId);
 		}
+		*/
+
+		BasicSet set;
+		set.addDoc(docId);
 
 		return set;
 	}
