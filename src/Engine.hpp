@@ -7,6 +7,7 @@
 // #include <utility>
 #include "QueryParser.hpp"
 #include <set>
+#include <unordered_set>
 #include <vector>
 #include "Word.hpp"
 
@@ -184,8 +185,8 @@ class Engine
 		 */
 		vector<unsigned int> search(const string& query, unsigned int start, unsigned int offset) const
 		{
-			// q = "", field1="some more text" = input1/some input1/more input1/text
-			// q = "some more text" = (input1/some OR input2/some ) AND (input1/more or input2/more)
+			// q = "some more text", field = "input1" => input1/some input1/more input1/text
+			// q = "some more", field = "" => (input1/some OR input2/some ) AND (input1/more or input2/more)
 
 			unsigned int skip = start * offset;
 
@@ -308,7 +309,7 @@ class Engine
 		shared_ptr<ITokenizer> tokenizer;
 
 		// store all the fields
-		set<string> fields;
+		unordered_set<string> fields;
 
 		// store all the documents
 		shared_ptr<IDocumentStore> documentStore;

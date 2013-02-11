@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <set>
+#include <unordered_set>
 #include <sstream>
 #include <thread>
 #include <chrono>
@@ -113,8 +114,6 @@ void work(string fileName)
 			// doc->setTitle(title);
 			doc->addEntry("title", title);
 
-			// DO NOT REMOVE
-			/*
 			// parse the input, each line is a single document
 			size_t found = input.find_first_of(documentDelimiter);
 			if (found != string::npos)
@@ -128,9 +127,8 @@ void work(string fileName)
 			{
 				throw "Couldn't split key value!";
 			}
-			*/
 
-			doc->addEntry("memtest", input);
+			// doc->addEntry("memtest", input);
 
 			cout << "Added document: " << engine.addDocument(doc) << endl;
 		}
