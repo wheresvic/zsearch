@@ -61,7 +61,10 @@ void search(const string& query, const Engine& engine, unsigned int start, unsig
 
 void work(string fileName)
 {
+	char LocalBuffer[4096];
+	std::ios::sync_with_stdio(false);
 	ifstream f(fileName.c_str());
+    f.rdbuf()->pubsetbuf(LocalBuffer, 4096);
 
 	if (f.is_open())
 	{
@@ -123,7 +126,7 @@ void work(string fileName)
 				string field = input.substr(0, found);
 				string value = input.substr(found + 1);
 				// cout << "field : " << field << ", value: " << value << endl;
-				doc->addEntry(field, value);
+				doc->addEntry("document", value);
 			}
 			else
 			{
