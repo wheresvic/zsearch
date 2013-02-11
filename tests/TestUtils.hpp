@@ -30,4 +30,19 @@ string readFile(const string& fileName)
 	return fileStr;
 }
 
+string stripSpecialCharacters(const string& input)
+{
+	string clean;
+
+	for (char c : input)
+	{
+		if (c == '\n' || c == '\t')
+			continue;
+
+		clean += c;
+	}
+
+	return clean;
+}
+
 #endif

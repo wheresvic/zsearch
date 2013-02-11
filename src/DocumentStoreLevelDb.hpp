@@ -15,21 +15,21 @@ using namespace std;
 class DocumentStoreLevelDb : public IDocumentStore
 {
 	private:
-	
+
 		std::shared_ptr<KVStore::IKVStore> store;
-		
+
 	public:
-		
+
 		DocumentStoreLevelDb(std::shared_ptr<KVStore::IKVStore> store) : store(store)
 		{
 			store->Open();
 		}
-		
+
 		~DocumentStoreLevelDb()
 		{
 			std::cerr << "Destroyed DocumentStoreLevelDb" << std::endl;
 		}
-		
+
 		void addDoc(unsigned int docId, const shared_ptr<IDocument>& doc)
 		{
 			stringstream ss;
@@ -51,20 +51,42 @@ class DocumentStoreLevelDb : public IDocumentStore
 		{
 			throw ZException("Not implemented - will be deprecated");
 		}
-        
+
 		int Get(unsigned int docId, shared_ptr<IDocument>& doc) const
 		{
 			string d;
-		
+
 			if (store->Get(docId, d).ok())
 			{
 				doc->construct(d);
+
+				/*
+				cout << "got docId " << docId << endl << d << endl;
+
+				try
+				{
+					doc->construct(d);
+				}
+				catch (const string& ex)
+				{
+					cerr << ex << endl;
+				}
+				catch (const exception& ex)
+				{
+					cerr << ex.what() << endl;
+				}
+				catch (...)
+				{
+					cerr << "wtf" << endl;
+				}
+				*/
+
 				return 1;
 			}
-			
+
 			return 0;
 		}
-	
+
 };
 
 #endif

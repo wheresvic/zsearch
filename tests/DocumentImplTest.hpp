@@ -31,7 +31,8 @@ struct DocumentImplTest : tpunit::TestFixture
 		TEST(DocumentImplTest::testParsingDocumentCDATA),
 		TEST(DocumentImplTest::testDocumentWrite),
 		TEST(DocumentImplTest::testDocumentXmlEntity),
-		TEST(DocumentImplTest::testParsingDocumentTerrible)
+		TEST(DocumentImplTest::testParsingDocumentTerrible),
+		TEST(DocumentImplTest::testDocumentConstruct)
 	)
 	{ }
 
@@ -102,17 +103,19 @@ struct DocumentImplTest : tpunit::TestFixture
 
 	void testDocumentWrite()
 	{
-		string docStr = "<document><input1> some text</input1><input2> some more text</input2></document>";
+		string docStr = "<document>\n\t<input1> some text</input1>\n\t<input2> some more text</input2>\n</document>";
 
 		shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr);
 
 		stringstream ss;
 		document->write(ss);
 
-		string docStrExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + docStr;
-		string docStrActual = ss.str();
+		string docStrExpected = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + docStr;
+		docStrExpected = stripSpecialCharacters(docStrExpected);
 
-		// cout << docStrExpected << endl << docStrActual << endl;
+		string docStrActual = stripSpecialCharacters(ss.str());
+
+		cout << docStrExpected << endl << docStrActual << endl;
 
 		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);
 	}
@@ -136,11 +139,12 @@ struct DocumentImplTest : tpunit::TestFixture
 		stringstream ss;
 		document->write(ss);
 
-		string docStrActual = ss.str();
+		string docStrActual = stripSpecialCharacters(ss.str());
+		string docStrExpected = stripSpecialCharacters(docStr);
 
 		cout << docStr << endl << docStrActual << endl;
 
-		// ASSERT_TRUE(docStr.compare(docStrActual) == 0);
+		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);
 	}
 
 	void testParsingDocumentTerrible()
@@ -168,6 +172,25 @@ struct DocumentImplTest : tpunit::TestFixture
 		cout << docStrActual << endl;
 		*/
 
+	}
+
+	void testDocumentConstruct()
+	{
+		string docStr1 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<document>\n\t<input1> some text</input1>\n\t<input2> some more text</input2>\n</document>";
+
+		shared_ptr<IDocument> document = make_shared<DocumentImpl>(docStr1);
+
+		string docStr2 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<document>\n\t<construct>bla bla</construct>\n\n</document>";
+
+		document->construct(docStr2);
+
+		stringstream ss;
+		document->write(ss);
+
+		string docStrActual = stripSpecialCharacters(ss.str());
+		string docStrExpected = stripSpecialCharacters(docStr2);
+
+		ASSERT_TRUE(docStrExpected.compare(docStrActual) == 0);
 	}
 
 };

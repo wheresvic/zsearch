@@ -37,7 +37,7 @@ class ZUtil
 			char* ptr = EncodeVarint64(buf, v);
 			dst.append(buf, ptr - buf);
 		}
-	
+
 		static string getString(uint64_t v)
 		{
 			std::stringstream ss;
@@ -58,7 +58,7 @@ class ZUtil
 		   ss << number;
 		   return ss.str();
 		}
-		
+
 		static int getInt(const std::string& str)
 		{
 			int x;
@@ -108,7 +108,6 @@ class ZUtil
 
 			return ss.str();
 		}
-
 
 };
 

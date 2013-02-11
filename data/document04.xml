@@ -1,6 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document>
-	<title>Input document</title>
-	<input1> some &lt; text</input1>
-	<input2>72.8/km²</input2>
-</document>
+<?xml version="1.0" encoding="utf-8"?><document><input1> some &lt; text</input1><input2>72.8/km²</input2><title>Input document</title></document>
