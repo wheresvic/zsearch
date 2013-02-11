@@ -8,7 +8,6 @@
 #include <memory>
 
 #include "IKVStore.h"
-#include "KVStoreLevelDBBatch.hpp"
 #include "ZUtil.hpp"
 
 namespace KVStore
@@ -22,7 +21,7 @@ namespace KVStore
 
 		public:
 
-			KVStoreInMemory(const std::string& path) : IKVStore(path)
+			KVStoreInMemory(const std::string& path) 
 			{ }
 
 			Status Open()
@@ -140,10 +139,7 @@ namespace KVStore
 				return Status::OK();
 			}
 			
-			Status Write(KVStoreLevelDBBatch& batch)
-			{
-				return Status::NotSupported();
-			}
+
 
 	}; // end class
 
