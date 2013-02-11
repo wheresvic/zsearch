@@ -13,6 +13,7 @@
 
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/file.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -42,6 +43,7 @@
 #include "TokenizerImpl.h"
 #include "DocumentImpl.hpp"
 #include "KVStoreLevelDb.h"
+#include "NameSpaceKVStore.hpp"
 #include "Constants.hpp"
 #include "Engine.hpp"
 #include "ZUtil.hpp"
@@ -123,7 +125,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 
 						std::cout << "retrieving document " << value << std::endl;
 
-						std::shared_ptr<IDocument> document;
+						std::shared_ptr<IDocument> document = make_shared<DocumentImpl>();
 
 						if (engine->getDoc(docId, document))
 						{
@@ -470,6 +472,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 					unsigned int docId = engine->addDocument(document);
 					std::cout << "Added document: " << docId << std::endl;
 					evbuffer_add_printf(evb, "%d", docId);
+					std::cout << "Made it" << std::endl;
 				}
 				catch (const std::string& e)
 				{
@@ -654,26 +657,47 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 
 int main(int argc, char **argv)
 {
+	int pid_file = open(zsearch::LOCK_FILE.c_str(), O_CREAT | O_RDWR, 0666);
+
+	int rc = flock(pid_file, LOCK_EX | LOCK_NB);
+
+	if (rc)
+	{
+		if (EWOULDBLOCK == errno)
+		{
+			std::cerr << "Only one instance of zsearch is allowed!" << std::endl;
+			return -1;
+		}
+
+	}
+
+
 	struct event_base *base;
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
 
-    std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+    // std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
+
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
-	// std::shared_ptr<IDocumentStore> documentStore = std::make_shared<DocumentStoreSimple>();
-	
-	shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/DocumentStore");
-	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreKV);
-	
-	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/WordIndexStore");
-	
-	std::shared_ptr<KVStore::IKVStore> invertedIndexStore = std::make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
+
+	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
+	storeKV->Open();
+
+	shared_ptr<KVStore::IKVStore> documentStoreNsKV = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
+	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreNsKV);
+
+	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
+	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
 	engine = new Engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+
 	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		return (1);
+	{
+		return 1;
+	}
 
 	if (argc < 2)
 	{

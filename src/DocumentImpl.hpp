@@ -33,7 +33,7 @@ class DocumentImpl : public IDocument
 		void construct(const string& xml)
 		{
 			entries.clear();
-		
+
 			vector<char> xmlVec;
 			copy (xml.begin(), xml.end(), back_inserter(xmlVec));
 			xmlVec.push_back('\0');
@@ -80,7 +80,7 @@ class DocumentImpl : public IDocument
 
 			throw message;
 		}
-		
+
 		DocumentImpl(const string& xml)
 		{
 			construct(xml);
@@ -108,6 +108,12 @@ class DocumentImpl : public IDocument
 			string document;
 
 			rapidxml::xml_document<> doc;
+
+			rapidxml::xml_node<>* decl = doc.allocate_node(rapidxml::node_declaration);
+			decl->append_attribute(doc.allocate_attribute("version", "1.0"));
+			decl->append_attribute(doc.allocate_attribute("encoding", "utf-8"));
+			doc.append_node(decl);
+
 			rapidxml::xml_node<> *root = doc.allocate_node(rapidxml::node_element, "document");
 			doc.append_node(root);
 

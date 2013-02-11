@@ -1,4 +1,6 @@
 
+#include <sys/file.h>
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -75,7 +77,7 @@ void work(string fileName)
 
 		// shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
 
-		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>("/tmp/Store");
+		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE);
 
 		storeKV->Open();
 
@@ -165,6 +167,20 @@ void work(string fileName)
 
 int main(int argc, char **argv)
 {
+	int pid_file = open(zsearch::LOCK_FILE.c_str(), O_CREAT | O_RDWR, 0666);
+
+	int rc = flock(pid_file, LOCK_EX | LOCK_NB);
+
+	if (rc)
+	{
+		if (EWOULDBLOCK == errno)
+		{
+			std::cerr << "Only one instance of zsearch is allowed!" << std::endl;
+			return -1;
+		}
+
+	}
+
 	string fileName = argv[1];
 
 	work(fileName);
