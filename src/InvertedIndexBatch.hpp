@@ -73,18 +73,10 @@ private:
 
 	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
 	{
-		try
-		{
-			stringstream ss;
-			set->write(ss);
-			string bitmap = ss.str();
-			store->PutBatch(wordId,bitmap);
-		}
-		catch (exception ex)
-		{
-			cerr << "batchPut " << ex.what() << endl;
-		}
-
+		stringstream ss;
+		set->write(ss);
+		string bitmap = ss.str();
+		store->PutBatch(wordId,bitmap);
 		return 1;
 	}
 
@@ -103,7 +95,7 @@ public:
 
 		producerVec.store(&postings);
 		consumerVec.store(&postings2);
-		
+
 		consumerThread = std::thread([this](){
 			       this->consumer_main();
 		        });
