@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include "IKVStore.h"
+#include "leveldb/write_batch.h"
 
 namespace KVStore
 {
@@ -17,7 +18,8 @@ namespace KVStore
 		private:
 
 			leveldb::DB* db;
-
+			const std::string path;
+			leveldb::WriteBatch batch;
 		public:
 
 			char* EncodeVarint64(char* dst, uint64_t v);
@@ -48,13 +50,15 @@ namespace KVStore
 			
 			Status Delete(uint64_t key);
 			
-			Status Write(KVStoreLevelDBBatch& batch);
-
 			void Compact();
 
-
+            void PutBatch(const std::string& key, const std::string& value);
+			void PutBatch(uint64_t key, const std::string& value);
+			void DeleteBatch(const std::string& key);
+			void ClearBatch();
+			Status writeBatch();
+		protected:
 	};
-
 
 } // namespace KVStore
 

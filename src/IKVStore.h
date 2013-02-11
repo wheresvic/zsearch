@@ -3,9 +3,7 @@
 
 #include <string>
 #include <vector>
-
-// TODO: remove this dependency
-#include "KVStoreLevelDBBatch.hpp"
+#include <memory>
 
 namespace KVStore
 {
@@ -80,16 +78,14 @@ namespace KVStore
 			virtual Status Delete(uint64_t key) = 0;
 			
 		    virtual	void Compact() = 0;
-
-			virtual Status Write(KVStoreLevelDBBatch& batch) = 0;
-
-			IKVStore(const std::string& path) : path(path) { }
-
+            virtual void PutBatch(const std::string& key, const std::string& value)= 0;
+			virtual void PutBatch(uint64_t key, const std::string& value)= 0;
+			virtual void DeleteBatch(const std::string& key)= 0;
+			virtual void ClearBatch()= 0;
+			virtual Status writeBatch()= 0;
 			virtual ~IKVStore() { }
 
-		protected:
 
-			const std::string path;
 	};
 
 }

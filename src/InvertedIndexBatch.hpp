@@ -24,7 +24,6 @@
 
 
 #include "varint/ISetFactory.h"
-#include "KVStoreLevelDBBatch.hpp"
 
 struct postingComp {
   inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
@@ -40,7 +39,6 @@ class InvertedIndexBatch : public IInvertedIndex
 {
 private:
 	std::shared_ptr<KVStore::IKVStore> store;
-	KVStore::KVStoreLevelDBBatch batch;
 
 	vector<std::pair<unsigned int,unsigned int>> postings;
 	vector<std::pair<unsigned int,unsigned int>> postings2;
@@ -80,7 +78,7 @@ private:
 			stringstream ss;
 			set->write(ss);
 			string bitmap = ss.str();
-			batch.Put(wordId,bitmap);
+			store->PutBatch(wordId,bitmap);
 		}
 		catch (exception ex)
 		{
@@ -95,7 +93,6 @@ public:
 
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
 	 store(store),
-	 batch('i'),
 	 setFactory(setFactory),
 	 cond_var(&m)
 	{
@@ -103,10 +100,10 @@ public:
 
 		maxbatchsize = 2500000;
 		batchsize = 0;
-		store->Open();
 
 		producerVec.store(&postings);
 		consumerVec.store(&postings2);
+		
 		consumerThread = std::thread([this](){
 			       this->consumer_main();
 		        });
@@ -207,9 +204,8 @@ public:
 			batchPut(wordid, docSet);
 			vec.clear();
 		}
-
-		store->Write(batch);
-		batch.Clear();
+		store->writeBatch();
+		store->ClearBatch();
 		return 1;
 	}
 

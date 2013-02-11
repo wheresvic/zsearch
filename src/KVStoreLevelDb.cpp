@@ -11,7 +11,7 @@
 
 namespace KVStore
 {
-	        KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : IKVStore(path)
+	        KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : path(path)
 			{
 				db = NULL;
 
@@ -144,18 +144,34 @@ namespace KVStore
 
 			}
 
-			Status KVStoreLevelDb::Write(KVStoreLevelDBBatch& batch)
-			{
-				leveldb::Status s = db->Write(leveldb::WriteOptions(), &(batch.batch));
 
-				if (s.ok())
-				{
-					return Status::OK();
-				}
+    void KVStoreLevelDb::PutBatch(const std::string& key, const std::string& value){
+	   batch.Put(key, value);
+    }
 
-				return Status::IOError();
-			}
+	void KVStoreLevelDb::PutBatch(uint64_t key, const std::string& value){
+		string keystr;
+		ZUtil::PutVarint64(keystr, key);
+		batch.Put(keystr, value);	
+	}
+	
+	void KVStoreLevelDb::DeleteBatch(const std::string& key){
+		batch.Delete(key);
+	}
+	
+	void KVStoreLevelDb::ClearBatch(){
+		batch.Clear();
+	}
+	
+	Status KVStoreLevelDb::writeBatch(){
+		leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
 
+		if (s.ok())
+		{
+			return Status::OK();
+		}
 
+		return Status::IOError();
+	}
 } // namespace KVStore
 

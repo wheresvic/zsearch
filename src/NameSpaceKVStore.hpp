@@ -8,9 +8,9 @@
 #include <memory>
 
 #include "IKVStore.h"
-#include "KVStoreLevelDBBatch.hpp"
 #include "ZUtil.hpp"
 #include "ZException.hpp"
+
 
 namespace KVStore
 {
@@ -24,7 +24,7 @@ namespace KVStore
 
 		public:
 
-			NameSpaceKVStore(const char ns, std::shared_ptr<KVStore::IKVStore> store) : IKVStore(""), ns(ns), store(store)
+			NameSpaceKVStore(const char ns, std::shared_ptr<KVStore::IKVStore> store) :  ns(ns), store(store)
 			{
 
 			}
@@ -124,13 +124,33 @@ namespace KVStore
 
 				return store->Put(writesNs);
 			}
+			
+            void PutBatch(const std::string& key, const std::string& value){
+				string keystr = key;
+				keystr.insert(0, 1, ns);
+				store->PutBatch(keystr, value);
+            }
 
-			Status Write(KVStoreLevelDBBatch& batch)
-			{
-				// throw ZException("Not implemented!");
-				return store->Write(batch);
+			void PutBatch(uint64_t key, const std::string& value){
+				string keystr;
+			    ZUtil::PutVarint64(keystr, key);
+			    keystr.insert(0, 1, ns);
+				store->PutBatch(keystr,value);
 			}
-
+			
+			void DeleteBatch(const std::string& key){
+				string keystr = key;
+				keystr.insert(0, 1, ns);
+				store->DeleteBatch(keystr);
+			}
+			
+			void ClearBatch(){
+				store->ClearBatch();
+			}
+			
+			Status writeBatch(){
+				return store->writeBatch();
+			}
 	}; // end class
 
 
