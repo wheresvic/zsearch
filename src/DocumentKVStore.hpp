@@ -1,6 +1,6 @@
 
-#ifndef DOCUMENTSTORELEVELDB_H
-#define DOCUMENTSTORELEVELDB_H
+#ifndef DOCUMENTKVSTORE_H
+#define DOCUMENTKVSTORE_H
 
 #include <iostream>
 #include <map>
@@ -8,13 +8,13 @@
 #include <string>
 #include <sstream>
 #include "IKVStore.h"
-#include "IDocumentStore.h"
+#include "IDocument.h"
 #include "ZException.hpp"
 
 
 using namespace std;
 
-class DocumentStoreLevelDb : public IDocumentStore
+class DocumentKVStore
 {
 	private:
 
@@ -22,14 +22,14 @@ class DocumentStoreLevelDb : public IDocumentStore
 
 	public:
 
-		DocumentStoreLevelDb(std::shared_ptr<KVStore::IKVStore> store) : store(store)
+		DocumentKVStore(std::shared_ptr<KVStore::IKVStore> store) : store(store)
 		{
 			store->Open();
 		}
 
-		~DocumentStoreLevelDb()
+		~DocumentKVStore()
 		{
-			std::cerr << "Destroyed DocumentStoreLevelDb" << std::endl;
+			std::cerr << "Destroyed DocumentKVStore" << std::endl;
 		}
 
 		void addDoc(unsigned int docId, const shared_ptr<IDocument>& doc)
@@ -47,11 +47,6 @@ class DocumentStoreLevelDb : public IDocumentStore
 		void removeDoc(unsigned int docId)
 		{
 			store->Delete(docId);	// status could really only be Ok or NotFound
-		}
-
-		const map<unsigned int, shared_ptr<IDocument>>& getDocuments()
-		{
-			throw ZException("Not implemented - will be deprecated");
 		}
 
 		int Get(unsigned int docId, shared_ptr<IDocument>& doc) const

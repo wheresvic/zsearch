@@ -16,8 +16,7 @@
 
 #include "DocumentImpl.hpp"
 #include "TokenizerImpl.h"
-#include "DocumentStoreSimple.h"
-#include "DocumentStoreLevelDb.hpp"
+#include "DocumentKVStore.hpp"
 #include "NameSpaceKVStore.hpp"
 #include "KVStoreLevelDb.hpp"
 #include "KVStoreInMemory.hpp"
@@ -78,24 +77,12 @@ void work(string fileName)
 
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
 
-		// shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreSimple>();
-
 		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE);
 
 		storeKV->Open();
 
-		shared_ptr<KVStore::IKVStore> documentStoreNsKV = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
-		// shared_ptr<KVStore::IKVStore> documentStoreKV = make_shared<KVStore::KVStoreInMemory>("/tmp/DocumentStore");
-		shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreNsKV);
-
-		// shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/WordIndexStore");
-		// shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/WordIndexStore");
-
+		shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
 		shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
-
-		// shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreLevelDb>("/tmp/InvertedIndex");
-		// shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::KVStoreInMemory>("/tmp/InvertedIndex");
-
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
 		Engine engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
@@ -126,7 +113,8 @@ void work(string fileName)
 				string field = input.substr(0, found);
 				string value = input.substr(found + 1);
 				// cout << "field : " << field << ", value: " << value << endl;
-				doc->addEntry("document", value);
+				// doc->addEntry("document", value);
+				doc->addEntry(field, value);
 			}
 			else
 			{
@@ -189,7 +177,7 @@ int main(int argc, char **argv)
 	work(fileName);
 	// work(fileName);
 
-	std::this_thread::sleep_for(std::chrono::seconds(30));
+	// std::this_thread::sleep_for(std::chrono::seconds(30));
 
 	return 0;
 }

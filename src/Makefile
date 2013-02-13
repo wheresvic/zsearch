@@ -10,11 +10,11 @@ CC = g++
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 
-BUILD_OBJECTS = $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o
+BUILD_OBJECTS = $(BUILD_DIR)/TokenizerImpl.o
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentStoreLevelDb.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp
+HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
@@ -42,9 +42,6 @@ engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
 ##
 # Classes
 ##
-
-$(BUILD_DIR)/DocumentStoreSimple.o : DocumentStoreSimple.cpp DocumentStoreSimple.h IDocumentStore.h Constants.hpp
-	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
 	$(CC) -c $(CFLAGS) $< -o $@

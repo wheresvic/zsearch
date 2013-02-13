@@ -31,7 +31,7 @@ namespace KVStore
 
 			~NameSpaceKVStore()
 			{
-				std::cerr << "Destroyed NameSpaceKVStore" << std::endl;
+				std::cerr << "Destroyed NameSpaceKVStore " << ns << std::endl;
 			}
 
 			Status Open()

@@ -38,8 +38,6 @@
 #include <iostream>
 #include <chrono>
 
-#include "DocumentStoreSimple.h"
-#include "DocumentStoreLevelDb.hpp"
 #include "TokenizerImpl.h"
 #include "DocumentImpl.hpp"
 #include "KVStoreLevelDb.hpp"
@@ -665,9 +663,7 @@ int main(int argc, char **argv)
 	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
 	storeKV->Open();
 
-	shared_ptr<KVStore::IKVStore> documentStoreNsKV = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
-	shared_ptr<IDocumentStore> documentStore = make_shared<DocumentStoreLevelDb>(documentStoreNsKV);
-
+	shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);	
 	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 

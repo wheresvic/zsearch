@@ -2,25 +2,27 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "DocumentStoreSimple.h"
 #include <memory>
-// #include <utility>
-#include "QueryParser.hpp"
 #include <set>
 #include <unordered_set>
 #include <vector>
-#include "Word.hpp"
+#include <chrono>
 
+#include "Word.hpp"
+#include "DocumentImpl.hpp"
+#include "QueryParser.hpp"
 #include "InvertedIndexBatch.hpp"
 #include "InvertedIndexSimpleBatch.hpp"
 #include "InvertedIndexImpl.hpp"
+#include "varint/ISetFactory.h"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
 #include "varint/LazyAndSet.h"
 #include "IKVStore.h"
 #include "WordIndexKVStore.hpp"
-#include "varint/ISetFactory.h"
-#include <chrono>
+#include "DocumentKVStore.hpp"
+
+
 
 using namespace std;
 
@@ -29,12 +31,12 @@ class Engine
 	public:
 
 		Engine(shared_ptr<ITokenizer> tokenizer,
-				shared_ptr<IDocumentStore> documentStore,
+				shared_ptr<KVStore::IKVStore> documentStore,
 				shared_ptr<KVStore::IKVStore> wordIndexStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore,
 				shared_ptr<ISetFactory> setFactory) :
 			tokenizer(tokenizer),
-			documentStore(documentStore),
+			documents(documentStore),
 			wordIndex(wordIndexStore),
 			invertedIndex(invertedIndexStore, setFactory),
 			setFactory(setFactory)
@@ -84,7 +86,7 @@ class Engine
 		 */
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
-			documentStore->addDoc(docId, document);
+			documents.addDoc(docId, document);
 
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
@@ -130,10 +132,11 @@ class Engine
 		 */
 		void deleteDocument(unsigned int docId)
 		{
-			shared_ptr<IDocument> document;
+			// TODO add exists method to remove DocumentImpl dependency
+			shared_ptr<IDocument> document = make_shared<DocumentImpl>();
 
 			// get the document to be deleted
-			if (!documentStore->Get(docId, document))
+			if (!documents.Get(docId, document))
 			{
 				return;
 			}
@@ -173,7 +176,7 @@ class Engine
 				invertedIndex.remove(value, docId);
 			}
 
-			documentStore->removeDoc(docId);
+			documents.removeDoc(docId);
 		}
 
 
@@ -293,7 +296,7 @@ class Engine
 
 		bool getDoc(const unsigned int docId, shared_ptr<IDocument>& doc) const
 		{
-			if (documentStore->Get(docId, doc)) {
+			if (documents.Get(docId, doc)) {
 				return true;
 			}
 
@@ -312,7 +315,7 @@ class Engine
 		unordered_set<string> fields;
 
 		// store all the documents
-		shared_ptr<IDocumentStore> documentStore;
+		DocumentKVStore documents;
 
 		// store all the words
 		WordIndexKVStore wordIndex;
