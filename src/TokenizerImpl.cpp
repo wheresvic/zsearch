@@ -7,7 +7,7 @@
 
 using namespace std;
 
-TokenizerImpl::TokenizerImpl(const std::string& delimiters) : m_offset(0), m_delimiters(delimiters)
+TokenizerImpl::TokenizerImpl() : m_offset(0)
 { }
 
 TokenizerImpl::~TokenizerImpl()

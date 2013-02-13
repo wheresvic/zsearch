@@ -8,9 +8,9 @@
 #include <vector>
 #include <chrono>
 
+#include "ITokenizer.h"
 #include "Word.hpp"
 #include "DocumentImpl.hpp"
-#include "QueryParser.hpp"
 #include "InvertedIndexBatch.hpp"
 #include "InvertedIndexSimpleBatch.hpp"
 #include "InvertedIndexImpl.hpp"

@@ -75,7 +75,7 @@ void work(string fileName)
 		shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 		// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
 
-		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
+		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
 		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE);
 

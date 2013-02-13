@@ -658,7 +658,7 @@ int main(int argc, char **argv)
     // std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
     std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 
-	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
+	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>();
 
 	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
 	storeKV->Open();

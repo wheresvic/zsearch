@@ -14,7 +14,7 @@ BUILD_OBJECTS = $(BUILD_DIR)/TokenizerImpl.o
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp QueryParser.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp
+HEADERS = Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp IDocument.h IInvertedIndex.h IKVStore.h KVStoreInMemory.hpp NameSpaceKVStore.hpp 
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O0  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 

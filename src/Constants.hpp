@@ -11,7 +11,7 @@ namespace zsearch
 	const std::string LEVELDB_STORE = "/var/tmp/store";
 	const std::string LEVELDB_TEST_STORE = "/var/tmp/test_store";
 
-	const std::string QUERY_PARSER_DELIMITERS = " \t\n\r.,;";
+	// const std::string QUERY_PARSER_DELIMITERS = " \t\n\r.,;";
 
 	namespace server
 	{
