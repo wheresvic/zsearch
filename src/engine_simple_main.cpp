@@ -19,7 +19,7 @@
 #include "DocumentStoreSimple.h"
 #include "DocumentStoreLevelDb.hpp"
 #include "NameSpaceKVStore.hpp"
-#include "KVStoreLevelDb.h"
+#include "KVStoreLevelDb.hpp"
 #include "KVStoreInMemory.hpp"
 #include "Engine.hpp"
 #include "Constants.hpp"

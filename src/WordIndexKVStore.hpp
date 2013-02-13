@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include "KVStoreLevelDb.h"
+#include "IKVStore.h"
 #include "ZException.hpp"
 #include "Word.hpp"
 #include "ZUtil.hpp"

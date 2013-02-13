@@ -42,7 +42,7 @@
 #include "DocumentStoreLevelDb.hpp"
 #include "TokenizerImpl.h"
 #include "DocumentImpl.hpp"
-#include "KVStoreLevelDb.h"
+#include "KVStoreLevelDb.hpp"
 #include "NameSpaceKVStore.hpp"
 #include "Constants.hpp"
 #include "Engine.hpp"

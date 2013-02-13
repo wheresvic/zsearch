@@ -1,17 +1,31 @@
+#ifndef KVSTORE_LEVELDB_H
+#define KVSTORE_LEVELDB_H
+
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
-#include "leveldb/write_batch.h"
 #include <map>
 #include <string>
+#include <vector>
 #include <sstream>
 #include <iostream>
-#include <vector>
-#include "KVStoreLevelDb.h"
+#include "IKVStore.h"
+#include "leveldb/write_batch.h"
 #include "ZUtil.hpp"
+
 
 namespace KVStore
 {
-	        KVStoreLevelDb::KVStoreLevelDb(const std::string& path) : path(path)
+	class KVStoreLevelDb : public IKVStore
+	{
+		private:
+
+			leveldb::DB* db;
+			const std::string path;
+			leveldb::WriteBatch batch;
+			
+		public:
+
+			KVStoreLevelDb(const std::string& path) : path(path)
 			{
 				db = NULL;
 
@@ -19,12 +33,12 @@ namespace KVStore
 				leveldb::DestroyDB(path, options);
 			}
 
-			KVStoreLevelDb::~KVStoreLevelDb()
+			~KVStoreLevelDb()
 			{
 				delete db;
 			}
 
-			Status KVStoreLevelDb::Open()
+			Status Open()
 			{
 				leveldb::Options options;
 				// options.block_cache = leveldb::NewLRUCache(1024*128);
@@ -34,7 +48,7 @@ namespace KVStore
 				return Status::OK();
 			}
 
-			Status KVStoreLevelDb::Put(const std::string& key, const std::string& value)
+			Status Put(const std::string& key, const std::string& value)
 			{
 				leveldb::Status s = db->Put(leveldb::WriteOptions(), key, value);
 
@@ -47,14 +61,14 @@ namespace KVStore
 
 			}
 
-			Status KVStoreLevelDb::Put(uint64_t key, const std::string& value)
+			Status Put(uint64_t key, const std::string& value)
 			{
 				std::string keystr;
 				ZUtil::PutVarint64(keystr, key);
 				return Put(keystr, value);
 			}
 
-			Status KVStoreLevelDb::Get(const std::string& key, std::string* value)
+			Status Get(const std::string& key, std::string* value)
 			{
 				leveldb::Status s = db->Get(leveldb::ReadOptions(), key, value);
 				if (s.ok())
@@ -65,26 +79,26 @@ namespace KVStore
 				return Status::NotFound();
 			}
 
-			Status KVStoreLevelDb::Get(const std::string& key, std::string& value)
+			Status Get(const std::string& key, std::string& value)
 			{
 				return Get(key, &value);
 			}
 
-			Status KVStoreLevelDb::Get(uint64_t key, std::string& value)
+			Status Get(uint64_t key, std::string& value)
 			{
 				std::string keystr;
 				ZUtil::PutVarint64(keystr, key);
 				return Get(keystr, &value);
 			}
 
-			Status KVStoreLevelDb::Delete(uint64_t key)
+			Status Delete(uint64_t key)
 			{
 				std::string keystr;
 				ZUtil::PutVarint64(keystr, key);
 				return Delete(keystr);
 			}
 			
-			Status KVStoreLevelDb::Delete(const std::string& key)
+			Status Delete(const std::string& key)
 			{
 				leveldb::Status s = db->Delete(leveldb::WriteOptions(), key);
 
@@ -96,13 +110,12 @@ namespace KVStore
 				return Status::NotFound();
 			}
 
-
-	      	void KVStoreLevelDb::Compact()
+	      	void Compact()
 	      	{
 		        db->CompactRange(NULL,NULL);
 			}
 
-			Status KVStoreLevelDb::Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
+			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
 				leveldb::WriteBatch batch;
 
@@ -124,7 +137,7 @@ namespace KVStore
 
 			}
 
-			Status KVStoreLevelDb::Put(const std::vector<std::pair<std::string, std::string>>& writes)
+			Status Put(const std::vector<std::pair<std::string, std::string>>& writes)
 			{
 				leveldb::WriteBatch batch;
 
@@ -144,34 +157,41 @@ namespace KVStore
 
 			}
 
+			void PutBatch(const std::string& key, const std::string& value)
+			{
+				batch.Put(key, value);
+			}
 
-    void KVStoreLevelDb::PutBatch(const std::string& key, const std::string& value){
-	   batch.Put(key, value);
-    }
+			void PutBatch(uint64_t key, const std::string& value)
+			{
+				string keystr;
+				ZUtil::PutVarint64(keystr, key);
+				batch.Put(keystr, value);	
+			}
 
-	void KVStoreLevelDb::PutBatch(uint64_t key, const std::string& value){
-		string keystr;
-		ZUtil::PutVarint64(keystr, key);
-		batch.Put(keystr, value);	
-	}
-	
-	void KVStoreLevelDb::DeleteBatch(const std::string& key){
-		batch.Delete(key);
-	}
-	
-	void KVStoreLevelDb::ClearBatch(){
-		batch.Clear();
-	}
-	
-	Status KVStoreLevelDb::writeBatch(){
-		leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
+			void DeleteBatch(const std::string& key)
+			{
+				batch.Delete(key);
+			}
 
-		if (s.ok())
-		{
-			return Status::OK();
-		}
+			void ClearBatch()
+			{
+				batch.Clear();
+			}
 
-		return Status::IOError();
-	}
+			Status writeBatch()
+			{
+				leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
+
+				if (s.ok())
+				{
+					return Status::OK();
+				}
+
+				return Status::IOError();
+			}		
+	};
+
 } // namespace KVStore
 
+#endif

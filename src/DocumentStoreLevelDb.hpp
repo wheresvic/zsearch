@@ -7,8 +7,10 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include "KVStoreLevelDb.h"
+#include "IKVStore.h"
+#include "IDocumentStore.h"
 #include "ZException.hpp"
+
 
 using namespace std;
 

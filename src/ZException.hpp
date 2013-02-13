@@ -6,6 +6,8 @@
 #ifndef ZEXCEPTION_H
 #define ZEXCEPTION_H
 
+#include <string>
+
 struct ZException : public std::exception
 {
 	std::string s;
