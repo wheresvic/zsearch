@@ -24,9 +24,14 @@
 		<div id="nav1">
 			<ul>
 				<li><a href="index.html">Main</a></li>
+				<!--
 				<li><a href="demo.html">Demo</a></li>
 				<li><a href="tutorial.html">Tutorial</a></li>
 				<li><a href="api.html">Api</a></li>								
+				-->
+				<li>Demo</li>
+				<li>Tutorial</li>
+				<li>API</li>
 			</ul>
 		</div>	
 
@@ -46,11 +51,15 @@
       <section>
         <h3>What?</h3>
 
-<p>A quick summary of Zsearch and what it is about. Talk about specific features, perhaps compare with existing products?</p>
+<p>
+A quick summary of Zsearch and what it is about. Talk about specific features, perhaps compare with existing products?
+</p>
 
 <h3>Quick start</h3>
 
-<p>You can grab the source and build the project from scratch if you have gcc 4.7.2 (or higher) and libevent2:</p>
+<p>
+You can grab the source and build the project from scratch if you have gcc 4.7.2 (or higher) and libevent2:
+</p>
 
 <pre>
 <code>$ git clone git://github.com/victorparmar/zsearch.git
@@ -62,8 +71,20 @@ $ ./build/server ./docroot</code>
 <p>As simple as that! You now have a zsearch instance running on localhost:8080. You can test this out by indexing a few documents provided by the load script:</p>
 
 <pre>
-<code>TODO</code>
+<code>$ ./api/load.py</code>
 </pre>
+
+<p>
+You can then open up a browser and point to <code>http://localhost:8080/doc?id=1</code> to retrieve the first document or simply search via <code>http://localhost:8080/search?q=kingdom</code> to get a list of all the document ids. You can change the search term to whatever you'd like to play around with it. A screencast of the above steps is provided below:
+</p>
+
+<p>
+<iframe width="560" height="315" src="http://www.youtube.com/embed/q2jnIdyCi94?rel=0" frameborder="0" allowfullscreen></iframe>
+</p>
+
+<p>
+If you'd like to manually post data, you can do so via <code>http://localhost:8080/post.htm</code>. There are a couple of sample documents under the data folder with the extension .xml. You will need to copy and paste the entire xml and post it to the server to have it index the document. Enjoy :)
+</p>
 
 <h3>Authors and Contributors</h3>
 
