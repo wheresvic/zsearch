@@ -40,7 +40,7 @@ You can clone this repo and simply execute:
     git clone git://github.com/victorparmar/zsearch.git
     cd zsearch
     ./buildall.sh
-	./build/server ./src
+	./build/server ./docroot
 
 ## License
 
