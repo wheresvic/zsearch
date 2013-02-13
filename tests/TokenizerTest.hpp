@@ -8,7 +8,7 @@
 #include <iostream>
 #include <iterator>
 
-#include "src/QueryParser.hpp"
+#include "src/ITokenizer.h"
 #include "src/TokenizerImpl.h"
 #include "src/Constants.hpp"
 #include "lib/tpunit++.hpp"
@@ -18,13 +18,13 @@ using namespace std;
 
 
 /**
- * Test the query parser
+ * Test the tokenizer
  */
-struct QueryParserTest : tpunit::TestFixture
+struct TokenizerTest : tpunit::TestFixture
 {
-	QueryParserTest() : tpunit::TestFixture
+	TokenizerTest() : tpunit::TestFixture
 	(
-		TEST(QueryParserTest::testTokenizing)
+		TEST(TokenizerTest::testTokenizing)
 	)
 	{ }
 
@@ -32,16 +32,24 @@ struct QueryParserTest : tpunit::TestFixture
 	{
 		string text(" snoop  doggy dawg");
 
-		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>(zsearch::QUERY_PARSER_DELIMITERS);
+		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
-		QueryParser qp(text, tokenizer);
-
+		tokenizer->setString(text);
+		
+		while (tokenizer->nextToken())
+		{
+			string token = tokenizer->getToken();
+			cout << token << endl;			
+		}
+		
+		/*
 		vector<string> words = qp.getTokens();
 
 		ASSERT_EQUAL(words.size(), 3);
 		ASSERT_EQUAL(words[0].compare("snoop"), 0);
 		ASSERT_EQUAL(words[1].compare("doggy"), 0);
 		ASSERT_EQUAL(words[2].compare("dawg"), 0);
+		*/
 	}
 
 };

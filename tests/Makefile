@@ -12,7 +12,7 @@ BUILD_DIR_TEST = ../build/tests
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb-1.7.0
 
-OBJECTS = $(BUILD_DIR)/DocumentStoreSimple.o $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/KVStoreLevelDb.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
+OBJECTS = $(BUILD_DIR)/TokenizerImpl.o $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
 
@@ -30,7 +30,7 @@ endif
 clean :
 	rm -f $(BUILD_DIR_TEST)/*
 
-all: document_test query_parser_test xml_test inverted_index_test compressed_set_test basic_set_test statistics_test thread_test memory_leak_test
+all: memory_leak_test thread_test document_test tokenizer_test xml_test inverted_index_test compressed_set_test basic_set_test statistics_test
 
 memory_leak_test : memory_leak_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
@@ -41,7 +41,7 @@ thread_test : thread_test.cpp $(OBJECTS)
 document_test : document_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 
-query_parser_test : query_parser_test.cpp $(OBJECTS)
+tokenizer_test : tokenizer_test.cpp $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BUILD_DIR_TEST)/$@ $^ $(LIBS)
 
 xml_test : xml_test.cpp $(OBJECTS)
