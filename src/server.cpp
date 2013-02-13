@@ -51,12 +51,9 @@
 #include "varint/SetFactory.h"
 #include "varint/BasicSetFactory.h"
 
-
 static Engine *engine;
 
 char uri_root[512];
-
-
 
 /**
  * Callback used for doc request
@@ -75,7 +72,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 		struct evbuffer *evb = NULL;
 		const char *uri = evhttp_request_get_uri(req);
 		struct evhttp_uri *decoded = NULL;
-		const char *path = NULL;
+		// const char *path = NULL;
 		const char *query = NULL;
 
 		printf("Got a GET request for %s\n",  uri);
@@ -90,11 +87,11 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 			return;
 		}
 
-		path = evhttp_uri_get_path(decoded);
-		std::cout << path << std::endl;
+		// path = evhttp_uri_get_path(decoded);
+		// std::cout << path << std::endl;
 
 		query = evhttp_uri_get_query(decoded);
-		std::cout << query << std::endl;
+		// std::cout << query << std::endl;
 
 		// This holds the content we're sending
 		evb = evbuffer_new();
@@ -113,7 +110,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 				std::string key(param->key);
 				std::string value(param->value);
 
-				printf("%s\n%s\n", key.c_str(), value.c_str());
+				// printf("%s %s\n", key.c_str(), value.c_str());
 
 				if (key.compare(zsearch::server::DOC_ID_KEY) == 0)
 				{
@@ -210,7 +207,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 		struct evbuffer *evb = NULL;
 		const char *uri = evhttp_request_get_uri(req);
 		struct evhttp_uri *decoded = NULL;
-		const char *path = NULL;
+		// const char *path = NULL;
 		const char *query = NULL;
 		// struct evkeyvalq *headers;
 		// struct evkeyval *header;
@@ -225,11 +222,11 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 			return;
 		}
 
-		path = evhttp_uri_get_path(decoded);
-		std::cout << path << std::endl;
+		// path = evhttp_uri_get_path(decoded);
+		// std::cout << path << std::endl;
 
 		query = evhttp_uri_get_query(decoded);
-		std::cout << query << std::endl;
+		// std::cout << query << std::endl;
 
 		// This holds the content we're sending
 		evb = evbuffer_new();
@@ -258,7 +255,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 				std::string key(param->key);
 				std::string value(param->value);
 
-				std::cout << key << " " << value << std::endl;
+				// std::cout << key << " " << value << std::endl;
 
 				if (key.compare(zsearch::server::GET_SEARCH_QUERY_KEY) == 0)
 				{
@@ -300,21 +297,6 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 				{
 					evbuffer_add_printf(evb, "%u ", docId);
 				}
-
-				/*
-				auto docSet = engine->getDocs(docIdSet);
-
-				for (auto document : docSet)
-				{
-					std::string title;
-					document->getEntry("title", title);
-					std::cout << title << " ";
-					evbuffer_add_printf(evb, title.c_str());
-					evbuffer_add_printf(evb, "\n");
-				}
-				*/
-
-				// evbuffer_add_printf(evb, "\n");
 			}
 
 			evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", "text/html");
@@ -471,8 +453,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
 					unsigned int docId = engine->addDocument(document);
 					std::cout << "Added document: " << docId << std::endl;
-					evbuffer_add_printf(evb, "%d", docId);
-					std::cout << "Made it" << std::endl;
+					evbuffer_add_printf(evb, "%d", docId);					
 				}
 				catch (const std::string& e)
 				{
