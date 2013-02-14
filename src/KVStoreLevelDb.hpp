@@ -46,12 +46,15 @@ namespace KVStore
 
 		public:
 
-			KVStoreLevelDb(const std::string& path) : path(path)
+			KVStoreLevelDb(const std::string& path, bool destroy) : path(path)
 			{
 				db = NULL;
 
-				// leveldb::Options options;
-				// leveldb::DestroyDB(path, options);
+				if (destroy)
+				{
+					leveldb::Options options;
+					leveldb::DestroyDB(path, options);
+				}
 			}
 
 			~KVStoreLevelDb()

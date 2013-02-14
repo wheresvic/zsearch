@@ -666,11 +666,22 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	if (argc < 2)
+	if (argc < 3)
 	{
-		fprintf(stdout, "Syntax: http-server <docroot>\n");
+		fprintf(stdout, "Syntax: http-server <docroot> <destroyDb = 0/1>\n");
 		return 1;
 	}
+
+	bool destroyDb = false;
+
+	string strDestroyDb = argv[2];
+	int iDestroyDb = ZUtil::getInt(strDestroyDb);
+
+	if (iDestroyDb)
+	{
+		destroyDb = true;
+	}
+
 
 	struct evhttp *http;
 	struct evhttp_bound_socket *handle;
@@ -716,7 +727,7 @@ int main(int argc, char **argv)
 
 	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>();
 
-	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
+	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE, destroyDb);
 	storeKV->Open();
 
 	shared_ptr<KVStore::IKVStore> engineDataStore = make_shared<KVStore::NameSpaceKVStore>('e', storeKV);

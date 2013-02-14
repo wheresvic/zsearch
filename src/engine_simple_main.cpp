@@ -58,7 +58,7 @@ void search(const string& query, const Engine& engine, unsigned int start, unsig
 }
 
 
-void work(string fileName)
+void work(string fileName, bool destroyDb)
 {
 	char LocalBuffer[4096];
 	std::ios::sync_with_stdio(false);
@@ -77,7 +77,7 @@ void work(string fileName)
 
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
-		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE);
+		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE, destroyDb);
 		storeKV->Open();
 
 		shared_ptr<KVStore::IKVStore> engineDataStore = make_shared<KVStore::NameSpaceKVStore>('e', storeKV);
@@ -173,9 +173,25 @@ int main(int argc, char **argv)
 
 	}
 
+	if (argc < 3)
+	{
+		cerr << argv[0] << " <input> <destroyDb = 0/1>" << endl;
+		return 1;
+	}
+
 	string fileName = argv[1];
 
-	work(fileName);
+	bool destroyDb = false;
+
+	string strDestroyDb = argv[2];
+	int iDestroyDb = ZUtil::getInt(strDestroyDb);
+
+	if (iDestroyDb)
+	{
+		destroyDb = true;
+	}
+
+	work(fileName, destroyDb);
 	// work(fileName);
 
 	// std::this_thread::sleep_for(std::chrono::seconds(30));
