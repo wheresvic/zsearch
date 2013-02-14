@@ -49,6 +49,8 @@
 #include "varint/SetFactory.h"
 #include "varint/BasicSetFactory.h"
 
+static struct event_base *base;
+
 static Engine *engine;
 
 char uri_root[512];
@@ -451,7 +453,7 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 					std::shared_ptr<IDocument> document = std::make_shared<DocumentImpl>(value);
 					unsigned int docId = engine->addDocument(document);
 					std::cout << "Added document: " << docId << std::endl;
-					evbuffer_add_printf(evb, "%d", docId);					
+					evbuffer_add_printf(evb, "%d", docId);
 				}
 				catch (const std::string& e)
 				{
@@ -634,8 +636,17 @@ static void generic_request_cb(struct evhttp_request *req, void *arg)
 
 
 
+void signal_callback_handler(int signum)
+{
+	std::cerr << "caught signal " << signum << std::endl;
+	event_base_loopexit(base, NULL);
+}
+
 int main(int argc, char **argv)
 {
+	// Register signal and signal handler
+	signal(SIGINT, &signal_callback_handler);
+
 	int pid_file = open(zsearch::LOCK_FILE.c_str(), O_CREAT | O_RDWR, 0666);
 
 	int rc = flock(pid_file, LOCK_EX | LOCK_NB);
@@ -650,27 +661,6 @@ int main(int argc, char **argv)
 
 	}
 
-
-	struct event_base *base;
-	struct evhttp *http;
-	struct evhttp_bound_socket *handle;
-
-    // std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
-    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
-
-	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>();
-
-	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
-	storeKV->Open();
-
-	shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);	
-	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
-	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
-
-	engine = new Engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
-
-	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
-
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 	{
 		return 1;
@@ -681,6 +671,9 @@ int main(int argc, char **argv)
 		fprintf(stdout, "Syntax: http-server <docroot>\n");
 		return 1;
 	}
+
+	struct evhttp *http;
+	struct evhttp_bound_socket *handle;
 
 	base = event_base_new();
 	if (!base)
@@ -715,6 +708,24 @@ int main(int argc, char **argv)
 		fprintf(stderr, "couldn't bind to port %d. Exiting.\n", zsearch::server::PORT);
 		return 1;
 	}
+
+	// if we made it till here then we're go!
+
+	// std::shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+    std::shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
+
+	std::shared_ptr<ITokenizer> tokenizer = std::make_shared<TokenizerImpl>();
+
+	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
+	storeKV->Open();
+
+	shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
+	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
+	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
+
+	engine = new Engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+
+	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 
 	printf("Listening on 0.0.0.0:%d\n", zsearch::server::PORT);
 
