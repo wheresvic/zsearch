@@ -21,6 +21,8 @@
 #include "IKVStore.h"
 #include "WordIndexKVStore.hpp"
 #include "DocumentKVStore.hpp"
+#include "FieldKVStore.hpp"
+#include "EngineDataKVStore.hpp"
 
 
 
@@ -30,12 +32,16 @@ class Engine
 {
 	public:
 
-		Engine(shared_ptr<ITokenizer> tokenizer,
+		Engine(shared_ptr<KVStore::IKVStore> engineDataStore,
+				shared_ptr<ITokenizer> tokenizer,
+				shared_ptr<KVStore::IKVStore> fieldStore,
 				shared_ptr<KVStore::IKVStore> documentStore,
 				shared_ptr<KVStore::IKVStore> wordIndexStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore,
 				shared_ptr<ISetFactory> setFactory) :
+			engineData(engineDataStore),
 			tokenizer(tokenizer),
+			fields(fieldStore),
 			documents(documentStore),
 			wordIndex(wordIndexStore),
 			invertedIndex(invertedIndexStore, setFactory),
@@ -86,7 +92,7 @@ class Engine
 		 */
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
-			documents.addDoc(docId, document);
+			documents.addDoc(engineData.getDocId(), document);
 
 			// we create a set of word in the document
 			// to avoid duplicate pair<wordid,docid>
@@ -101,7 +107,7 @@ class Engine
 				const string& field = iter->first;
 				const string& value = iter->second;
 
-				fields.insert(field);
+				fields.put(field);
 
 				tokenizer->setString(value);
 				while (tokenizer->nextToken())
@@ -115,16 +121,16 @@ class Engine
 					}
 					else
 					{
-					   	wordIndex.Put(field, token, wordId);
-					    documentWordId.insert(wordId++);
+					   	wordIndex.Put(field, token, engineData.getWordId());
+					    documentWordId.insert(engineData.getWordId()++);
 					}
 				}
 
 			} // end looping through entries
 
-			invertedIndex.add(docId, documentWordId);
+			invertedIndex.add(engineData.getDocId(), documentWordId);
 
-			return docId++;
+			return engineData.getDocId()++;
 		}
 
 		/**
@@ -210,7 +216,7 @@ class Engine
 			{
 				vector<shared_ptr<Set>> unionSet;
 
-				for (auto field : fields)
+				for (auto field : fields.getFields())
 				{
 					unsigned int wordId = 0;
 
@@ -305,14 +311,13 @@ class Engine
 
 	private:
 
-		unsigned long docId = 1;
-		unsigned long wordId = 1;
+		EngineDataKVStore engineData;
 
 		// tokenizer
 		shared_ptr<ITokenizer> tokenizer;
 
 		// store all the fields
-		unordered_set<string> fields;
+		FieldKVStore fields;
 
 		// store all the documents
 		DocumentKVStore documents;

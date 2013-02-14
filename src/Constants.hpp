@@ -11,6 +11,10 @@ namespace zsearch
 	const std::string LEVELDB_STORE = "/var/tmp/store";
 	const std::string LEVELDB_TEST_STORE = "/var/tmp/test_store";
 
+	const std::string FIELDS_KEY = "fields";
+	const std::string DOC_ID_KEY = "docId";
+	const std::string WORD_ID_KEY = "wordId";
+
 	// const std::string QUERY_PARSER_DELIMITERS = " \t\n\r.,;";
 
 	namespace server

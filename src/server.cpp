@@ -719,11 +719,13 @@ int main(int argc, char **argv)
 	shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_STORE);
 	storeKV->Open();
 
+	shared_ptr<KVStore::IKVStore> engineDataStore = make_shared<KVStore::NameSpaceKVStore>('e', storeKV);
+	shared_ptr<KVStore::IKVStore> fieldStore = make_shared<KVStore::NameSpaceKVStore>('f', storeKV);
 	shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
 	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
-	engine = new Engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+	engine = new Engine(engineDataStore, tokenizer, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
 	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 

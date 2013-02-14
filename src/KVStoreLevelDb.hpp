@@ -1,15 +1,36 @@
+/**
+ * http://leveldb.googlecode.com/svn/trunk/doc/index.html
+ *
+ * A database may only be opened by one process at a time.
+ * The leveldb implementation acquires a lock from the operating system
+ * to prevent misuse. Within a single process, the same leveldb::DB
+ * object may be safely shared by multiple concurrent threads.
+ * I.e., different threads may write into or fetch iterators or
+ * call Get on the same database without any external synchronization
+ * (the leveldb implementation will automatically do the required
+ * synchronization). However other objects (like Iterator and WriteBatch)
+ * may require external synchronization. If two threads share such an
+ * object, they must protect access to it using their own locking protocol.
+ * More details are available in the public header files.
+ *
+ */
+
+
 #ifndef KVSTORE_LEVELDB_H
 #define KVSTORE_LEVELDB_H
 
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
+#include "leveldb/write_batch.h"
+
 #include <map>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <iostream>
+
 #include "IKVStore.h"
-#include "leveldb/write_batch.h"
+#include "ZException.hpp"
 #include "ZUtil.hpp"
 
 
@@ -22,20 +43,21 @@ namespace KVStore
 			leveldb::DB* db;
 			const std::string path;
 			leveldb::WriteBatch batch;
-			
+
 		public:
 
 			KVStoreLevelDb(const std::string& path) : path(path)
 			{
 				db = NULL;
 
-				leveldb::Options options;
-				leveldb::DestroyDB(path, options);
+				// leveldb::Options options;
+				// leveldb::DestroyDB(path, options);
 			}
 
 			~KVStoreLevelDb()
 			{
 				delete db;
+				cerr << "Destroyed KVStoreLevelDb" << endl;
 			}
 
 			Status Open()
@@ -44,7 +66,18 @@ namespace KVStore
 				// options.block_cache = leveldb::NewLRUCache(1024*128);
 				// options.write_buffer_size =  1024 * 128; // 16777216; // 16Mb
 				options.create_if_missing = true;
+				options.paranoid_checks = true;
+
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
+
+				if (!status.ok())
+				{
+					// could possibly attempt to repair and open via
+					// if (leveldb::RepairDB(path, options).ok()) ... if (!leveldb::DB::Open(options, path, &db).ok()) ... throw ...
+
+					throw ZException("Failed to open leveldb database!");
+				}
+
 				return Status::OK();
 			}
 
@@ -97,7 +130,7 @@ namespace KVStore
 				ZUtil::PutVarint64(keystr, key);
 				return Delete(keystr);
 			}
-			
+
 			Status Delete(const std::string& key)
 			{
 				leveldb::Status s = db->Delete(leveldb::WriteOptions(), key);
@@ -166,7 +199,7 @@ namespace KVStore
 			{
 				string keystr;
 				ZUtil::PutVarint64(keystr, key);
-				batch.Put(keystr, value);	
+				batch.Put(keystr, value);
 			}
 
 			void DeleteBatch(const std::string& key)
@@ -189,7 +222,7 @@ namespace KVStore
 				}
 
 				return Status::IOError();
-			}		
+			}
 	};
 
 } // namespace KVStore

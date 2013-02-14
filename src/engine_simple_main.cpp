@@ -78,14 +78,15 @@ void work(string fileName)
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
 		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE);
-
 		storeKV->Open();
 
+		shared_ptr<KVStore::IKVStore> engineDataStore = make_shared<KVStore::NameSpaceKVStore>('e', storeKV);
+		shared_ptr<KVStore::IKVStore> fieldStore = make_shared<KVStore::NameSpaceKVStore>('f', storeKV);
 		shared_ptr<KVStore::IKVStore> documentStore = make_shared<KVStore::NameSpaceKVStore>('d', storeKV);
 		shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
-		Engine engine(tokenizer, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+		Engine engine(engineDataStore, tokenizer, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
 		// engine.disableBatching();
 		engine.setMaxBatchSize(100000);
