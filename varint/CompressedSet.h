@@ -11,6 +11,7 @@
 //for(int x=DEFAULT_BATCH_SIZE; x>0; ++i, x = x>> 1) { }
 //BLOCK_INDEX_SHIFT_BITS = i;
 #define BLOCK_INDEX_SHIFT_BITS 11
+#include <utility>
 #include "Common.h"
 #include "Set.h"
 #include "DeltaChunkStore.h"
@@ -70,15 +71,23 @@ public:
     DeltaChunkStore sequenceOfCompBlocks; // Store for list compressed delta chunk
 
 
-	CompressedSet(const CompressedSet& other);
+    CompressedSet(const CompressedSet& other);
 
 
-    /**
-     * Swap the content of this bitmap with another bitmap.
-     * No copying is done. (Running time complexity is constant.)
-     */
-	void swap(CompressedSet & x);
+   /**
+    * Swap the content of this bitmap with another bitmap.
+    * without having to pay the cost of one copy constructor call 
+    * and two assignment operator call.
+    */
 
+    inline void swap(CompressedSet & x)throw (){ // No throw exception guarantee
+        assert(false);
+        std::swap(this->sizeOfCurrentNoCompBlock, x->sizeOfCurrentNoCompBlock);
+        std::swap(this->baseListForOnlyCompBlocks, x->baseListForOnlyCompBlocks);
+        std::swap(this->totalDocIdNum, x->totalDocIdNum);
+        std::swap(this->currentNoCompBlock, x->currentNoCompBlock);
+        std::swap(this->sequenceOfCompBlocks, x->sequenceOfCompBlocks);
+    }
 
     CompressedSet();
 
@@ -141,4 +150,14 @@ public:
     //This method will not work after a call to flush()
     bool find(unsigned int target) const;
 };
+
+namespace std
+{
+    template<>
+    void swap(CompressedSet& lhs, CompressedSet& rhs)
+    {
+       lhs.swap(rhs);
+    }
+}
+
 #endif  // COMPRESSED_SET_H__
