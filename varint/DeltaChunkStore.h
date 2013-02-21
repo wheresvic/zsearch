@@ -65,5 +65,18 @@ public:
       data2.push_back(compblock);
     }
   }
+
+  inline void swap(DeltaChunkStore & x)throw (){ // No throw exception guarantee
+      std::swap(this->data2, x.data2);
+  }
+
 };
+namespace std
+{
+    template<>
+    void swap(DeltaChunkStore& lhs, DeltaChunkStore& rhs)
+    {
+       lhs.swap(rhs);
+    }
+}
 #endif // DELTA_CHUNK_STORE_H__

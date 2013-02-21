@@ -23,6 +23,19 @@ public:
 	Sink getSink();
 	Source getSource() const;
 	void write(ostream & out) const;
-
+	
+    inline void swap(CompressedDeltaChunk & x) throw (){
+      std::swap(this->data_, x.data_);
+      std::swap(this->compressedSize_, x.compressedSize_);
+    }
 }__attribute__ ((aligned (256)));
+
+namespace std
+{
+    template<>
+    void swap(CompressedDeltaChunk& lhs, CompressedDeltaChunk& rhs)
+    {
+       lhs.swap(rhs);
+    }
+}
 #endif // COMPRESSED_DELTA_CHUNK_H__
