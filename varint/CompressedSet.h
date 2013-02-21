@@ -82,11 +82,11 @@ public:
 
     inline void swap(CompressedSet & x)throw (){ // No throw exception guarantee
         assert(false);
-        std::swap(this->sizeOfCurrentNoCompBlock, x->sizeOfCurrentNoCompBlock);
-        std::swap(this->baseListForOnlyCompBlocks, x->baseListForOnlyCompBlocks);
-        std::swap(this->totalDocIdNum, x->totalDocIdNum);
-        std::swap(this->currentNoCompBlock, x->currentNoCompBlock);
-        std::swap(this->sequenceOfCompBlocks, x->sequenceOfCompBlocks);
+        std::swap(this->sizeOfCurrentNoCompBlock, x.sizeOfCurrentNoCompBlock);
+        std::swap(this->baseListForOnlyCompBlocks, x.baseListForOnlyCompBlocks);
+        std::swap(this->totalDocIdNum, x.totalDocIdNum);
+        std::swap(this->currentNoCompBlock, x.currentNoCompBlock);
+        std::swap(this->sequenceOfCompBlocks, x.sequenceOfCompBlocks);
     }
 
     CompressedSet();
