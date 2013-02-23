@@ -29,7 +29,7 @@ public:
   void compact(){
 	if (data2.size() != data2.capacity()) {
         vector<shared_ptr<CompressedDeltaChunk> > tmp = data2;
-        swap(data2, tmp);
+        std::swap(data2, tmp);
     }
   }
 
@@ -74,7 +74,7 @@ public:
 namespace std
 {
     template<>
-    void swap(DeltaChunkStore& lhs, DeltaChunkStore& rhs)
+    void swap(DeltaChunkStore& lhs, DeltaChunkStore& rhs) throw () 
     {
        lhs.swap(rhs);
     }

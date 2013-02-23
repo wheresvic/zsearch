@@ -31,7 +31,7 @@
 		compressedSize_ = newsize;
 		data_.resize(newsize);
 	    vector<uint8,cacheallocator> tmp(data_);
-	    swap(data_, tmp);
+	    std::swap(data_, tmp);
 	    assert(!needPaddingTo128Bits(&data_[0]));
     }
 

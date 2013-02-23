@@ -20,18 +20,7 @@
     }
 
 
-   /**
-    * Swap the content of this bitmap with another bitmap.
-    * No copying is done. (Running time complexity is constant.)
-    */
-
-    void CompressedSet::swap(CompressedSet & x){
-	 //todo: implement it
-     assert(false);
-    }
-
-
- //   CompressedSet::CompressedSet() : currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
+    //   CompressedSet::CompressedSet() : currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
     CompressedSet::CompressedSet() : currentNoCompBlock(0)
 	{
         //lastAdded = 0;
