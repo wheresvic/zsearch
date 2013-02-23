@@ -81,12 +81,17 @@ public:
     */
 
     inline void swap(CompressedSet & x)throw (){ // No throw exception guarantee
-        assert(false);
-        std::swap(this->sizeOfCurrentNoCompBlock, x.sizeOfCurrentNoCompBlock);
-        std::swap(this->baseListForOnlyCompBlocks, x.baseListForOnlyCompBlocks);
-        std::swap(this->totalDocIdNum, x.totalDocIdNum);
-        std::swap(this->currentNoCompBlock, x.currentNoCompBlock);
-        std::swap(this->sequenceOfCompBlocks, x.sequenceOfCompBlocks);
+	    using std::swap;
+        swap(this->sizeOfCurrentNoCompBlock, x.sizeOfCurrentNoCompBlock);
+        swap(this->baseListForOnlyCompBlocks, x.baseListForOnlyCompBlocks);
+        swap(this->totalDocIdNum, x.totalDocIdNum);
+        swap(this->currentNoCompBlock, x.currentNoCompBlock);
+        swap(this->sequenceOfCompBlocks, x.sequenceOfCompBlocks);
+    }
+
+	friend void swap(CompressedSet& lhs, CompressedSet& rhs) noexcept
+    {
+       lhs.swap(rhs);
     }
 
     CompressedSet();
@@ -150,14 +155,5 @@ public:
     //This method will not work after a call to flush()
     bool find(unsigned int target) const;
 };
-
-namespace std
-{
-    template<>
-    void swap(CompressedSet& lhs, CompressedSet& rhs)
-    {
-       lhs.swap(rhs);
-    }
-}
 
 #endif  // COMPRESSED_SET_H__

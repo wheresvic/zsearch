@@ -62,21 +62,19 @@ public:
     data2.clear();
     for(int i = 0; i<size; i++){
       shared_ptr<CompressedDeltaChunk> compblock(new CompressedDeltaChunk(in));
-      data2.push_back(compblock);
+ tcmalloc dynamiclib     data2.push_back(compblock);
     }
   }
 
   inline void swap(DeltaChunkStore & x)throw (){ // No throw exception guarantee
-      std::swap(this->data2, x.data2);
+      using std::swap;
+      swap(this->data2, x.data2);
+  }
+
+  friend void swap(DeltaChunkStore& lhs, DeltaChunkStore& rhs) noexcept
+  {
+     lhs.swap(rhs);
   }
 
 };
-namespace std
-{
-    template<>
-    void swap(DeltaChunkStore& lhs, DeltaChunkStore& rhs) throw () 
-    {
-       lhs.swap(rhs);
-    }
-}
 #endif // DELTA_CHUNK_STORE_H__
