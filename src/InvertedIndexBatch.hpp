@@ -49,6 +49,7 @@ private:
 	std::shared_ptr<ISetFactory> setFactory;
 
 	int maxbatchsize;
+	int minbatchsize;
 	volatile int batchsize;
 
 	// For the threading
@@ -91,6 +92,7 @@ public:
 		void consumer_main();
 
 		maxbatchsize = 2500000;
+		minbatchsize = 10000;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -117,12 +119,12 @@ public:
 
 	void shutDownBatchProcessor()
 	{
-		// TODO
+		stopConsumerThread();
 	}
 
 	void setMaxBatchSize(unsigned int newSize)
 	{
-		// TODO
+		maxbatchsize = newSize;
 	}
 
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
@@ -164,10 +166,11 @@ public:
 	// this is not good - if you call this from another thread that means that you'll be waiting for a while for this to finish
 	void flushBatch(){
 	   m.Lock();
-	   while (batchsize > 0){
+	   while (batchsize > minbatchsize){
 	     cond_var.Wait();
 	   }
 	   m.Unlock();
+	  //cerr << "flushBatch() end "<< endl;
 	}
 
 
@@ -175,6 +178,7 @@ public:
 	int flushInBackground()
 	{
 		vector<std::pair<unsigned int,unsigned int>>& vec = *consumerVec.load();
+		//cerr << "flushInBackground() start size:"<<vec.size() << endl;
 		if (vec.size() > 0){
 			std::stable_sort(vec.begin(),vec.end(),postingComp());
 
@@ -198,27 +202,33 @@ public:
 		}
 		store->writeBatch();
 		store->ClearBatch();
+		//cerr << "flushInBackground() end "<< endl;
 		return 1;
 	}
 
 	void consumer_main(){
 	    while (!done) {
+			bool haveWork = false;
 		    m.Lock();
-		    if (batchsize > 0){
+		    if (batchsize > minbatchsize){
 				vector<std::pair<unsigned int,unsigned int>>* temp;
 				temp = producerVec.load();
 				producerVec.store(consumerVec.load());
 				consumerVec.store(temp);
 				batchsize = 0;
 				cond_var.Signal();
+				haveWork = true;
 		    } else {
 			   // sleep
-			   while (batchsize == 0 && !done){
+			   while (batchsize < minbatchsize && !done){
 			     cond_var.Wait();
 			   }
 		    }
 	        m.Unlock();
-			flushInBackground();
+	        if (haveWork){
+		        flushInBackground();
+	        }
+			
 	    }
 	}
 
@@ -254,6 +264,7 @@ public:
 		{
 			try
 			{
+				//cerr << "maxbatchsize reached calling flushBatch() "<< endl;
 				flushBatch();
 			}
 			catch (exception ex)

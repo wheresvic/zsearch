@@ -39,6 +39,7 @@ class WordIndexKVStore
 		int Get(const std::string& field, const std::string& token, unsigned int& value) const
 		{
 			Word word(field, token);
+			
 			return Get(word, value);
 		}
 		
@@ -53,7 +54,8 @@ class WordIndexKVStore
 			
 			return 0;
 		}
-
+		
+        // this is our bottleneck and we need to add caching
 		int Get(const Word& word, unsigned int& value) const
 		{
 			string v;
