@@ -22,7 +22,7 @@
 #include "leveldb/db.h"
 #include "leveldb/cache.h"
 #include "leveldb/write_batch.h"
-
+#include "leveldb/filter_policy.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -66,10 +66,12 @@ namespace KVStore
 			Status Open()
 			{
 				leveldb::Options options;
-				// options.block_cache = leveldb::NewLRUCache(1024*128);
-				// options.write_buffer_size =  1024 * 128; // 16777216; // 16Mb
+				
+				//options.block_cache = leveldb::NewLRUCache(500 * 1048576); 
+				options.write_buffer_size = 200 * 1048576; // 200MB write buffer
+				options.filter_policy = leveldb::NewBloomFilterPolicy(16);
 				options.create_if_missing = true;
-				options.paranoid_checks = true;
+				options.paranoid_checks = false;
 
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 
@@ -92,7 +94,7 @@ namespace KVStore
 				{
 					return Status::OK();
 				}
-
+                std::cerr << s.ToString() << std::endl;
 				return Status::NotFound();
 
 			}
