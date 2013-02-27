@@ -9,18 +9,18 @@
 #include "ZException.hpp"
 #include "Word.hpp"
 #include "ZUtil.hpp"
-
+#include "LRUCache.hpp"
 using namespace std;
 
 class WordIndexKVStore
 {
 	private:
-		
+		mutable LRUCache<std::string,unsigned int> cache;
 		std::shared_ptr<KVStore::IKVStore> store;
 
 	public:
 
-		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : store(store)
+		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : cache(50000),store(store)
 		{
 			// store->Open();
 		}
@@ -45,24 +45,36 @@ class WordIndexKVStore
 		
 		int Put(const Word& word, unsigned int value)
 		{
+			const std::string wordString =word.toString();
+			cache.put(wordString,value);
+			
 			string v = ZUtil::getString(value);
 			
-			if (store->Put(word.toString(), v).ok())
+			//TODO: this need to be batched too 
+			if (store->Put(wordString, v).ok())
 			{
 				return 1;
 			}
 			
+			return 1;
 			return 0;
 		}
 		
-        // this is our bottleneck and we need to add caching
+        
 		int Get(const Word& word, unsigned int& value) const
 		{
+			const std::string wordString =word.toString();
+			
+			if (cache.exist(wordString)){
+				value = cache.get(wordString);
+				return 1;
+			} 
+					
 			string v;
-		
-			if (store->Get(word.toString(), v).ok())
+			if (store->Get(wordString, v).ok())
 			{
 				value = ZUtil::getUInt(v);
+				cache.put(wordString,value);
 				return 1;
 			}
 
