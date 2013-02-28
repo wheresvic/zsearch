@@ -1,6 +1,7 @@
 #ifndef SPARSESET_H
 #define SPARSESET_H
 #include <vector>
+#include <algorithm>
 // Idea from 
 // Using Uninitialized Memory for Fun and Profit
 // http://research.swtch.com/sparse
@@ -35,20 +36,40 @@ public:
 	}
 	
 	size_t size(){
-		return sparse.size();
+		return n;
 	}
 	
+	bool empty () {
+	    return n == 0;
+    }
+
+    /**
+	 * Look at the last added element without removing it.
+	 * Running time O(1).
+	 */
+	unsigned int peek () {
+		return dense[n-1];
+	}
+	
+    void growBuffers(size_t minSize) {
+		size_t newLength = std::max(sparse.size(),minSize) *2;
+	    sparse.resize(newLength);
+		dense.resize(newLength);
+    }
+
 	/**
 	 * check whether i is in the set
 	 * you verify that the two arrays point at each other for that element
-	 * this should be constant time.
+	 * Running time O(1)
 	 */
 	bool ismember(unsigned int i){
-	  //  if ((i+1) > sparse.size() ){
-	  //  	return false;
-	  //  }
-		//If sparse[i] >= n then i is definetly not in the set and it doesn't matter what sparse[i] is set to.
-		//otherwise sparse can have any arbitrary values so we need to verify that  dense[sparse[i]] == i
+	    if (i >= sparse.size() ){
+	    	return false;
+	    }
+		// If sparse[i] >= n then i is definetly not in the set and
+		// it doesn't matter what sparse[i] is set to.
+		// otherwise sparse can have any arbitrary values 
+		// so we need to verify that  dense[sparse[i]] == i
 		const unsigned int v = sparse[i];
 		return v < n && dense[v] == i;
 	}
@@ -63,33 +84,33 @@ public:
 		}
 	}
 	
-	
 	/**
 	 * Adding a member to the set requires updating both of these arrays:
 	 * this should be constant time.
 	 */
 	void insert_new(unsigned int i){
-	   // if ((i+1) > dense.size()){
-	   // 	dense.resize(i+1);
-	   // }
-	   // if ((i+1) > sparse.size()){
-	   // 	sparse.resize(i+1);
-	   // }
+	    if (i >= sparse.size()){
+			growBuffers(i);
+	    }
 		dense[n] = i;
 		sparse[i] = n;
 		n++;
 	}
 	
-
-	
+	/**
+	 * Remove an elementfrom the set. Running time O(1).
+	 * Warning Using this method moves the last inserted element
+	 * into the position of the removed element.
+	 * Breaking the insertion order invariant - if you rely on that.
+     */		
 	void remove(unsigned int i){
-	   // if(!ismember(i)){
-	   // 	return;
-	   // } 
-	   // unsigned int j = dense[n-1];
-	   // dense[sparse[i]] = j;
-	   // sparse[j] = sparse[i];
-	   // n = n-1;
+	    if(!ismember(i)){
+	    	return;
+	    } 
+	    unsigned int j = dense[n-1];
+	    dense[sparse[i]] = j;
+	    sparse[j] = sparse[i];
+	    n--;
 	}
 	
 	/**
