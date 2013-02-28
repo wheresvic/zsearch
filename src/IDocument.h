@@ -17,14 +17,18 @@ class IDocument
 	public:
 
 		virtual void construct(const string& xml) = 0;
+		
+		virtual void write(ostream& out) = 0;
+		
+		virtual void readMini(const string& src) = 0;
+		
+		virtual void writeMini(ostream& out) = 0;
 	
 		virtual void addEntry(const string& key, const string& value) = 0;
 
 		virtual const map<string, string>& getEntries() = 0;
 		
 		virtual void getEntry(const string& key, string& value) = 0;
-		
-		virtual void write(ostream& out) = 0;
 		
 		virtual ~IDocument() { }
 };

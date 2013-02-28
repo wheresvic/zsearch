@@ -35,12 +35,13 @@ class DocumentKVStore
 		void addDoc(unsigned int docId, const shared_ptr<IDocument>& doc)
 		{
 			stringstream ss;
-			doc->write(ss);
+			doc->writeMini(ss);
 			string d = ss.str();
 
 			if (!(store->Put(docId, d).ok()))
 			{
-				throw ZException("Could not put document into LevelDb");
+				std::cerr << "Could not put document into LevelDb " << d << std::endl;
+				throw ZException("Could not put document into LevelDb ");
 			}
 		}
 
@@ -55,7 +56,7 @@ class DocumentKVStore
 
 			if (store->Get(docId, d).ok())
 			{
-				doc->construct(d);
+				doc->readMini(d);
 
 				/*
 				cout << "got docId " << docId << endl << d << endl;

@@ -18,6 +18,7 @@
 
 #include "Constants.hpp"
 #include "IDocument.h"
+#include "ZUtil.hpp"
 
 using namespace std;
 
@@ -102,6 +103,34 @@ class DocumentImpl : public IDocument
 				value = entries[key];
 			}
 		}
+		
+		void readMini(const string& src){
+			entries.clear();
+			leveldb::Slice s(src);
+			uint32_t numelem=0;
+			ZUtil::GetVarint32(&s,&numelem);
+			for (unsigned int i = 0; i<= numelem; i++){
+				leveldb::Slice key;
+				ZUtil::GetLengthPrefixedSlice(&s,&key);
+				leveldb::Slice value;
+				ZUtil::GetLengthPrefixedSlice(&s,&value);
+				this->addEntry(key.ToString(), value.ToString());
+			}
+		}
+
+        void writeMini(ostream& out){
+			std::string dst;
+			unsigned int size = entries.size();
+			ZUtil::PutVarint32(&dst,size);
+			for (auto it = entries.begin(); it != entries.end(); ++it)
+			{
+				const std::string& key = it->first;
+				ZUtil::PutLengthPrefixedSlice(&dst,key);
+				const std::string& value = it->second;
+				ZUtil::PutLengthPrefixedSlice(&dst,value);
+			}
+			out << dst;
+        }
 
 		void write(ostream& out)
 		{
