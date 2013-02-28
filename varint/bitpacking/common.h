@@ -9,4 +9,5 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <immintrin.h>
 #endif  // PACKING_COMMON_H__
