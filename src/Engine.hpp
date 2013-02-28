@@ -23,8 +23,7 @@
 #include "DocumentKVStore.hpp"
 #include "FieldKVStore.hpp"
 #include "EngineDataKVStore.hpp"
-
-
+#include "SparseSet.hpp"
 
 using namespace std;
 
@@ -74,12 +73,12 @@ class Engine
 			invertedIndex.setMaxBatchSize(newSize);
 		}
 
-		/*
+		
         void Compact()
         {
 	         invertedIndex.Compact();
         }
-		*/
+		
 
         ~Engine()
         {
@@ -92,13 +91,10 @@ class Engine
 		 */
 		unsigned int addDocument(const shared_ptr<IDocument>& document)
 		{
+			sparseset.clear();
+			
+			//TODO: this need to be batched too 
 			documents.addDoc(engineData.getDocId(), document);
-
-			// we create a set of word in the document
-			// to avoid duplicate pair<wordid,docid>
-			set<unsigned int> documentWordId;
-
-			// TODO: Add SparesetSet for better performance
 
 			auto& entries = document->getEntries();
 
@@ -117,19 +113,18 @@ class Engine
 
                     if (wordIndex.Get(field, token, id))
                     {
-						documentWordId.insert(id);
+						sparseset.insert(id);
 					}
 					else
 					{
 					   	wordIndex.Put(field, token, engineData.getWordId());
-					    documentWordId.insert(engineData.getWordId()++);
+					    sparseset.insert(engineData.getWordId()++);
 					}
 				}
 
 			} // end looping through entries
 
-			invertedIndex.add(engineData.getDocId(), documentWordId);
-
+            invertedIndex.add(engineData.getDocId(), sparseset);
 			return engineData.getDocId()++;
 		}
 
@@ -332,4 +327,6 @@ class Engine
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;
+		
+		SparseSet sparseset;
 };

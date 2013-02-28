@@ -24,6 +24,7 @@
 
 
 #include "varint/ISetFactory.h"
+#include "SparseSet.hpp"
 
 struct postingComp {
   inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
@@ -91,8 +92,8 @@ public:
 	{
 		void consumer_main();
 
-		maxbatchsize = 2500000;
-		minbatchsize = 10000;
+		maxbatchsize = 18350080;
+		minbatchsize = 9175040;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -245,8 +246,9 @@ public:
 		return 1;
 	}
 
-	// better batch add that doesnt lock and unlock for each wordid
-	void add(unsigned int docid, const set<unsigned int>& documentWordId)
+
+
+	void add(unsigned int docid, const SparseSet& documentWordId)
 	{
 		m.Lock();
 
@@ -255,24 +257,27 @@ public:
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
 			batchsize +=1;
 		}
-
-		cond_var.Signal();
-
-		m.Unlock();
-
-		if (batchsize > maxbatchsize)
+		if (batchsize > minbatchsize)
 		{
-			try
-			{
-				//cerr << "maxbatchsize reached calling flushBatch() "<< endl;
-				flushBatch();
-			}
-			catch (exception ex)
-			{
-				cerr << "add " << ex.what() << endl;
-			}
+		    cond_var.Signal();
+        }
+		m.Unlock();
+	}
+	
+	// better batch add that doesnt lock and unlock for each wordid
+	void add(unsigned int docid, const set<unsigned int>& documentWordId)
+	{
+		m.Lock();
+		for (auto value : documentWordId)
+		{
+			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
+			batchsize +=1;
 		}
-
+		if (batchsize > minbatchsize)
+		{
+		    cond_var.Signal();
+        }
+		m.Unlock();
 	}
 
 	int remove(unsigned int wordId, unsigned int docId)

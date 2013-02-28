@@ -43,6 +43,7 @@ public:
         VAL_T get(const KEY_T &key) const  {
                 assert(exist(key));
                 auto it = item_map.find(key);
+                // splice move the item to the front of lru list
                 item_list.splice(item_list.begin(), item_list, it->second);
                 return it->second->second;
         };

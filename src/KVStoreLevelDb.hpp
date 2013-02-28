@@ -72,6 +72,7 @@ namespace KVStore
 				options.filter_policy = leveldb::NewBloomFilterPolicy(16);
 				options.create_if_missing = true;
 				options.paranoid_checks = false;
+				options.compression = leveldb::kSnappyCompression;
 
 				leveldb::Status status = leveldb::DB::Open(options, path, &db);
 
