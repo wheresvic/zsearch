@@ -69,12 +69,12 @@ class WordIndexKVStore
 				value = cache.get(wordString);
 				return 1;
 			} 
+			
 					
 			string v;
 			if (store->Get(wordString, v).ok())
 			{
 				value = ZUtil::getUInt(v);
-				cache.put(wordString,value);
 				return 1;
 			}
 

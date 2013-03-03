@@ -15,6 +15,7 @@ class SparseSet {
 private:
 	// counts the number of elements in dense
 	unsigned int n;
+	size_t currentSize;
 
 	// packed list of the elements in the set, stored in order of insertion. 
 	vector<unsigned int> dense;
@@ -27,6 +28,7 @@ public:
 	
 	SparseSet(unsigned int initialsize = 1453689){
 		n = 0;	
+		currentSize = initialsize;
 		dense.resize(initialsize);
 		sparse.resize(initialsize);
 	}
@@ -35,7 +37,7 @@ public:
 		
 	}
 	
-	size_t size(){
+	size_t size() const {
 		return n;
 	}
 	
@@ -52,7 +54,8 @@ public:
 	}
 	
     void growBuffers(size_t minSize) {
-		size_t newLength = std::max(sparse.size(),minSize) *2;
+		size_t newLength = std::max(currentSize,minSize) *2;
+		currentSize = newLength;
 	    sparse.resize(newLength);
 		dense.resize(newLength);
     }
@@ -62,8 +65,8 @@ public:
 	 * you verify that the two arrays point at each other for that element
 	 * Running time O(1)
 	 */
-	bool ismember(unsigned int i){
-	    if (i >= sparse.size() ){
+	inline bool ismember(unsigned int i){
+	    if (i >= currentSize ){
 	    	return false;
 	    }
 		// If sparse[i] >= n then i is definetly not in the set and
@@ -78,7 +81,7 @@ public:
 	 * Adding a member to the set requires updating both of these arrays:
 	 * this should be constant time.
 	 */
-	void insert(unsigned int i){
+	inline void insert(unsigned int i){
 		if (!ismember(i)){
 		    insert_new(i);
 		}
