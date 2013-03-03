@@ -37,7 +37,8 @@ public:
         };
 
         bool exist(const KEY_T &key) const {
-                return (item_map.count(key)>0);
+	            // can this be done faster ?
+    			return item_map.find(key)!=item_map.end();
         };
 
         VAL_T get(const KEY_T &key) const  {
