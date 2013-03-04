@@ -15,7 +15,7 @@
 // #include "../varint/CompressedSet.h"
 
 #include "DocumentImpl.hpp"
-#include "TokenizerImpl.h"
+#include "TokenizerImpl.hpp"
 #include "DocumentKVStore.hpp"
 #include "NameSpaceKVStore.hpp"
 #include "KVStoreLevelDb.hpp"
@@ -86,7 +86,7 @@ void work(string fileName, bool destroyDb)
 		shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
 		shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
-		Engine engine(engineDataStore, tokenizer, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+		Engine engine(engineDataStore, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
 		// engine.disableBatching();
 		engine.setMaxBatchSize(100000);
@@ -115,7 +115,7 @@ void work(string fileName, bool destroyDb)
 				string value = input.substr(found + 1);
 				// cout << "field : " << field << ", value: " << value << endl;
 				// doc->addEntry("document", value);
-				doc->addEntry(field, value);
+				doc->addEntry("field", value);
 			}
 			else
 			{
@@ -130,8 +130,9 @@ void work(string fileName, bool destroyDb)
 		f.close();
 
 		// flush
-		engine.flushBatch();
-
+//		engine.flushBatch();
+/*
+        storeKV->Compact();
 		// test that searching for some more text returns only 1 document
 
 		string query = "some  more text";
@@ -150,11 +151,13 @@ void work(string fileName, bool destroyDb)
 		search(query, engine, 5, 5);
 		search(query, engine, 4, 7);
 		search(query, engine, 2, 0);
+			*/
 	}
 	else
 	{
 		cerr << "unable to open file :(" << endl;
 	}
+
 }
 
 int main(int argc, char **argv)

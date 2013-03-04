@@ -38,7 +38,7 @@
 #include <iostream>
 #include <chrono>
 
-#include "TokenizerImpl.h"
+#include "TokenizerImpl.hpp"
 #include "DocumentImpl.hpp"
 #include "KVStoreLevelDb.hpp"
 #include "NameSpaceKVStore.hpp"
@@ -736,7 +736,7 @@ int main(int argc, char **argv)
 	shared_ptr<KVStore::IKVStore> wordIndexStore = make_shared<KVStore::NameSpaceKVStore>('w', storeKV);
 	shared_ptr<KVStore::IKVStore> invertedIndexStore = make_shared<KVStore::NameSpaceKVStore>('i', storeKV);
 
-	engine = new Engine(engineDataStore, tokenizer, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
+	engine = new Engine(engineDataStore, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
 	engine->setMaxBatchSize(zsearch::MAX_BATCH_SIZE);
 
