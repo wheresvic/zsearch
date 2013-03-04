@@ -31,7 +31,7 @@ class Engine
 {
 	public:
 
-		Engine(shared_ptr<KVStore::IKVStore> engineDataStore
+		Engine(shared_ptr<KVStore::IKVStore> engineDataStore,
 				shared_ptr<KVStore::IKVStore> fieldStore,
 				shared_ptr<KVStore::IKVStore> documentStore,
 				shared_ptr<KVStore::IKVStore> wordIndexStore,
