@@ -24,22 +24,20 @@
 #include "FieldKVStore.hpp"
 #include "EngineDataKVStore.hpp"
 #include "SparseSet.hpp"
-
+#include "TokenizerImpl.hpp"
 using namespace std;
 
 class Engine
 {
 	public:
 
-		Engine(shared_ptr<KVStore::IKVStore> engineDataStore,
-				shared_ptr<ITokenizer> tokenizer,
+		Engine(shared_ptr<KVStore::IKVStore> engineDataStore
 				shared_ptr<KVStore::IKVStore> fieldStore,
 				shared_ptr<KVStore::IKVStore> documentStore,
 				shared_ptr<KVStore::IKVStore> wordIndexStore,
 				shared_ptr<KVStore::IKVStore> invertedIndexStore,
 				shared_ptr<ISetFactory> setFactory) :
 			engineData(engineDataStore),
-			tokenizer(tokenizer),
 			fields(fieldStore),
 			documents(documentStore),
 			wordIndex(wordIndexStore),
@@ -95,7 +93,7 @@ class Engine
 			
 			//TODO: this need to be batched too 
 			documents.addDoc(engineData.getDocId(), document);
-
+            // using a hashtable to store field is really overkill
 			auto& entries = document->getEntries();
 
 			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
@@ -105,11 +103,11 @@ class Engine
 
 				fields.put(field);
 
-				tokenizer->setString(value);
-				while (tokenizer->nextToken())
+				tokenizer.setString(value);
+				while (tokenizer.nextToken())
 				{
 				    unsigned int id = 0;
-				    const string& token = tokenizer->getToken();
+				    const string& token = tokenizer.getToken();
 
                     if (wordIndex.Get(field, token, id))
                     {
@@ -153,11 +151,11 @@ class Engine
 				const string& field = iter->first;
 				const string& value = iter->second;
 
-				tokenizer->setString(value);
-				while (tokenizer->nextToken())
+				tokenizer.setString(value);
+				while (tokenizer.nextToken())
 				{
 				    unsigned int id = 0;
-				    const string& token = tokenizer->getToken();
+				    const string& token = tokenizer.getToken();
 
                     if (wordIndex.Get(field, token, id))
                     {
@@ -198,11 +196,11 @@ class Engine
 
 			set<string> queryTokens;
 
-			tokenizer->setString(query);
+			tokenizer.setString(query);
 
-			while (tokenizer->nextToken())
+			while (tokenizer.nextToken())
 			{
-				queryTokens.insert(tokenizer->getToken());
+				queryTokens.insert(tokenizer.getToken());
 			}
 
 			vector<shared_ptr<Set>> intersectionSet;
@@ -309,7 +307,8 @@ class Engine
 		EngineDataKVStore engineData;
 
 		// tokenizer
-		shared_ptr<ITokenizer> tokenizer;
+		mutable TokenizerImpl tokenizer;
+		//shared_ptr<ITokenizer> tokenizer;
 
 		// store all the fields
 		FieldKVStore fields;
