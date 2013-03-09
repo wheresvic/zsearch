@@ -30,7 +30,12 @@ class DocumentImpl : public IDocument
 		{
 
 		}
+		
+		~DocumentImpl()
+		{
 
+		}
+		
 		void construct(const string& xml)
 		{
 			entries.clear();
@@ -89,18 +94,18 @@ class DocumentImpl : public IDocument
 
 		void addEntry(const string& key, const string& value)
 		{
-			entries.insert(make_pair(key, value));
+			entries.push_back(make_pair(key, value));
 		}
-
-		const map<string, string>& getEntries()
-		{
-			return entries;
-		}
-
+       
 		void getEntry(const string& key, string& value)
 		{
-			if (entries.find(key) != entries.end()) {
-				value = entries[key];
+			for (auto it = entries.begin(); it != entries.end(); ++it)
+			{
+				const std::string& entrykey = it->first;
+				if (entrykey == key){
+					value = it->second;
+					break;
+				}
 			}
 		}
 		
@@ -155,11 +160,11 @@ class DocumentImpl : public IDocument
 			rapidxml::print(std::back_inserter(document), doc);
 			out << document;
 		}
-
+        typedef std::vector<pair<string,string>>::const_iterator const_iterator;
+		const_iterator  begin() const { return entries.begin(); }
+	    const_iterator  end()   const { return entries.end(); }
 	private:
-
-		map<string, string> entries;
-
+		vector<pair<string,string>> entries;
 };
 
 #endif

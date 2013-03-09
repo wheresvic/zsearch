@@ -93,22 +93,24 @@ class Engine
 			
 			//TODO: this need to be batched too 
 			documents.addDoc(engineData.getDocId(), document);
+			
             // using a hashtable to store field is really overkill
-			auto& entries = document->getEntries();
+		//	auto& entries = document->getEntries();
 
-			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
+			for (auto iter = document->begin(); iter != document->end(); ++iter)
 			{
 				const string& field = iter->first;
 				const string& value = iter->second;
 
 				fields.put(field);
-
+                
 				tokenizer.setString(value);
 				while (tokenizer.nextToken())
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer.getToken();
-
+                    
+                    
                     if (wordIndex.Get(field, token, id))
                     {
 						sparseset.insert(id);
@@ -118,8 +120,9 @@ class Engine
 					   	wordIndex.Put(field, token, engineData.getWordId());
 					    sparseset.insert(engineData.getWordId()++);
 					}
+				
 				}
-
+                	
 			} // end looping through entries
 
             invertedIndex.add(engineData.getDocId(), sparseset);
@@ -144,9 +147,9 @@ class Engine
 			// to avoid duplicate pair<wordid,docid>
 			set<unsigned int> documentWordId;
 
-			auto& entries = document->getEntries();
+//			auto& entries = document->getEntries();
 
-			for (auto iter = entries.begin(); iter != entries.end(); ++iter)
+			for (auto iter = document->begin(); iter != document->end(); ++iter)
 			{
 				const string& field = iter->first;
 				const string& value = iter->second;

@@ -9,7 +9,8 @@
 #include <string>
 #include <memory>
 #include <iostream>
-
+#include <iterator>
+#include <vector>
 using namespace std;
 
 class IDocument
@@ -26,7 +27,9 @@ class IDocument
 	
 		virtual void addEntry(const string& key, const string& value) = 0;
 
-		virtual const map<string, string>& getEntries() = 0;
+		typedef std::vector<pair<string,string>>::const_iterator const_iterator;
+		virtual const_iterator  begin() const = 0;
+		virtual const_iterator  end()   const = 0;
 		
 		virtual void getEntry(const string& key, string& value) = 0;
 		
