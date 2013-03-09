@@ -16,7 +16,7 @@ TokenizerImpl::~TokenizerImpl()
 }
 
 
-void TokenizerImpl::setString(const std::string& str)
+void TokenizerImpl::setString(const std::string& str,const std::string& field)
 {
 	m_string = str;
 	m_token.clear();

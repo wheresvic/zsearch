@@ -13,7 +13,7 @@ class TokenizerImpl : public ITokenizer
 
 		~TokenizerImpl();
 		
-		void setString(const std::string& str);
+		void setString(const std::string& str,const std::string& field);
 
         bool nextToken();
 		

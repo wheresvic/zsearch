@@ -104,7 +104,7 @@ class Engine
 
 				fields.put(field);
                 
-				tokenizer.setString(value);
+				tokenizer.setString(value,field);
 				while (tokenizer.nextToken())
 				{
 				    unsigned int id = 0;
