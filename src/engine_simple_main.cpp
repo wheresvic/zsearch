@@ -12,8 +12,6 @@
 #include <thread>
 #include <chrono>
 
-// #include "../varint/CompressedSet.h"
-
 #include "DocumentImpl.hpp"
 #include "TokenizerImpl.hpp"
 #include "DocumentKVStore.hpp"
@@ -22,7 +20,6 @@
 #include "KVStoreInMemory.hpp"
 #include "Engine.hpp"
 #include "Constants.hpp"
-#include "Word.hpp"
 #include "ZUtil.hpp"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
@@ -105,7 +102,7 @@ void work(string fileName, bool destroyDb)
 			string title = ZUtil::getString(documentId++);
 			shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
 			// doc->setTitle(title);
-			doc->addEntry("title", title);
+			doc->addEntry("t", title);
 
 			// parse the input, each line is a single document
 			size_t found = input.find_first_of(documentDelimiter);
@@ -115,7 +112,7 @@ void work(string fileName, bool destroyDb)
 				string value = input.substr(found + 1);
 				// cout << "field : " << field << ", value: " << value << endl;
 				// doc->addEntry("document", value);
-				doc->addEntry("field", value);
+				doc->addEntry("f", value);
 			}
 			else
 			{
@@ -123,7 +120,8 @@ void work(string fileName, bool destroyDb)
 			}
 
 			// doc->addEntry("memtest", input);
-
+			//engine.addDocument(doc);
+			//engine.addDocument(doc);
 			cout << "Added document: " << engine.addDocument(doc) << endl;
 		}
 

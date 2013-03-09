@@ -25,6 +25,7 @@
 
 #include "varint/ISetFactory.h"
 #include "SparseSet.hpp"
+#include <ctime>
 
 struct postingComp {
   inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
@@ -93,7 +94,7 @@ public:
 		void consumer_main();
 
 		maxbatchsize = 18350080;
-		minbatchsize = 9175040;
+		minbatchsize =  1000000;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -210,6 +211,7 @@ public:
 	void consumer_main(){
 	    while (!done) {
 			bool haveWork = false;
+		//	const clock_t start = clock();
 		    m.Lock();
 		    if (batchsize > minbatchsize){
 				vector<std::pair<unsigned int,unsigned int>>* temp;
@@ -222,11 +224,12 @@ public:
 		    } else {
 			   // sleep
 			   while (batchsize < minbatchsize && !done){
-			     cond_var.Wait();
+			     cond_var.Wait(); // no maxwait ?
 			   }
 		    }
 	        m.Unlock();
 	        if (haveWork){
+		        // use a ThreadPoolExecutor to execute it
 		        flushInBackground();
 	        }
 			

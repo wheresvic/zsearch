@@ -14,12 +14,12 @@ BUILD_OBJECTS =
 
 OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-HEADERS = TokenizerImpl.hpp Constants.hpp ZUtil.hpp Statistics.hpp Word.hpp Engine.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp IDocument.h IInvertedIndex.h IKVStore.h KVStoreInMemory.hpp NameSpaceKVStore.hpp FieldKVStore.hpp EngineDataKVStore.hpp
+HEADERS = TokenizerImpl.hpp Constants.hpp ZUtil.hpp Statistics.hpp Engine.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp IDocument.h IInvertedIndex.h IKVStore.h KVStoreInMemory.hpp NameSpaceKVStore.hpp FieldKVStore.hpp EngineDataKVStore.hpp
 
-CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O3  -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
+CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O3 -m64 -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include -DOS_MACOSX
+CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include -DOS_MACOSX -DINTEL64
 LIBS = -L/opt/local/lib -lleveldb -lm -levent
 endif
 

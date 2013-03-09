@@ -9,7 +9,6 @@
 #include <chrono>
 
 #include "ITokenizer.h"
-#include "Word.hpp"
 #include "DocumentImpl.hpp"
 #include "InvertedIndexBatch.hpp"
 #include "InvertedIndexSimpleBatch.hpp"
@@ -93,9 +92,6 @@ class Engine
 			
 			//TODO: this need to be batched too 
 			documents.addDoc(engineData.getDocId(), document);
-			
-            // using a hashtable to store field is really overkill
-		//	auto& entries = document->getEntries();
 
 			for (auto iter = document->begin(); iter != document->end(); ++iter)
 			{
@@ -154,7 +150,7 @@ class Engine
 				const string& field = iter->first;
 				const string& value = iter->second;
 
-				tokenizer.setString(value);
+				tokenizer.setString(value,field);
 				while (tokenizer.nextToken())
 				{
 				    unsigned int id = 0;
@@ -199,7 +195,7 @@ class Engine
 
 			set<string> queryTokens;
 
-			tokenizer.setString(query);
+			tokenizer.setString(query,"");
 
 			while (tokenizer.nextToken())
 			{
