@@ -94,7 +94,7 @@ public:
 		void consumer_main();
 
 		maxbatchsize = 18350080;
-		minbatchsize =  1000000;
+		minbatchsize =    28000;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -112,7 +112,9 @@ public:
 	}
 
 	void stopConsumerThread(){
+		m.Lock();
 		done=true;
+		m.Unlock();
 		//wakup if sleeping
 		cond_var.Signal();
 		//wait for termination
@@ -129,6 +131,7 @@ public:
 		maxbatchsize = newSize;
 	}
 
+    // we need an LRU cache her
 	int get(unsigned int wordId, shared_ptr<Set>& inset) const
 	{
 		try
@@ -172,7 +175,7 @@ public:
 	     cond_var.Wait();
 	   }
 	   m.Unlock();
-	  //cerr << "flushBatch() end "<< endl;
+	  
 	}
 
 
@@ -180,7 +183,6 @@ public:
 	int flushInBackground()
 	{
 		vector<std::pair<unsigned int,unsigned int>>& vec = *consumerVec.load();
-		//cerr << "flushInBackground() start size:"<<vec.size() << endl;
 		if (vec.size() > 0){
 			std::stable_sort(vec.begin(),vec.end(),postingComp());
 
@@ -204,7 +206,6 @@ public:
 		}
 		store->writeBatch();
 		store->ClearBatch();
-		//cerr << "flushInBackground() end "<< endl;
 		return 1;
 	}
 
@@ -219,11 +220,11 @@ public:
 				producerVec.store(consumerVec.load());
 				consumerVec.store(temp);
 				batchsize = 0;
-				cond_var.Signal();
+				
 				haveWork = true;
 		    } else {
 			   // sleep
-			   while (batchsize < minbatchsize && !done){
+			   while (batchsize <= minbatchsize && !done){
 			     cond_var.Wait(); // no maxwait ?
 			   }
 		    }
@@ -231,6 +232,9 @@ public:
 	        if (haveWork){
 		        // use a ThreadPoolExecutor to execute it
 		        flushInBackground();
+                m.Lock();
+                cond_var.Signal();
+                m.Unlock();
 	        }
 			
 	    }
@@ -254,7 +258,6 @@ public:
 	void add(unsigned int docid, const SparseSet& documentWordId)
 	{
 		m.Lock();
-
 		for (auto value : documentWordId)
 		{
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));

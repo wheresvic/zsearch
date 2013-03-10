@@ -45,11 +45,14 @@ class TokenizerImpl : public ITokenizer
 					tokensize++;
 					m_token.push_back(c);
 				} else {
-					if (tokensize>0)
+					if (tokensize>2){
 					  return true;
+					} else {
+					  m_token.resize(0);	
+					}
 				}
 			}
-			return tokensize>0;
+			return tokensize>2;
 		}
 		
         

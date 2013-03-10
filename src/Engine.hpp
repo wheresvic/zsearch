@@ -101,19 +101,19 @@ class Engine
 				fields.put(field);
                 
 				tokenizer.setString(value,field);
-				while (tokenizer.nextToken())
+				while (tokenizer.nextToken()) // 18%
 				{
 				    unsigned int id = 0;
 				    const string& token = tokenizer.getToken();
                     
                     
-                    if (wordIndex.Get(field, token, id))
+                    if (wordIndex.Get(field, token, id)) // 58%
                     {
 						sparseset.insert(id);
 					}
 					else
 					{
-					   	wordIndex.Put(field, token, engineData.getWordId());
+					   	wordIndex.Put(field, token, engineData.getWordId()); // 11%
 					    sparseset.insert(engineData.getWordId()++);
 					}
 				
