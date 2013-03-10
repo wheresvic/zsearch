@@ -5,10 +5,13 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <stdlib.h>  // rand
 #include "IKVStore.h"
 #include "ZException.hpp"
 #include "ZUtil.hpp"
 #include "LRUCache.hpp"
+
+#include "bloom_filter.hpp"
 using namespace std;
 
 class WordIndexKVStore
@@ -17,16 +20,23 @@ class WordIndexKVStore
 		mutable LRUCache cache;
 		
 		std::shared_ptr<KVStore::IKVStore> store;
-
+		bloom_filter* filter;
 	public:
 
 		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : cache(656538),store(store)
 		{
-			// store->Open();
+			int count = 1053691;
+			bloom_parameters parameters;
+			parameters.projected_element_count  = count;
+			parameters.false_positive_probability = 1.0 / count;
+			parameters.random_seed = (int) 100000*rand();
+			parameters.compute_optimal_parameters();
+			filter = new bloom_filter(parameters);
 		}
 		
 		~WordIndexKVStore()
 		{
+			delete filter;
 			std::cerr << "Destroyed WordIndexKVStore" << std::endl;
 		}
 
@@ -36,6 +46,7 @@ class WordIndexKVStore
 
 		int Put(const std::string& field, const std::string& token, unsigned int value)
 		{
+			
 			return Put(wordToString(field,token), value);
 		}
 
@@ -46,6 +57,7 @@ class WordIndexKVStore
 		
 		int Put(const std::string& wordString, const unsigned int value)
 		{
+			filter->insert(wordString);
 			cache.put(wordString,value);
 			
 			string v = ZUtil::getString(value);
@@ -60,9 +72,13 @@ class WordIndexKVStore
 
 		int Get(const string& wordString, unsigned int& value) const
 		{	
-			if (cache.get(wordString,value)){
+			if (!filter->contains(wordString)){ // 9%
+				return 0;
+			}
+			if (cache.get(wordString,value)){ // 88%
 				return 1;
 			} 
+		
 					
 			string v;
 			if (store->Get(wordString, v).ok())
@@ -70,7 +86,7 @@ class WordIndexKVStore
 				value = ZUtil::getUInt(v);
 				
 				return 1;
-			}
+			} 
 
 			return 0;
 		}		
