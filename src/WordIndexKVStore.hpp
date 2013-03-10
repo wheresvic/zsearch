@@ -25,11 +25,10 @@ class WordIndexKVStore
 
 		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : cache(656538),store(store)
 		{
-			int count = 1053691;
 			bloom_parameters parameters;
-			parameters.projected_element_count  = count;
-			parameters.false_positive_probability = 1.0 / count;
-			parameters.random_seed = (int) 100000*rand();
+			parameters.projected_element_count  = 1053691;
+			parameters.false_positive_probability = 0.03;
+			parameters.random_seed = 0xA5A5A5A55A5A5A5AULL;
 			parameters.compute_optimal_parameters();
 			filter = new bloom_filter(parameters);
 		}
