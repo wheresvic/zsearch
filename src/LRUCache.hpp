@@ -1,44 +1,101 @@
-#ifndef LRUCACHE_H
-#define LRUCACHE_H
-
-#include <list>
+#include <iostream>
+#include <vector>
 #include <unordered_map>
-#include <assert.h>
-#include "cedar.h"
+
 using namespace std;
 
-class LRUCache{
-private:
-        mutable list< pair<std::string,int> > item_list; 
-        mutable cedar::da <int, -1, -2, false> trie;
-        mutable unordered_map<std::string, decltype(item_list.begin()) > item_map;
-        size_t cache_size;
-private:
-        void clean(void) {
-	            if (item_map.size()>cache_size){
-					std::cout << "cache full" << std::endl;
-	            }
-                while(item_map.size()>cache_size){
-                        auto last_it = item_list.end(); last_it --;
-                        item_map.erase(last_it->first);
-                        item_list.pop_back();
-                }
-        };
-public:
-        LRUCache(int cache_size_):cache_size(cache_size_){
-                
-        };
 
-        void put(const std::string &key, const int &val){
-	            trie.update (key.c_str(), key.size(), val);
-			    return;
-        };
-
-        bool get(const std::string &key,unsigned int& value) const  {
-	            // add bloom filter her :)
-			    const int val = trie.exactMatchSearch<int>(key.c_str(), key.size());
-				value = val;
-                return val!=-1;
-        };
+template<class K, class T>
+struct LRUCacheEntry
+{
+	K key;
+	T data;
+	LRUCacheEntry* prev;
+	LRUCacheEntry* next;
 };
-#endif
+
+template<class K, class T>
+class LRUCache
+{
+private:
+    mutable unordered_map<K, LRUCacheEntry<K,T>* >	_mapping;
+	vector< LRUCacheEntry<K,T>* >		_freeEntries;
+	mutable LRUCacheEntry<K,T> *			head;
+	mutable LRUCacheEntry<K,T> *			tail;
+	mutable LRUCacheEntry<K,T> *			entries;
+public:
+	LRUCache(size_t size){
+		entries = new LRUCacheEntry<K,T>[size];
+		for (int i=0; i<size; i++)
+			_freeEntries.push_back(entries+i);
+		head = new LRUCacheEntry<K,T>;
+		tail = new LRUCacheEntry<K,T>;
+		head->prev = NULL;
+		head->next = tail;
+		tail->next = NULL;
+		tail->prev = head;
+	}
+	~LRUCache()
+	{
+		delete head;
+		delete tail;
+		delete [] entries;
+	}
+	void put(const K key, const T data)
+	{
+		LRUCacheEntry<K,T>* node = _mapping[key];
+		if(node)
+		{
+			// refresh the link list
+			detach(node);
+			node->data = data;
+			attach(node);
+		}
+		else{
+			if ( _freeEntries.empty() )
+			{
+				node = tail->prev;
+				detach(node);
+				_mapping.erase(node->key);
+				node->data = data;
+				node->key = key;
+				attach(node);
+			}
+			else{
+				node = _freeEntries.back();
+				_freeEntries.pop_back();
+				node->key = key;
+				node->data = data;
+				_mapping[key] = node;
+				attach(node);
+			}
+		}
+	}
+
+	bool get(const K key,T& value) const
+	{
+		LRUCacheEntry<K,T>* node = _mapping[key];
+		if(node)
+		{
+			detach(node);
+			attach(node);
+			value = node->data;
+			return true;
+		}
+		else return false;
+	}
+
+private:
+	void detach(LRUCacheEntry<K,T>* node) const
+	{
+		node->prev->next = node->next;
+		node->next->prev = node->prev;
+	}
+	void attach(LRUCacheEntry<K,T>* node) const
+	{
+		node->next = head->next;
+		node->prev = head;
+		head->next = node;
+		node->next->prev = node;
+	}
+};

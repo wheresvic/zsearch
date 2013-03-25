@@ -17,8 +17,7 @@ using namespace std;
 class WordIndexKVStore
 {
 	private:
-		mutable LRUCache cache;
-		
+		mutable LRUCache<string,unsigned int> cache;		
 		std::shared_ptr<KVStore::IKVStore> store;
 		bloom_filter* filter;
 	public:
@@ -71,19 +70,16 @@ class WordIndexKVStore
 
 		int Get(const string& wordString, unsigned int& value) const
 		{	
-			if (!filter->contains(wordString)){ // 9%
-				return 0;
+			if (filter->contains(wordString)){ // might be in cache
+				if (cache.get(wordString,value)){ 
+					return 1; // found in cache
+				}
 			}
-			if (cache.get(wordString,value)){ // 88%
-				return 1;
-			} 
-		
 					
 			string v;
 			if (store->Get(wordString, v).ok())
 			{
 				value = ZUtil::getUInt(v);
-				
 				return 1;
 			} 
 
