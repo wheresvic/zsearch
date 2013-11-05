@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h>
+#include <cstdlib> 
 #include <stdexcept>
 #include <vector>
 #include <iostream>
