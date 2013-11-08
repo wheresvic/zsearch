@@ -5,7 +5,6 @@
 
 OSNAME  := $(shell uname -s)
 
-CC = g++
 CFLAGS_SIMPLE = -std=gnu++0x -Wall -O3 -pedantic
 BUILD_DIR = ../build
 
@@ -39,25 +38,25 @@ CompressedSet.a : $(LIBOBJECTS)
 ##
 
 $(BUILD_DIR)/varint_CompressedSet.o : CompressedSet.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CXX) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/varint_BasicSet.o : BasicSet.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CXX) -c $(CFLAGS) $< -o $@
 	
 $(BUILD_DIR)/varint_CompressedDeltaChunk.o : CompressedDeltaChunk.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CXX) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/varint_Codec.o : Codec.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@ 
+	$(CXX) -c $(CFLAGS) $< -o $@ 
 	
 $(BUILD_DIR)/varint_bitpacksimd.o : bitpacking/bitpacksimd.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CXX) -c $(CFLAGS) $< -o $@
 			
 $(BUILD_DIR)/varint_util.o : bitpacking/util.cpp 
-	$(CC) -c $(CFLAGS) $< -o $@	
+	$(CXX) -c $(CFLAGS) $< -o $@	
 
 $(BUILD_DIR)/varint_LazyAndSet.o : LazyAndSet.cpp
-	$(CC) -c $(CFLAGS) $< -o $@	
+	$(CXX) -c $(CFLAGS) $< -o $@	
 
 $(BUILD_DIR)/varint_LazyOrSet.o : LazyOrSet.cpp
-	$(CC) -c $(CFLAGS) $< -o $@	
+	$(CXX) -c $(CFLAGS) $< -o $@	
