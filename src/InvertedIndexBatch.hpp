@@ -27,6 +27,24 @@
 #include "SparseSet.hpp"
 #include <ctime>
 
+
+#ifdef __MACH__
+#include <sys/time.h>
+#define CLOCK_REALTIME 0
+#define CLOCK_MONOTONIC 0
+int clock_gettime(int /*clk_id*/, struct timespec* t) {
+    struct timeval now;
+    int rv = gettimeofday(&now, NULL);
+    if (rv) return rv;
+    t->tv_sec  = now.tv_sec;
+    t->tv_nsec = now.tv_usec * 1000;
+    return 0;
+}
+#else
+#include <time.h>
+#endif
+
+
 struct postingComp {
   inline bool operator()(const std::pair<unsigned int,unsigned int>& first,
   const std::pair<unsigned int,unsigned int>& second) const{
@@ -76,6 +94,7 @@ private:
 
 	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
 	{
+		 cout << "batchPut:"<<wordId <<  endl;
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
@@ -94,7 +113,7 @@ public:
 		void consumer_main();
 
 		maxbatchsize = 18350080;
-		minbatchsize =    28000;
+		minbatchsize = 18350080;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -209,32 +228,81 @@ public:
 		return 1;
 	}
 
+long long nanosec_elapsed(struct timespec diff){
+    return ((long long)diff.tv_sec * 1000000000) + diff.tv_nsec;
+}
+
+struct timespec diff_timespec(struct timespec start, struct timespec end) {
+    struct timespec result;
+
+    if (end.tv_nsec < start.tv_nsec){ // peform carry like in normal subtraction
+        //                123456789
+        result.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;        
+        result.tv_sec = end.tv_sec - 1 - start.tv_sec;
+    }
+    else{
+        result.tv_nsec = end.tv_nsec - start.tv_nsec;        
+        result.tv_sec = end.tv_sec - start.tv_sec;
+    }
+
+    return result;
+}
+
+void timespec_addms(struct timespec *ts, long ms) {
+    int sec=ms/1000;
+    ms=ms-sec*1000;
+
+    // perform the addition
+    ts->tv_nsec+=ms*1000000;
+
+    // adjust the time
+    ts->tv_sec+=ts->tv_nsec/1000000000 + sec;
+    ts->tv_nsec=ts->tv_nsec%1000000000;
+}
+        int getBatchFromQueue(){
+                // maximum time in ms spends waiting to complete a full batch
+                // This doesn't limit the time spent in the queue.
+                int maxDelay = 500;
+ 
+                struct timespec now;
+                clock_gettime(CLOCK_REALTIME, &now);
+                struct timespec firstTime = now;
+                timespec_addms(&firstTime, maxDelay);
+                do { 
+                    m.Lock();                  
+                    if (batchsize < minbatchsize){
+                        long long maxWait = nanosec_elapsed(diff_timespec(now, firstTime));
+                        if ( maxWait <= 0 ){
+                           m.Unlock();
+                           break;
+                        }
+                        cond_var.Wait(maxWait); 
+                    }
+	            m.Unlock();
+                    clock_gettime(CLOCK_REALTIME, &now);
+                } while (batchsize < minbatchsize && !done);
+
+
+                const int localbatchSize = batchsize;
+		if (batchsize > 0){
+		    vector<std::pair<unsigned int,unsigned int>>* temp;
+		    temp = producerVec.load();
+		    producerVec.store(consumerVec.load());
+		    consumerVec.store(temp);
+		    batchsize = 0;
+		}
+                return localbatchSize;
+        }
+
 	void consumer_main(){
 	    while (!done) {
-			bool haveWork = false;
-		//	const clock_t start = clock();
-		    m.Lock();
-		    if (batchsize > minbatchsize){
-				vector<std::pair<unsigned int,unsigned int>>* temp;
-				temp = producerVec.load();
-				producerVec.store(consumerVec.load());
-				consumerVec.store(temp);
-				batchsize = 0;
-				
-				haveWork = true;
-		    } else {
-			   // sleep
-			   while (batchsize <= minbatchsize && !done){
-			     cond_var.Wait(); // no maxwait ?
-			   }
-		    }
-	        m.Unlock();
-	        if (haveWork){
-		        // use a ThreadPoolExecutor to execute it
-		        flushInBackground();
-                m.Lock();
-                cond_var.Signal();
-                m.Unlock();
+	        if (getBatchFromQueue()){
+		    // TODO: use a ThreadPoolExecutor to execute it
+                    cout << "flushInBackground"<< endl;
+		    flushInBackground();
+                    m.Lock();
+                    cond_var.Signal();
+                    m.Unlock();
 	        }
 			
 	    }
@@ -263,10 +331,7 @@ public:
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
 			batchsize +=1;
 		}
-		if (batchsize > minbatchsize)
-		{
-		    cond_var.Signal();
-        }
+		cond_var.Signal();
 		m.Unlock();
 	}
 	
@@ -282,7 +347,7 @@ public:
 		if (batchsize > minbatchsize)
 		{
 		    cond_var.Signal();
-        }
+                }
 		m.Unlock();
 	}
 

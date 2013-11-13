@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "util/logging.h"
+#include <sys/time.h>
 
 namespace leveldb {
 namespace port {
@@ -36,6 +37,26 @@ CondVar::~CondVar() { PthreadCall("destroy cv", pthread_cond_destroy(&cv_)); }
 
 void CondVar::Wait() {
   PthreadCall("wait", pthread_cond_wait(&cv_, &mu_->mu_));
+}
+
+void CondVar::Wait(int64_t reltime) {
+    struct timespec ts;
+#if defined(HAVE_POSIX_CLOCKS)
+    clock_gettime(CLOCK_REALTIME, &ts);
+#else // HAVE_POSIX_CLOCKS
+    // we don't support the clocks here.
+    struct timeval t;
+    gettimeofday(&t, NULL);
+    ts.tv_sec = t.tv_sec;
+    ts.tv_nsec= t.tv_usec*1000;
+#endif // HAVE_POSIX_CLOCKS
+    ts.tv_sec += reltime/1000000000;
+    ts.tv_nsec+= reltime%1000000000;
+    if (ts.tv_nsec >= 1000000000) {
+        ts.tv_nsec -= 1000000000;
+        ts.tv_sec  += 1;
+    }
+    pthread_cond_timedwait(&cv_, &mu_->mu_,&ts);
 }
 
 void CondVar::Signal() {
