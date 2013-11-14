@@ -119,6 +119,12 @@ case "$TARGET_OS" in
         PORT_FILE=port/port_posix.cc
         CROSS_COMPILE=true
         ;;
+    CYGWIN_*)
+        PLATFORM=OS_LINUX
+        COMMON_FLAGS="$MEMCMP_FLAG -lpthread -DOS_LINUX -DCYGWIN"
+        PLATFORM_LDFLAGS="-lpthread"
+        PORT_FILE=port/port_posix.cc
+        ;;
     HP-UX)
         PLATFORM=OS_HPUX
         COMMON_FLAGS="$MEMCMP_FLAG -D_REENTRANT -DOS_HPUX"
