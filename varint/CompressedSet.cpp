@@ -220,24 +220,86 @@
 	compactBaseListForOnlyCompBlocks();
  }
 
-
-
-
-
-
   /**
    * Prefix Sum
    *
    */
-  void CompressedSet::preProcessBlock(unsigned int block[], size_t size)
-  {
+  void CompressedSet::delta(unsigned int block[], size_t size) {
     for(int i=size-1; i>0; --i)
     {
-      block[i] = block[i] - block[i-1] - 1;
+      block[i] = block[i] - block[i-1];
     }
   }
 
+  static void inverseDelta(unsigned int data[], const size_t size) {
+        if (size == 0)
+            return;
+        size_t i = 1;
+        for (; i < size - 1; i += 2) {
+            data[i] += data[i - 1];
+            data[i + 1] += data[i];
+        }
+        for (; i != size; ++i) {
+            data[i] += data[i - 1];
+        }
+  }
+  
+  void CompressedSet::preProcessBlock(unsigned int pData[], size_t TotalQty){
+     if (TotalQty < 5) {
+         delta(pData, TotalQty);// no SIMD
+         return;
+     }
 
+     const size_t Qty4 = TotalQty / 4;
+     __m128i* pCurr = reinterpret_cast<__m128i*>(pData);
+     const __m128i* pEnd = pCurr + Qty4;
+
+     __m128i last = _mm_setzero_si128();
+     while (pCurr < pEnd) {
+         __m128i a0 = _mm_load_si128(pCurr);
+         __m128i a1 = _mm_sub_epi32(a0, _mm_srli_si128(last, 12));
+         a1 = _mm_sub_epi32(a1, _mm_slli_si128(a0, 4));
+         last = a0;
+        
+         _mm_store_si128(pCurr++ , a1);
+     }
+
+     if (Qty4 * 4 < TotalQty) {
+         uint32_t lastVal = _mm_cvtsi128_si32(_mm_srli_si128(last, 12));
+         for (size_t i = Qty4 * 4; i < TotalQty; ++i) {
+             uint32_t newVal = pData[i];
+             pData[i] -= lastVal;
+             lastVal = newVal;
+         }
+     }
+  }
+    
+  static void postProcessBlock(unsigned int* pData, const size_t TotalQty) {
+     if (TotalQty < 5) {
+         inverseDelta(pData, TotalQty);// no SIMD
+         return;
+     }
+     const size_t Qty4 = TotalQty / 4;
+
+     __m128i runningCount = _mm_setzero_si128();
+     __m128i* pCurr = reinterpret_cast<__m128i*>(pData);
+     const __m128i* pEnd = pCurr + Qty4;
+     while (pCurr < pEnd) {
+         __m128i a0 = _mm_load_si128(pCurr);
+         __m128i a1 = _mm_add_epi32(_mm_slli_si128(a0, 8),a0);
+         __m128i a2 = _mm_add_epi32(_mm_slli_si128(a1, 4),a1);
+         a0 = _mm_add_epi32(a2,runningCount);
+         runningCount = _mm_shuffle_epi32(a0, 0xFF);
+         _mm_store_si128(pCurr++ , a0);
+     }
+
+     for (size_t i = Qty4 * 4; i < TotalQty; ++i) {
+         pData[i] += pData[i-1];
+     }
+  }
+  
+   
+    
   const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize){
     return codec.Compress(block,blocksize);
   }
@@ -391,7 +453,7 @@
          } else
          if (PREDICT_TRUE(offset)){
 	        //lastAccessedDocId = iterDecompBlock[offset];
-             lastAccessedDocId += (iterDecompBlock[offset]+1);
+             lastAccessedDocId += (iterDecompBlock[offset]);
          } else {
 	        // (offset==0) must be in one of the compressed blocks
              Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
@@ -407,7 +469,30 @@
         return lastAccessedDocId;
     }
 
-
+    int CompressedSet::Iterator::advanceToTargetInTheFollowingCompBlocks(int target, int startBlockIndex)
+    {
+      // searching from the current block
+      int iterBlockIndex = binarySearchInBaseListForBlockThatMayContainTarget(set->baseListForOnlyCompBlocks, startBlockIndex, set->baseListForOnlyCompBlocks.size()-1, target);
+      
+      if(iterBlockIndex < 0)
+      {
+        //System.err.println("ERROR: advanceToTargetInTheFollowingCompBlocks(): Impossible, we must be able to find the block");
+      }
+      
+      Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
+      size_t uncompSize = set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE); 
+      postProcessBlock(&iterDecompBlock[0], uncompSize);
+      
+      int offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(iterDecompBlock[0]), 0, DEFAULT_BATCH_SIZE-1, target);
+      
+      if(offset < 0)
+      {
+       // System.err.println("ERROR: case 2: advanceToTargetInTheFollowingCompBlocks(), Impossible, we must be able to find the target" + target + " in the block " + iterBlockIndex);
+      }
+      cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
+      return iterDecompBlock[offset];
+    }
+    
     /**
     * Implement the same functionality as advanceToTargetInTheFollowingCompBlocks()
     * except that this function do prefix sum during searching
@@ -433,7 +518,7 @@
 
       for (size_t offset=1; offset < uncompSize; ++offset)
       {
-        lastAccessedDocId += ( iterDecompBlock[offset]+1);
+        lastAccessedDocId += ( iterDecompBlock[offset]);
         if (lastAccessedDocId >= target) {
           cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
           return lastAccessedDocId;
@@ -449,83 +534,87 @@
     // whose value is greater than or equal to target.
     // we do linear search inside block because of delta encoding
     unsigned int CompressedSet::Iterator::Advance(unsigned int target){
-    // if the pointer points past the end
-    if( PREDICT_FALSE(cursor == totalDocIdNum || totalDocIdNum <= 0)){
-        lastAccessedDocId = NO_MORE_DOCS;
-        return NO_MORE_DOCS;
-    }
-    // if the pointer points to the end
-    if(++cursor == totalDocIdNum){
-        lastAccessedDocId = NO_MORE_DOCS;
-        return NO_MORE_DOCS;
-    }
-    // the expected behavior is to find the first element AFTER the current cursor,
-    // who is equal or larger than target
-    if(target <= lastAccessedDocId) {
-        target = lastAccessedDocId + 1;
-    }
-
-    int iterBlockIndex = cursor >> BLOCK_SIZE_BIT;
-    int offset = cursor & BLOCK_SIZE_MODULO;
-
-    // if there is noComp block, check noComp block
-    // the next element is in currently in the last block , or
-    // currently not in the last block, but the target is larger than
-    // the last element of the last compressed block
-    unsigned int sizeOfCurrentNoCompBlock = set->sizeOfCurrentNoCompBlock;
-    size_t baseListForOnlyCompBlocksSize = set->baseListForOnlyCompBlocks.size();
-    if(sizeOfCurrentNoCompBlock>0) {// if there exists the last decomp block
-      if(iterBlockIndex == compBlockNum || (baseListForOnlyCompBlocksSize>0 && target > set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1])) {
-        offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(set->currentNoCompBlock[0]), 0, sizeOfCurrentNoCompBlock-1, target);
-
-        if(offset>=0){
-          iterBlockIndex = compBlockNum;
-          lastAccessedDocId = set->currentNoCompBlock[offset];
-          cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
-          return lastAccessedDocId;
-        } else {
-          // hy: to avoid the repeated lookup next time once it reaches the end of the sequence
-          cursor = totalDocIdNum;
-          lastAccessedDocId = NO_MORE_DOCS;
-          return lastAccessedDocId;
+        // if the pointer points past the end
+        if( PREDICT_FALSE(cursor == totalDocIdNum || totalDocIdNum <= 0)){
+            lastAccessedDocId = NO_MORE_DOCS;
+            return NO_MORE_DOCS;
         }
-      }
-    }
+        // if the pointer points to the end
+        if(++cursor == totalDocIdNum){
+            lastAccessedDocId = NO_MORE_DOCS;
+            return NO_MORE_DOCS;
+        }
+        // the expected behavior is to find the first element AFTER the current cursor,
+        // who is equal or larger than target
+        if(target <= lastAccessedDocId) {
+            target = lastAccessedDocId + 1;
+        }
 
-     // if we cannot not find it in the noComp block, we check the comp blocks
-     if(baseListForOnlyCompBlocksSize>0 && target <= set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1]) {
-       // for the following cases, it must exist in one of the comp blocks since target<= the last base in the comp blocks
-       if(offset == 0) {
-         // searching the right block from the current block to the last block
-         lastAccessedDocId = advanceToTargetInTheFollowingCompBlocksNoPostProcessing(target, iterBlockIndex);
-         return lastAccessedDocId;
-       } else { // offset > 0, the current block has been decompressed, so, first test the first block; and then do sth like case 2
-         if(target <= set->baseListForOnlyCompBlocks[iterBlockIndex]) {
-           while(offset < DEFAULT_BATCH_SIZE) {
-             lastAccessedDocId += (iterDecompBlock[offset]+1);
+        int iterBlockIndex = cursor >> BLOCK_SIZE_BIT;
+        int offset = cursor & BLOCK_SIZE_MODULO;
 
-             if (lastAccessedDocId >= target) {
-               break;
+        // if there is noComp block, check noComp block
+        // the next element is in currently in the last block , or
+        // currently not in the last block, but the target is larger than
+        // the last element of the last compressed block
+        unsigned int sizeOfCurrentNoCompBlock = set->sizeOfCurrentNoCompBlock;
+        size_t baseListForOnlyCompBlocksSize = set->baseListForOnlyCompBlocks.size();
+        
+        if(sizeOfCurrentNoCompBlock>0) {// if there exists the last decomp block
+          if(iterBlockIndex == compBlockNum || (baseListForOnlyCompBlocksSize>0 && target > set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1])) {
+            offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(set->currentNoCompBlock[0]), 0, sizeOfCurrentNoCompBlock-1, target);
+
+            if(offset>=0){
+              iterBlockIndex = compBlockNum;
+              lastAccessedDocId = set->currentNoCompBlock[offset];
+              cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
+              return lastAccessedDocId;
+            } else {
+              // hy: to avoid the repeated lookup next time once it reaches the end of the sequence
+              cursor = totalDocIdNum;
+              lastAccessedDocId = NO_MORE_DOCS;
+              return lastAccessedDocId;
+            }
+          }
+        }
+
+         // if we cannot not find it in the noComp block, we check the comp blocks
+         if(baseListForOnlyCompBlocksSize>0 && target <= set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1]) {
+           // for the following cases, it must exist in one of the comp blocks since target<= the last base in the comp blocks
+           if(offset == 0) {
+             // searching the right block from the current block to the last block
+            
+             // lastAccessedDocId = advanceToTargetInTheFollowingCompBlocksNoPostProcessing(target, iterBlockIndex);
+            lastAccessedDocId = advanceToTargetInTheFollowingCompBlocks(target, iterBlockIndex);
+             return lastAccessedDocId;
+           } else { // offset > 0, the current block has been decompressed, so, first test the first block; and then do sth like case 2
+             if(target <= set->baseListForOnlyCompBlocks[iterBlockIndex]) {
+               while(offset < DEFAULT_BATCH_SIZE) {
+                 lastAccessedDocId += (iterDecompBlock[offset]);
+
+                 if (lastAccessedDocId >= target) {
+                   break;
+                 }
+                 offset++;
+               }
+
+               if (offset == DEFAULT_BATCH_SIZE) {
+                printf("Error case 3: Impossible, we must be able to find the target %d in the block, lastAccessedDocId: %d , baseListForOnlyCompBlocks[%d]\n",
+                target,lastAccessedDocId,iterBlockIndex);
+               }
+               assert(offset != DEFAULT_BATCH_SIZE);
+
+               cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
+               return lastAccessedDocId;
+             } else { // hy: there must exist other comp blocks between the current block and noComp block since target <= baseListForOnlyCompBlocks.get(baseListForOnlyCompBlocks.size()-1)
+               // lastAccessedDocId = advanceToTargetInTheFollowingCompBlocksNoPostProcessing(target, iterBlockIndex);
+               lastAccessedDocId = advanceToTargetInTheFollowingCompBlocks(target, iterBlockIndex);
+               //lastAccessedDocId = LS_advanceToTargetInTheFollowingCompBlocks(target, iterBlockIndex);
+               return lastAccessedDocId;
              }
-             offset++;
            }
-
-           if (offset == DEFAULT_BATCH_SIZE) {
-            printf("Error case 3: Impossible, we must be able to find the target %d in the block, lastAccessedDocId: %d , baseListForOnlyCompBlocks[%d]\n",
-            target,lastAccessedDocId,iterBlockIndex);
-           }
-           assert(offset != DEFAULT_BATCH_SIZE);
-
-           cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
-           return lastAccessedDocId;
-         } else { // hy: there must exist other comp blocks between the current block and noComp block since target <= baseListForOnlyCompBlocks.get(baseListForOnlyCompBlocks.size()-1)
-           lastAccessedDocId = advanceToTargetInTheFollowingCompBlocksNoPostProcessing(target, iterBlockIndex);
-           //lastAccessedDocId = LS_advanceToTargetInTheFollowingCompBlocks(target, iterBlockIndex);
-           return lastAccessedDocId;
          }
-       }
-     }
 
-     lastAccessedDocId = NO_MORE_DOCS;
-     return lastAccessedDocId;
+         lastAccessedDocId = NO_MORE_DOCS;
+         return lastAccessedDocId;
     }
