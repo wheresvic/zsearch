@@ -31,14 +31,13 @@ public:
         int totalDocIdNum;
 
         int compBlockNum; // the number of compressed blocks
-        // unsigned int*  iterDecompBlock; // temporary storage for the decompressed data
-		// unsigned int* currentNoCompBlock;
 		vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> iterDecompBlock;
 		vector<uint32_t,AlignedSTLAllocator<uint32_t, 64>> currentNoCompBlock;
 
         //parent
         const CompressedSet* set;
         //int BLOCK_INDEX_SHIFT_BITS; // floor(log(blockSize))
+        int advanceToTargetInTheFollowingCompBlocks(int target, int startBlockIndex);
         int advanceToTargetInTheFollowingCompBlocksNoPostProcessing(unsigned int target, int startBlockIndex);
         int getBlockIndex(int docIdIndex);
     public:
@@ -131,12 +130,10 @@ public:
 
     /**
      * Prefix Sum
-     *
      */
-    void preProcessBlock(unsigned int block[], size_t size);
-
+    void delta(unsigned int block[], size_t size);
+    void preProcessBlock(unsigned int* block, size_t size);
     const shared_ptr<CompressedDeltaChunk> PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize);
-
 	const shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock();
 
     /**
