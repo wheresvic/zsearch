@@ -17,12 +17,9 @@ private:
 	Codec();
     
 	~Codec();
-
-       
+  
     //Code below is part of the public interface
-
 	bool findInDeltaArray(const unsigned int* array, size_t size,unsigned int target) const;
-	double diffclock(clock_t clock1,clock_t clock2) const;
     size_t Uncompress(Source& src, unsigned int* dst,size_t size) const;
 
     /**
