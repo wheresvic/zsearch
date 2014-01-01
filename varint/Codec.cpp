@@ -27,13 +27,6 @@ using namespace std;
        }
        return false;
     }
-
-	double Codec::diffclock(clock_t clock1,clock_t clock2) const
-	{
-		double diffticks=clock1-clock2;
-		double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
-		return diffms;
-	}
 	
     size_t Codec::Uncompress(Source& src, unsigned int* dst,size_t size) const  {
 	   assert(!needPaddingTo128Bits(dst));
@@ -47,6 +40,3 @@ using namespace std;
 	   codec.decodeArray(srcptr2, sourceSize/4,dst,memavailable);
        return memavailable*4;
     }
-
-
-
