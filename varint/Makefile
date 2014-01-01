@@ -23,6 +23,18 @@ CFLAGS = $(CFLAGS_SIMPLE) -msse2
 LIBS = 
 endif
 
+# MINGW
+ifneq (,$(findstring MINGW,$(OSNAME)))
+CFLAGS = $(CFLAGS_SIMPLE)
+LIBS = 
+endif 
+
+# Cygwin
+ifneq (,$(findstring /cygdrive/,$(PATH)))
+CFLAGS = $(CFLAGS_SIMPLE) -msse2
+LIBS = 
+endif
+
 
 clean :
 	rm -f $(LIBOBJECTS) *.o $(BUILD_DIR)/CompressedSet.a
