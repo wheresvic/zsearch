@@ -1,4 +1,3 @@
-
 # $@ name of the target
 # $^ name of all prerequisites with duplicates removed
 # $< name of the first prerequisite
@@ -19,8 +18,8 @@ HEADERS = TokenizerImpl.hpp Constants.hpp ZUtil.hpp Statistics.hpp Engine.hpp In
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O3 -m64 -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include -DOS_MACOSX -DINTEL64
-LIBS = -L/opt/local/lib -lleveldb -lm -levent
+CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/opt/local/include -DOS_MACOSX -DINTEL64
+LIBS = -L/usr/local/lib -L/opt/local/lib -lleveldb -lm -levent
 endif
 
 ifeq ($(OSNAME), Linux)
@@ -33,11 +32,11 @@ clean :
 
 all: server engine
 
-server: server.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
+server: server.cpp $(OBJECTS)
+	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
 
-engine: engine_simple_main.cpp $(HEADERS) $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS) 
+engine: engine_simple_main.cpp $(OBJECTS)
+	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS) 
 	# -ljemalloc
 
 ##
