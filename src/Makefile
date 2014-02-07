@@ -1,4 +1,3 @@
-
 # $@ name of the target
 # $^ name of all prerequisites with duplicates removed
 # $< name of the first prerequisite
@@ -20,7 +19,7 @@ CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O3 -msse2 -I$(LEVELDB_DIR)/include -I../li
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/opt/local/include -DOS_MACOSX -DINTEL64
-LIBS = -L/opt/local/lib -L/usr/local/lib -lleveldb -lm -levent
+LIBS = -L/usr/local/lib -L/opt/local/lib -lleveldb -lm -levent
 endif
 
 
@@ -35,7 +34,7 @@ clean :
 all: server engine
 
 server: server.cpp $(OBJECTS)
-	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@  $^ $(LIBS) 
+	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
 
 engine: engine_simple_main.cpp $(OBJECTS)
 	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS) 
