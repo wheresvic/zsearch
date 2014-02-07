@@ -44,16 +44,11 @@ public:
         for (const uint32_t * const final = in + length; in + BlockSize
                 <= final; in += BlockSize) {
             for (uint32_t i = 0; i < HowManyMiniBlocks; ++i)
-                Bs[i] = maxbits(in + i * MiniBlockSize,
-                        in + (i + 1) * MiniBlockSize);
-            *out++ = (Bs[0] << 24) | (Bs[1] << 16) | (Bs[2] << 8)
-                | Bs[3];
-            *out++ = (Bs[4] << 24) | (Bs[5] << 16) | (Bs[6] << 8)
-                            | Bs[7];
-            *out++ = (Bs[8] << 24) | (Bs[9] << 16) | (Bs[10] << 8)
-                            | Bs[11];
-            *out++ = (Bs[12] << 24) | (Bs[13] << 16) | (Bs[14] << 8)
-                            | Bs[15];
+                Bs[i] = maxbits(in + i * MiniBlockSize, in + (i + 1) * MiniBlockSize);
+            *out++ = (Bs[0] << 24) | (Bs[1] << 16) | (Bs[2] << 8) | Bs[3];
+            *out++ = (Bs[4] << 24) | (Bs[5] << 16) | (Bs[6] << 8) | Bs[7];
+            *out++ = (Bs[8] << 24) | (Bs[9] << 16) | (Bs[10] << 8) | Bs[11];
+            *out++ = (Bs[12] << 24) | (Bs[13] << 16) | (Bs[14] << 8)| Bs[15];
             for (uint32_t i = 0; i < HowManyMiniBlocks; ++i) {
                 // D.L. : is the reinterpret_cast safe here?
                 SIMD_fastpackwithoutmask_32(in + i * MiniBlockSize, reinterpret_cast<__m128i *>(out),
@@ -62,6 +57,30 @@ public:
             }
         }
         nvalue = out - initout;
+    }
+
+    // assuming out pointer dont need padding
+    size_t compressedSize(const uint32_t *in, const size_t length) const {
+        size_t nvalue = 4; //need at least 4 byte to store uncompressed size
+        uint32_t Bs[HowManyMiniBlocks];
+        for (const uint32_t * const final = in + length;
+             in + BlockSize <= final;
+             in += BlockSize)
+        {
+            for (uint32_t i = 0; 
+                 i < HowManyMiniBlocks; 
+                 ++i)
+            {
+                // how many bit are needed per integer to encode this miniblock
+                Bs[i] = maxbits(in + i * MiniBlockSize, in + (i + 1) * MiniBlockSize);
+            }
+            nvalue += 4; // 16 byte for header
+            for (uint32_t i = 0; i < HowManyMiniBlocks; ++i) {
+                nvalue += MiniBlockSize/32 * Bs[i];
+            }
+        }
+        return nvalue*4;
+
     }
 
     __inline__ const uint32_t * decodeArray(const uint32_t *in, const size_t /*length*/,
@@ -144,6 +163,17 @@ public:
         }
         nvalue = out - initout;
         return in;*/
+    }
+
+    size_t compressedSize(const uint32_t *in, const size_t length) const {
+        size_t nvalue = 1; //need at least 4 byte to store uncompressed size
+        nvalue +=1; // 4 byte for Bs
+        uint32_t Bs = maxbits(in,in + length);
+        for (const uint32_t * const final = in + length; in + BlockSize
+                <= final; in += BlockSize) {
+             nvalue +=  4 * Bs;
+        }
+        return nvalue*4;
     }
 
     string name() const {

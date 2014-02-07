@@ -52,7 +52,10 @@ public:
      * overrun).
      */
     virtual const uint32_t * decodeArray(const uint32_t *in,
-            const size_t length, uint32_t *out, size_t &nvalue)const = 0;
+            const size_t length, uint32_t *out, size_t &nvalue) const = 0;
+
+    virtual size_t compressedSize(const uint32_t *in, const size_t length) const = 0;
+
     virtual ~IntegerCODEC() {
     }
 

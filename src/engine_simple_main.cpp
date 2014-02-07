@@ -66,8 +66,8 @@ void work(string fileName, bool destroyDb)
 	{
 		string input;
 
-		char documentDelimiter = ' ';
-		int documentId = 500;
+		char documentDelimiter = ',';
+		int documentId = 1;
 
 		shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
 		// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
@@ -90,66 +90,46 @@ void work(string fileName, bool destroyDb)
 
 		cout << "Made engine!" << endl;
 
-		while (getline(f, input))
-		{
-			// cout << input;
-
-			/*
-			if (documentId > 1000)
-				break;
-			*/
-
-			string title = ZUtil::getString(documentId++);
-			shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
-			// doc->setTitle(title);
-			doc->addEntry("t", title);
-
-			// parse the input, each line is a single document
-			size_t found = input.find_first_of(documentDelimiter);
-			if (found != string::npos)
-			{
-				string field = input.substr(0, found);
-				string value = input.substr(found + 1);
-				// cout << "field : " << field << ", value: " << value << endl;
-				// doc->addEntry("document", value);
-				doc->addEntry("f", value);
-			}
-			else
-			{
-				throw "Couldn't split key value!";
-			}
-
-			// doc->addEntry("memtest", input);
-			//engine.addDocument(doc);
-			//engine.addDocument(doc);
-			cout << "Added document: " << engine.addDocument(doc) << endl;
-		}
-
-		f.close();
+	//	while (getline(f, input))
+	//	{
+	//		// cout << input;
+    //
+	//		/*
+	//		if (documentId > 1000)
+	//			break;
+	//		*/
+    //
+	//		string title = ZUtil::getString(documentId++);
+	//		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
+	//		// doc->setTitle(title);
+	//		doc->addEntry("t", title);
+    //        int fieldId = 0;
+    //        bool isfound = true;
+  //        do{
+  //          string fieldstr = ZUtil::getString(fieldId++);
+  //          size_t found = input.find_first_of(documentDelimiter);
+  //          string value = input.substr(0, found);
+  //          doc->addEntry(fieldstr, value);
+  //          input = input.substr(found + 1);
+  //          isfound = found != string::npos;
+  //        } while (isfound  );
+  //		// doc->addEntry("memtest", input);
+  //		//engine.addDocument(doc);
+  //		//engine.addDocument(doc);
+  //		cout << "Added document: " << engine.addDocument(doc) << endl;
+  //	}
+  //
+  //	f.close();
 
 		// flush
 //		engine.flushBatch();
-/*
-        storeKV->Compact();
+
+      //  storeKV->Compact();
 		// test that searching for some more text returns only 1 document
 
-		string query = "some  more text";
-		search(query, engine, 0, 0);
-
-		// engine.deleteDocument(2);	// deletes some more text
-		search(query, engine, 0, 0);
-
-		query = "série";
-		search(query, engine, 0, 0);
-
-		query = "de";
-		search(query, engine, 0, 0);
-		search(query, engine, 0, 1);
-		search(query, engine, 1, 1);
-		search(query, engine, 5, 5);
-		search(query, engine, 4, 7);
-		search(query, engine, 2, 0);
-			*/
+		string query = "1987 SFO 1732";
+		search(query, engine, 1, 0);
+			
 	}
 	else
 	{

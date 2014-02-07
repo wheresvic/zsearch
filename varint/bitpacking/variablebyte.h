@@ -77,6 +77,28 @@ public:
         nvalue = storageinbytes / 4;
     }
 
+    size_t compressedSize(const uint32_t *in, const size_t length) const {
+        uint32_t byteOut =0;
+        for (size_t k = 0; k < length; ++k) {
+            const uint32_t val(in[k]);
+            if (val < (1U << 7)) {
+                byteOut++;
+            } else if (val < (1U << 14)) {
+                byteOut+=2;
+            } else if (val < (1U << 21)) {
+                byteOut+=3;
+            } else if (val < (1U << 28)) {
+                byteOut+=4;
+            } else {
+                byteOut+=5;
+            }
+        }
+        while (byteOut & 3) {
+            byteOut++;
+        }
+        return byteOut;
+    }
+
     const uint32_t * decodeArray(const uint32_t *in, const size_t length,
             uint32_t *out, size_t & nvalue) const {
         if (length == 0) {

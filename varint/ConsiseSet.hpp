@@ -14,7 +14,7 @@ public:
 	 * This is the compressed bitmap, that is a collection of words. 
 	 * For each word:
 	 *    1* (0x80000000) means that it is a 31-bit literal
-     *
+         *
 	 *    00* (0x00000000)  indicates a sequence made up of at 
 	 *    most one set bit in the first 31 bits and followed by
 	 *    blocks of 31 0's. The following 5 bits (00xxxxx*)
@@ -44,7 +44,7 @@ public:
 	/**
 	 * Index of the last word in  #words
 	 */
-    int lastWordIndex;
+        int lastWordIndex;
 
 	/**
 	 * User for <i>fail-fast</i> iterator. It counts the number of operations
@@ -87,10 +87,11 @@ public:
 	 */
 	unsigned int SEQUENCE_BIT = 0x40000000;
 
-    bool simulateWAH = false;
+        bool simulateWAH = false;
 
 	ConciseSet();
-    void reset();
+        //ConciseSet* clone()
+        void reset();
 	int maxLiteralLengthModulus(unsigned int n);
 	int maxLiteralLengthMultiplication(int n);
 	int maxLiteralLengthDivision(int n);
@@ -110,16 +111,20 @@ public:
 	void compact();
 	bool add(int e);
 	void append(int i);
+        void appendLiteral(int word);
 	void appendFill(int length, int fillType);
-	bool isEmpty() {
+        void updateLast();
+ 	bool isEmpty() {
 		return words.size() == 0;
 	}
 };
+
 class NoSuchElementException {};
 class IndexOutOfBoundsException{
 public:
 	IndexOutOfBoundsException(int index){}
 };
+
 /**
  * Iterator over the bits of a single literal/fill word
  */
@@ -204,9 +209,10 @@ public:
 		}
 	}
 };
-	/**
-	 * Iterator over the bits of one-fill words
-	 */
+
+/**
+ * Iterator over the bits of one-fill words
+ */
 class OneFillExpander : WordExpander {
 	int firstInt = 1;
 	int lastInt = -1;
@@ -268,7 +274,7 @@ public:
 		}
 };
 	
-class BitIterator{
+class BitIterator {
 	ConciseSet& set;
 	WordExpander* exp;
 	OneFillExpander oneExp;
@@ -509,11 +515,11 @@ class BitIterator{
 	 * Removes unused allocated words at the end of {@link #words} only when they
 	 * are more than twice of the needed space
 	 */
-    void ConciseSet::compact() {
+        void ConciseSet::compact() {
 		// TODO: compact words
 	}
 	
-    bool ConciseSet::add(int e) {
+        bool ConciseSet::add(int e) {
 		modCount++;
 
 		// range check
@@ -646,7 +652,58 @@ class BitIterator{
 		if (size >= 0)
 			size++;
 	}
-	
+
+  /**
+   * Append a literal word after the last word
+   *
+   * @param word the new literal word. Note that the leftmost bit <b>must</b>
+   *             be set to 1.
+   */
+  void ConciseSet::appendLiteral(int word)
+  {
+    // when we have a zero sequence of the maximum lenght (that is,
+    // 00.00000.1111111111111111111111111 = 0x01FFFFFF), it could happen
+    // that we try to append a zero literal because the result of the given operation must be an
+    // empty set. Whitout the following test, we would have increased the
+    // counter of the zero sequence, thus obtaining 0x02000000 that
+    // represents a sequence with the first bit set!
+    if (lastWordIndex == 0 && word == ConciseSetUtils.ALL_ZEROS_LITERAL && words[0] == 0x01FFFFFF) {
+      return;
+    }
+
+    // first addition
+    if (lastWordIndex < 0) {
+      words[lastWordIndex = 0] = word;
+      return;
+    }
+
+    final int lastWord = words[lastWordIndex];
+    if (word == ConciseSetUtils.ALL_ZEROS_LITERAL) {
+      if (lastWord == ConciseSetUtils.ALL_ZEROS_LITERAL) {
+        words[lastWordIndex] = 1;
+      } else if (isZeroSequence(lastWord)) {
+        words[lastWordIndex]++;
+      } else if (!simulateWAH && containsOnlyOneBit(getLiteralBits(lastWord))) {
+        words[lastWordIndex] = 1 | ((1 + Integer.numberOfTrailingZeros(lastWord)) << 25);
+      } else {
+        words[++lastWordIndex] = word;
+      }
+    } else if (word == ConciseSetUtils.ALL_ONES_LITERAL) {
+      if (lastWord == ConciseSetUtils.ALL_ONES_LITERAL) {
+        words[lastWordIndex] = ConciseSetUtils.SEQUENCE_BIT | 1;
+      } else if (isOneSequence(lastWord)) {
+        words[lastWordIndex]++;
+      } else if (!simulateWAH && containsOnlyOneBit(~lastWord)) {
+        words[lastWordIndex] = ConciseSetUtils.SEQUENCE_BIT | 1 | ((1 + Integer.numberOfTrailingZeros(~lastWord))
+                                                                   << 25);
+      } else {
+        words[++lastWordIndex] = word;
+      }
+    } else {
+      words[++lastWordIndex] = word;
+    }
+  }
+
 	/**
 	 * Append a sequence word after the last word
 	 * 

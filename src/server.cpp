@@ -458,12 +458,12 @@ static void post_request_cb(struct evhttp_request *req, void *arg)
 				catch (const std::string& e)
 				{
 					evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-					evbuffer_add_printf(evb, e.c_str());
+					evbuffer_add_printf(evb, "%s", e.c_str());
 				}
 				catch (const std::exception& e)
 				{
 					evbuffer_add_printf(evb, "Error parsing document. See documentation for more details\n");
-					evbuffer_add_printf(evb, e.what());
+					evbuffer_add_printf(evb, "%s", e.what());
 				}
 			}
 			else

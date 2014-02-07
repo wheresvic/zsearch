@@ -22,12 +22,29 @@ struct CompressedSetTest : tpunit::TestFixture
 	(
 		TEST(CompressedSetTest::testAddAfterRead),
 		TEST(CompressedSetTest::testEmptySet),
-		TEST(CompressedSetTest::testAndSet)
-		
+		TEST(CompressedSetTest::testAndSet),
+		TEST(CompressedSetTest::testAdvance)
 
 	)
 	{}
 	
+	void testAdvance()
+	{
+		CompressedSet myset1;
+		for (int i = 3; i<100000; i++){
+			myset1.addDoc(i);
+		}
+
+		stringstream ss;
+		myset1.write(ss);
+		
+		CompressedSet myset2;
+		myset2.read(ss);
+		CompressedSet::Iterator it2(&myset2);
+		cout << it2.Advance(2) << endl;
+		cout << it2.Advance(2) << endl;		
+	}
+
 	void testAddAfterRead()
 	{
 		CompressedSet myset1;

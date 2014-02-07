@@ -58,6 +58,19 @@ public:
         assert(initin + length >= in2);
         return in2;
     }
+    
+    __inline__ size_t compressedSize(const uint32_t *in, const size_t length) const {
+        const size_t roundedlength = length / Codec1::BlockSize * Codec1::BlockSize;
+        size_t nbytes = codec1.compressedSize(in,length);
+        if (roundedlength < length) {
+            size_t nbytes2 = codec2.compressedSize(in + roundedlength,length - roundedlength);
+            return nbytes + nbytes2;
+        } else {
+            return nbytes;
+        }
+
+    }
+
     string name() const {
         ostringstream convert;
         convert << codec1.name() << "+" << codec2.name();

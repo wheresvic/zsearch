@@ -290,8 +290,6 @@
      }
   }
   
-   
-    
   const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize){
     return codec.Compress(block,blocksize);
   }
@@ -473,24 +471,30 @@
     {
       // searching from the current block
       int iterBlockIndex = binarySearchInBaseListForBlockThatMayContainTarget(set->baseListForOnlyCompBlocks, startBlockIndex, set->baseListForOnlyCompBlocks.size()-1, target);
-      
+      assert(iterBlockIndex >= 0);
       if(iterBlockIndex < 0)
       {
         //System.err.println("ERROR: advanceToTargetInTheFollowingCompBlocks(): Impossible, we must be able to find the block");
       }
       int currentBlockIndex = cursor >> BLOCK_SIZE_BIT;
-      if (currentBlockIndex != iterBlockIndex){
+      int currentOffset = cursor & BLOCK_SIZE_MODULO;
+
+      // if we are already on currentBlockIndex and currentOffset >0 
+      // this mean the block is already decompresed by last iteration
+      // we can skip this decompressing it again
+      if (currentBlockIndex != iterBlockIndex || currentOffset == 0){
           Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
           set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
           postProcessBlock(&iterDecompBlock[0], DEFAULT_BATCH_SIZE);
       }
       
       int offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(iterDecompBlock[0]), 0, DEFAULT_BATCH_SIZE-1, target);
-      
+      assert(offset >= 0);
       if(offset < 0)
       {
        // System.err.println("ERROR: case 2: advanceToTargetInTheFollowingCompBlocks(), Impossible, we must be able to find the target" + target + " in the block " + iterBlockIndex);
       }
+
       cursor = (iterBlockIndex << BLOCK_INDEX_SHIFT_BITS) + offset;
       return iterDecompBlock[offset];
     }
@@ -521,7 +525,7 @@
         return lastAccessedDocId;
       }
       
-      int currentoffset = cursor & BLOCK_SIZE_MODULO;
+      // int currentoffset = cursor & BLOCK_SIZE_MODULO;
       for (size_t offset=1;offset < uncompSize;++offset)
       {
         lastAccessedDocId += ( iterDecompBlock[offset]);
@@ -567,7 +571,8 @@
         size_t baseListForOnlyCompBlocksSize = set->baseListForOnlyCompBlocks.size();
         
         if(sizeOfCurrentNoCompBlock>0) {// if there exists the last decomp block
-          if(iterBlockIndex == compBlockNum || (baseListForOnlyCompBlocksSize>0 && target > set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1])) {
+          if(iterBlockIndex == compBlockNum ||
+             (baseListForOnlyCompBlocksSize>0 && target > set->baseListForOnlyCompBlocks[baseListForOnlyCompBlocksSize-1])) {
             offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(set->currentNoCompBlock[0]), 0, sizeOfCurrentNoCompBlock-1, target);
 
             if(offset>=0){
@@ -596,16 +601,19 @@
             #endif
              return lastAccessedDocId;
            } else { // offset > 0, the current block has been decompressed, so, first test the first block;and then do sth like case 2
+             assert(offset > 0);
              if(target <= set->baseListForOnlyCompBlocks[iterBlockIndex]) {
                while(offset < DEFAULT_BATCH_SIZE) {
-                 lastAccessedDocId += (iterDecompBlock[offset]);
-
+                 #ifdef PREFIX_SUM
+                    lastAccessedDocId += (iterDecompBlock[offset]);
+                 #else
+                    lastAccessedDocId = (iterDecompBlock[offset]);
+                 #endif  
                  if (lastAccessedDocId >= target) {
                    break;
                  }
                  offset++;
                }
-
                if (offset == DEFAULT_BATCH_SIZE) {
                 printf("Error case 3: Impossible, we must be able to find the target %d in the block, lastAccessedDocId: %d , baseListForOnlyCompBlocks[%d]\n",
                 target,lastAccessedDocId,iterBlockIndex);
