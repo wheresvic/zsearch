@@ -38,7 +38,6 @@
             out.write((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
         }
 
-
         if ( totalDocIdNum > DEFAULT_BATCH_SIZE) {
             //write base (skipping info)
             int baseListForOnlyCompBlocksSize = baseListForOnlyCompBlocks.size();
@@ -216,7 +215,7 @@
    * Prefix Sum
    *
    */
-  void CompressedSet::delta(unsigned int block[], size_t size) {
+  static void delta(unsigned int block[], size_t size) {
     for(int i=size-1;i>0;--i)
     {
       block[i] = block[i] - block[i-1];
@@ -235,7 +234,8 @@
             data[i] += data[i - 1];
         }
   }
-  
+
+  // Simd delta
   void CompressedSet::preProcessBlock(unsigned int pData[], size_t TotalQty){
      if (TotalQty < 5) {
          delta(pData, TotalQty);// no SIMD
@@ -265,7 +265,8 @@
          }
      }
   }
-    
+
+  // simd inverseDelta  
   static void postProcessBlock(unsigned int* pData, const size_t TotalQty) {
      if (TotalQty < 5) {
          inverseDelta(pData, TotalQty);// no SIMD

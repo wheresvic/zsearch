@@ -128,11 +128,7 @@ public:
 
     void initSet();
 
-    /**
-     * Prefix Sum
-     */
-    void delta(unsigned int block[], size_t size);
-    void preProcessBlock(unsigned int* block, size_t size);
+    static void preProcessBlock(unsigned int* block, size_t size);
     const shared_ptr<CompressedDeltaChunk> PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize);
 	const shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock();
 
