@@ -34,7 +34,9 @@
     {
         out.write((char*)&totalDocIdNum,4);
         if (totalDocIdNum > 0 ){
-            out.write((char*)&sizeOfCurrentNoCompBlock,4);
+            if (totalDocIdNum >= DEFAULT_BATCH_SIZE) {
+               out.write((char*)&sizeOfCurrentNoCompBlock,4);
+            }
             out.write((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
         }
 
@@ -56,7 +58,12 @@
         in.read((char*)&totalDocIdNum,4);
         if (totalDocIdNum>0)
         {
-            in.read((char*)&sizeOfCurrentNoCompBlock,4);
+            if (totalDocIdNum < DEFAULT_BATCH_SIZE) {
+                sizeOfCurrentNoCompBlock = totalDocIdNum;
+            } else {
+                in.read((char*)&sizeOfCurrentNoCompBlock,4); 
+            }
+
             currentNoCompBlock.resize(sizeOfCurrentNoCompBlock);
             in.read((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
 
