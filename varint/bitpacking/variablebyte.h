@@ -99,6 +99,28 @@ public:
         return byteOut;
     }
 
+    // this assumes that there is a value to be read
+    int read_int(const uint8_t* in, uint32_t* out) {
+    	*out = in[0] & 0x7F;
+    	if (in[0] >= 128) {
+    		return 1;
+    	}
+    	*out = ((in[1] & 0x7FU) << 7) | *out;
+    	if (in[1] >= 128) {
+    		return 2;
+    	}
+    	*out = ((in[2] & 0x7FU) << 14) | *out;
+    	if (in[2] >= 128) {
+    		return 3;
+    	}
+    	*out = ((in[3] & 0x7FU) << 21) | *out;
+    	if (in[3] >= 128) {
+    		return 4;
+    	}
+    	*out = ((in[4] & 0x7FU) << 28) | *out;
+    	return 5;
+    }
+    
     const uint32_t * decodeArray(const uint32_t *in, const size_t length,
             uint32_t *out, size_t & nvalue) const {
         if (length == 0) {
@@ -109,7 +131,13 @@ public:
         const uint8_t * const endbyte = reinterpret_cast<const uint8_t *> (in
                         + length);
         const uint32_t * const initout(out);
-
+        
+        // this assumes that there is a value to be read
+        while (endbyte > inbyte + 5) {
+        	inbyte += read_int(inbyte,out);
+        	++out;
+        }
+        
         while (endbyte > inbyte) {
             unsigned int shift = 0;
 
@@ -123,8 +151,7 @@ public:
             }
         }
         nvalue = out - initout;
-        inbyte = padTo32bits(inbyte);
-        return reinterpret_cast<const uint32_t *> (inbyte);
+        return in + length;
     }
 
     string name() const {
