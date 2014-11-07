@@ -100,7 +100,7 @@ public:
     }
 
     // this assumes that there is a value to be read
-    int read_int(const uint8_t* in, uint32_t* out) {
+    int read_int(const uint8_t* in, uint32_t* out) const {
     	*out = in[0] & 0x7F;
     	if (in[0] >= 128) {
     		return 1;
