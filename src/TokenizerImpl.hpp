@@ -24,7 +24,7 @@ class TokenizerImpl : public ITokenizer
 			std::cerr << "Destroyed TokenizerImpl" << std::endl;
 		}
 		
-		void setString(const std::string& str,const std::string& field)
+		void setString(const std::string& str, const std::string& field)
 		{
 			m_string = str;
 			stringsize = m_string.size();

@@ -100,7 +100,7 @@ class Engine
                 
 				fields.put(field);
                 
-				tokenizer.setString(value,field);
+				tokenizer.setString(value, field);
 				while (tokenizer.nextToken()) // 18%
 				{
 				    unsigned long long id = 0;

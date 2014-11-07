@@ -32,20 +32,20 @@ endif
 clean :
 	rm -f $(BUILD_OBJECTS) $(BUILD_DIR)/server $(BUILD_DIR)/engine
 
-all: server engine
+all: server engine $(BUILD_DIR)/TokenizerImpl.o
 
 server: server.cpp $(OBJECTS)
 	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS)
 
 engine: engine_simple_main.cpp $(OBJECTS)
 	$(CXX) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LIBS) 
-	# -ljemalloc
+
 
 ##
 # Classes
 ##
 
-#$(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
-#	$(CXX) -c $(CFLAGS) $< -o $@
+$(BUILD_DIR)/TokenizerImpl.o : TokenizerImpl.cpp TokenizerImpl.h ITokenizer.h Constants.hpp
+	$(CXX) -c $(CFLAGS) $< -o $@
 
 

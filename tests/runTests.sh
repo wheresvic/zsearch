@@ -1,9 +1,9 @@
 
 TEST_DIR="../build/tests"
 
-for file in `ls $TEST_DIR` 
+for file in `find $TEST_DIR -perm -g=x -type f`
 do
-	echo "running $TEST_DIR/$file"
-	$TEST_DIR/$file
+	echo "running $file"
+	$file
 done
 

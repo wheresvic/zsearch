@@ -16,7 +16,7 @@ TokenizerImpl::~TokenizerImpl()
 }
 
 
-void TokenizerImpl::setString(const std::string& str,const std::string& field)
+void TokenizerImpl::setString(const std::string& str, const std::string& field)
 {
 	m_string = str;
 	m_token.clear();
@@ -44,7 +44,7 @@ bool TokenizerImpl::nextToken()
 
 
 
-const std::string TokenizerImpl::getToken() const
+const std::string& TokenizerImpl::getToken() const
 {	
 	return m_token;
 }

@@ -10,7 +10,7 @@ BUILD_DIR_TEST = ../build/tests
 BUILD_DIR = ../build
 LEVELDB_DIR = ../leveldb
 
-OBJECTS =  $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
+OBJECTS =  $(BUILD_DIR)/CompressedSet.a $(BUILD_DIR)/TokenizerImpl.o $(LEVELDB_DIR)/libleveldb.a
 
 CFLAGS_PLAIN = -std=gnu++0x -Wall -g  -pedantic -msse3 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
 

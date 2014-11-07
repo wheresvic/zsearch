@@ -17,7 +17,7 @@ class TokenizerImpl : public ITokenizer
 
         bool nextToken();
 		
-        const std::string getToken() const;
+        const std::string& getToken() const;
 
 	protected:
 

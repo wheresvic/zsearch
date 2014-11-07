@@ -34,7 +34,7 @@ struct TokenizerTest : tpunit::TestFixture
 
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
-		tokenizer->setString(text);
+		tokenizer->setString(text, "field1");
 		
 		while (tokenizer->nextToken())
 		{

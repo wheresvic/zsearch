@@ -41,9 +41,9 @@ void test_multiple_threads()
 
 
 // print function for "thread safe" printing using a stringstream
-void print(ostream& s)
+void print(const stringstream& s)
 {
-	cout << s.rdbuf(); cout.flush(); s.clear();
+	cout << s.rdbuf(); cout.flush();
 }
 
 
