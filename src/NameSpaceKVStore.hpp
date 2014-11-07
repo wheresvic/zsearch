@@ -96,6 +96,7 @@ namespace KVStore
 			{
 				store->Compact();
 			}
+			/*
 
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
@@ -124,6 +125,10 @@ namespace KVStore
 
 				return store->Put(writesNs);
 			}
+
+            unsigned int GetBatchSize(){
+               return store->GetBatchSize();
+            }
 			
             void PutBatch(const std::string& key, const std::string& value){
 				string keystr = key;
@@ -150,7 +155,7 @@ namespace KVStore
 			
 			Status writeBatch(){
 				return store->writeBatch();
-			}
+			}*/
 	}; // end class
 
 

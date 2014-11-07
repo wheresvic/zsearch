@@ -11,6 +11,7 @@
 #include "codecs.h"
 #include "bitpacksimd.h"
 #include "util.h"
+#include "simdintegratedbitpacking.h"
 
 
 /**
@@ -28,7 +29,7 @@ public:
     static const uint32_t MiniBlockSize = 128;
     static const uint32_t HowManyMiniBlocks = 16;
     static const uint32_t BlockSize = HowManyMiniBlocks * MiniBlockSize;
-
+    
     /**
      * The way this code is written, it will automatically "pad" the
      * header according to the alignment of the out pointer. So if you
@@ -41,17 +42,19 @@ public:
         *out++ = length;
         while(needPaddingTo128Bits(out)) *out++ = CookiePadder;
         uint32_t Bs[HowManyMiniBlocks];
+
         for (const uint32_t * const final = in + length; in + BlockSize
                 <= final; in += BlockSize) {
-            for (uint32_t i = 0; i < HowManyMiniBlocks; ++i)
+            for (uint32_t i = 0; i < HowManyMiniBlocks; ++i){
                 Bs[i] = maxbits(in + i * MiniBlockSize, in + (i + 1) * MiniBlockSize);
+            }
             *out++ = (Bs[0] << 24) | (Bs[1] << 16) | (Bs[2] << 8) | Bs[3];
             *out++ = (Bs[4] << 24) | (Bs[5] << 16) | (Bs[6] << 8) | Bs[7];
             *out++ = (Bs[8] << 24) | (Bs[9] << 16) | (Bs[10] << 8) | Bs[11];
             *out++ = (Bs[12] << 24) | (Bs[13] << 16) | (Bs[14] << 8)| Bs[15];
             for (uint32_t i = 0; i < HowManyMiniBlocks; ++i) {
                 // D.L. : is the reinterpret_cast safe here?
-                SIMD_fastpackwithoutmask_32(in + i * MiniBlockSize, reinterpret_cast<__m128i *>(out),
+                simdpackwithoutmaskd1(0,in + i * MiniBlockSize, reinterpret_cast<__m128i *>(out),
                                 Bs[i]);
                 out += MiniBlockSize/32 * Bs[i];
             }
@@ -102,7 +105,7 @@ public:
             }
             for (uint32_t i = 0; i < HowManyMiniBlocks; ++i) {
                 // D.L. : is the reinterpret_cast safe here?
-                SIMD_fastunpack_32(reinterpret_cast<const __m128i *>(in), out + i * MiniBlockSize, Bs[i]);
+                simdunpackd1(0,reinterpret_cast<const __m128i *>(in), out + i * MiniBlockSize, Bs[i]);
                 in += MiniBlockSize/32 * Bs[i];
             }
         }

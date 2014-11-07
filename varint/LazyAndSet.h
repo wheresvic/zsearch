@@ -16,7 +16,7 @@ public:
 	unsigned int Advance(unsigned int target);
 };
 
-class LazyAndSet : Set {
+class LazyAndSet : public Set {
  public:
 	vector<shared_ptr<Set> > sets_;
 	int nonNullSize;
@@ -26,6 +26,8 @@ class LazyAndSet : Set {
 	
 	LazyAndSet(vector<shared_ptr<Set> >& sets);
 	
+	LazyAndSet(shared_ptr<Set> & left,shared_ptr<Set> & right);
+
 	inline bool find(unsigned int val) const;
 	
 	unsigned int size() const ;

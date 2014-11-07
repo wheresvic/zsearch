@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-
+#include <time.h>
 #include <exception>
 
 #include <atomic>
-#include "port_posix.h"
-
+#include <condition_variable>
+#include <chrono>
 #include <thread>
 
 #include "IInvertedIndex.h"
@@ -25,7 +25,7 @@
 
 #include "varint/ISetFactory.h"
 #include "SparseSet.hpp"
-#include <ctime>
+#include "LRUCache.hpp"
 
 
 #ifdef __MACH__
@@ -57,7 +57,18 @@ struct postingComp {
 // but also avoid unserilizing a dccumenSet each time we add a new docID.
 class InvertedIndexBatch : public IInvertedIndex
 {
+	struct EvictionCallback{
+	  InvertedIndexBatch* invertedIndex;
+	  EvictionCallback(InvertedIndexBatch* invertedIndexp): invertedIndex(invertedIndexp){
+
+	  }
+	  void evict(unsigned int key,shared_ptr<Set> data){
+		invertedIndex->evictPut(key,data);
+	  }  
+    };
 private:
+	LRUCache<unsigned int,shared_ptr<Set>,EvictionCallback> wordSetCache;		
+
 	std::shared_ptr<KVStore::IKVStore> store;
 
 	vector<std::pair<unsigned int,unsigned int>> postings;
@@ -74,8 +85,10 @@ private:
 
 	// For the threading
 	std::thread consumerThread;
-    leveldb::port::Mutex m;
-    leveldb::port::CondVar cond_var;
+    //leveldb::port::Mutex m;
+    //leveldb::port::CondVar cond_var;
+    std::mutex m;
+    std::condition_variable cond_var;
 	volatile bool done = false;
 
 
@@ -92,13 +105,21 @@ private:
 		return 0;
 	}
 
-	int batchPut(unsigned int wordId, const shared_ptr<Set> set)
-	{
-		 cout << "batchPut:"<<wordId <<  endl;
+	// Need to be synchronized
+	void evictPut(unsigned int wordId, const shared_ptr<Set> set){
 		stringstream ss;
 		set->write(ss);
 		string bitmap = ss.str();
-		store->PutBatch(wordId,bitmap);
+        store->Put(wordId,bitmap);
+	}
+
+
+	int cachePut(unsigned int wordId, const shared_ptr<Set> set)
+	{
+		stringstream ss;
+		set->write(ss);
+		string bitmap = ss.str();
+		wordSetCache.put(wordId,set);
 		return 1;
 	}
 
@@ -106,14 +127,15 @@ private:
 public:
 
 	InvertedIndexBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) :
+	 wordSetCache(100000,this),
 	 store(store),
-	 setFactory(setFactory),
-	 cond_var(&m)
+	 setFactory(setFactory)
+	 
 	{
 		void consumer_main();
 
-		maxbatchsize = 18350080;
-		minbatchsize = 18350080;
+		maxbatchsize = 100000;
+		minbatchsize = 10000;
 		batchsize = 0;
 
 		producerVec.store(&postings);
@@ -128,14 +150,18 @@ public:
 	~InvertedIndexBatch() {
 		flushBatch();
 		stopConsumerThread();
+		wordSetCache.evictAll();
 	}
 
 	void stopConsumerThread(){
-		m.Lock();
+		if(done){
+			return;
+		}
+		m.lock();
 		done=true;
-		m.Unlock();
+		m.unlock();
 		//wakup if sleeping
-		cond_var.Signal();
+		cond_var.notify_all();
 		//wait for termination
 		consumerThread.join();
 	}
@@ -180,6 +206,9 @@ public:
 
 	shared_ptr<Set> getOrCreate(unsigned int wordid){
 		shared_ptr<Set> docSet;
+		if (wordSetCache.get(wordid,docSet)){
+            return docSet;
+		}
 	  	if(!get(wordid,docSet)){
 		    docSet = setFactory->createSparseSet();
 		}
@@ -189,12 +218,11 @@ public:
 
 	// this is not good - if you call this from another thread that means that you'll be waiting for a while for this to finish
 	void flushBatch(){
-	   m.Lock();
-	   while (batchsize > minbatchsize){
-	     cond_var.Wait();
+	   std::unique_lock<std::mutex> lk(m);
+	   while (batchsize > maxbatchsize){
+	   	// std::cout << "foreground: batchsize: " << batchsize << " > maxbatchsize: "<< maxbatchsize << std::endl;
+	     cond_var.wait(lk);
 	   }
-	   m.Unlock();
-	  
 	}
 
 
@@ -210,7 +238,7 @@ public:
 			unsigned int last = vec[0].first;
 			for (auto posting : vec){
 				if (posting.second != wordid){
-					batchPut(wordid, docSet);
+					cachePut(wordid, docSet);
 					docSet = getOrCreate(posting.second);
 					wordid = posting.second;
 					last = posting.first;
@@ -220,19 +248,17 @@ public:
 				last = posting.first;
 
 			}
-			batchPut(wordid, docSet);
+			cachePut(wordid, docSet);
 			vec.clear();
 		}
-		store->writeBatch();
-		store->ClearBatch();
 		return 1;
 	}
 
-long long nanosec_elapsed(struct timespec diff){
+long long nanosec_elapsed(struct timespec diff) const {
     return ((long long)diff.tv_sec * 1000000000) + diff.tv_nsec;
 }
 
-struct timespec diff_timespec(struct timespec start, struct timespec end) {
+struct timespec diff_timespec(struct timespec start, struct timespec end) const {
     struct timespec result;
 
     if (end.tv_nsec < start.tv_nsec){ // peform carry like in normal subtraction
@@ -258,51 +284,54 @@ void timespec_addms(struct timespec *ts, long ms) {
     // adjust the time
     ts->tv_sec+=ts->tv_nsec/1000000000 + sec;
     ts->tv_nsec=ts->tv_nsec%1000000000;
-}
-        int getBatchFromQueue(){
+}
+    int getBatchFromQueue(){
                 // maximum time in ms spends waiting to complete a full batch
                 // This doesn't limit the time spent in the queue.
-                int maxDelay = 500;
+                int maxDelay = 100;
  
                 struct timespec now;
                 clock_gettime(CLOCK_REALTIME, &now);
                 struct timespec firstTime = now;
                 timespec_addms(&firstTime, maxDelay);
+                unsigned int localbatchSize;
                 do { 
-                    m.Lock();                  
-                    if (batchsize < minbatchsize){
+                    std::unique_lock<std::mutex> lk(m);  
+                    localbatchSize = batchsize;                
+                    if (localbatchSize < minbatchsize){
                         long long maxWait = nanosec_elapsed(diff_timespec(now, firstTime));
                         if ( maxWait <= 0 ){
-                           m.Unlock();
                            break;
                         }
-                        cond_var.Wait(maxWait); 
+                        cond_var.wait_for(lk,std::chrono::milliseconds(maxDelay)); 
                     }
-	            m.Unlock();
                     clock_gettime(CLOCK_REALTIME, &now);
-                } while (batchsize < minbatchsize && !done);
+                } while (localbatchSize < minbatchsize && !done);
 
 
-                const int localbatchSize = batchsize;
-		if (batchsize > 0){
+  
+		if (localbatchSize > 0){
+			m.lock();
 		    vector<std::pair<unsigned int,unsigned int>>* temp;
 		    temp = producerVec.load();
 		    producerVec.store(consumerVec.load());
 		    consumerVec.store(temp);
 		    batchsize = 0;
-		}
-                return localbatchSize;
-        }
+		    m.unlock();
+		} 
+		//std::cout<< "background: get batch of size " << localbatchSize  << std::endl;
+        return localbatchSize;
+    }
 
 	void consumer_main(){
 	    while (!done) {
 	        if (getBatchFromQueue()){
-		    // TODO: use a ThreadPoolExecutor to execute it
-                    cout << "flushInBackground"<< endl;
-		    flushInBackground();
-                    m.Lock();
-                    cond_var.Signal();
-                    m.Unlock();
+			    // TODO: use a ThreadPoolExecutor to execute it
+			    flushInBackground();
+			  //  std::cout<< "background: processsed one batch" << std::endl;
+	            m.lock();
+	            cond_var.notify_all();
+	            m.unlock();
 	        }
 			
 	    }
@@ -310,12 +339,14 @@ void timespec_addms(struct timespec *ts, long ms) {
 
 	int add(unsigned int wordId, unsigned int docid)
 	{
-		m.Lock();
+		m.lock();
 		producerVec.load()->push_back(std::pair<unsigned int,unsigned int>(docid,wordId));
 		batchsize +=1;
-		cond_var.Signal();
-		m.Unlock();
-		if (batchsize > maxbatchsize){
+		cond_var.notify_all();
+		bool shouldFlush =batchsize > maxbatchsize;
+		m.unlock();
+		if (shouldFlush){
+
 		    flushBatch();
 		}
 		return 1;
@@ -325,20 +356,25 @@ void timespec_addms(struct timespec *ts, long ms) {
 
 	void add(unsigned int docid, const SparseSet& documentWordId)
 	{
-		m.Lock();
+		m.lock();
 		for (auto value : documentWordId)
 		{
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
 			batchsize +=1;
 		}
-		cond_var.Signal();
-		m.Unlock();
+
+		cond_var.notify_all();
+        bool shouldFlush =batchsize > maxbatchsize;
+		m.unlock();
+		if (shouldFlush){
+		    flushBatch();
+		}
 	}
 	
 	// better batch add that doesnt lock and unlock for each wordid
 	void add(unsigned int docid, const set<unsigned int>& documentWordId)
 	{
-		m.Lock();
+		m.lock();
 		for (auto value : documentWordId)
 		{
 			producerVec.load()->push_back(std::pair<unsigned int, unsigned int>(docid, value));
@@ -346,9 +382,9 @@ void timespec_addms(struct timespec *ts, long ms) {
 		}
 		if (batchsize > minbatchsize)
 		{
-		    cond_var.Signal();
-                }
-		m.Unlock();
+		    cond_var.notify_all();
+        }
+		m.unlock();
 	}
 
 	int remove(unsigned int wordId, unsigned int docId)

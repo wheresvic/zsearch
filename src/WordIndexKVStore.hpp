@@ -10,79 +10,107 @@
 #include "ZException.hpp"
 #include "ZUtil.hpp"
 #include "LRUCache.hpp"
-
-#include "bloom_filter.hpp"
+#include <cedarpp.h>
 using namespace std;
 
 class WordIndexKVStore
 {
+    struct EvictionCallback{
+	  WordIndexKVStore* store;
+	  EvictionCallback(WordIndexKVStore* storep): store(storep){
+
+	  }
+	  void evict(string key,unsigned int data){
+	  	std::cout << "WordIndex" << std::endl;
+		store->evictPut(key,data);
+	  }  
+    };
 	private:
-		mutable LRUCache<string,unsigned int> cache;		
+		mutable LRUCache<string,unsigned int,EvictionCallback> cache;		
 		std::shared_ptr<KVStore::IKVStore> store;
-		bloom_filter* filter;
+		cedar::da <int, -1, -2, false> tree;
 	public:
 
-		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : cache(656538),store(store)
+		WordIndexKVStore(std::shared_ptr<KVStore::IKVStore> store) : cache(16000,this),store(store)
 		{
-			bloom_parameters parameters;
-			parameters.projected_element_count  = 1053691;
-			parameters.false_positive_probability = 0.03;
-			parameters.random_seed = 0xA5A5A5A55A5A5A5AULL;
-			parameters.compute_optimal_parameters();
-			filter = new bloom_filter(parameters);
+            load();
 		}
 		
 		~WordIndexKVStore()
 		{
-			delete filter;
+			cache.evictAll();
+			save();
 			std::cerr << "Destroyed WordIndexKVStore" << std::endl;
 		}
+
+        void save(){
+            tree.save("wordindex","wb",true);
+        }
+
+        void load(){
+
+        	tree.open("wordindex");
+        }
+        void evictPut(string wordString,unsigned int value){
+        	std::string v;
+        	ZUtil::PutVarint32(&v,value);
+        	store->Put(wordString, v);
+
+        }
 
         static const string wordToString(const string& field, const string& word){
 	        return field + '/' + word;
         }
 
-		int Put(const std::string& field, const std::string& token, unsigned int value)
+		int Put(const std::string& field, const std::string& token, unsigned long long value)
 		{
-			
 			return Put(wordToString(field,token), value);
 		}
 
-		int Get(const std::string& field, const std::string& token, unsigned int& value) const
+		int Get(const std::string& field, const std::string& token, unsigned long long& value) const
 		{
 			return Get(wordToString(field, token), value);
 		}
 		
-		int Put(const std::string& wordString, const unsigned int value)
-		{
-			filter->insert(wordString);
-			cache.put(wordString,value);
-			
-			string v = ZUtil::getString(value);
-			//TODO: this need to be batched too 
-			if (store->Put(wordString, v).ok())
-			{
-				return 1;
-			}
-			
-			return 0;
+		void cedarPut(const std::string&  key,const unsigned long long value){
+            tree.update (key.c_str(), key.size()) = value;
 		}
 
-		int Get(const string& wordString, unsigned int& value) const
-		{	
-			if (filter->contains(wordString)){ // might be in cache
-				if (cache.get(wordString,value)){ 
-					return 1; // found in cache
-				}
+		bool cedarGet(const std::string& key,unsigned long long& value) const {
+			int ret = tree.exactMatchSearch<int>(key.c_str(), key.size());
+			if (ret >= 0){
+                value = ret;
+                return true;
 			}
-					
+			return false;
+		}
+
+		int Put(const std::string& wordString, const unsigned long long value)
+		{
+		//	cache.put(wordString,value,true);
+			cedarPut(wordString,value);
+			return 1;
+		}
+
+
+		int Get(const string& wordString, unsigned long long& value) const
+		{	
+		//	if (cache.get(wordString,value)){ 
+		//	    return 1; // found in cache
+		//	}
+			if (cedarGet(wordString,value)){ 
+			    return 1; // found in cache
+			}			
+/*
 			string v;
 			if (store->Get(wordString, v).ok())
 			{
-				value = ZUtil::getUInt(v);
+				leveldb::Slice s(v);
+			    ZUtil::GetVarint32(&s,&value);
+				cache.putOld(wordString,value,false);
 				return 1;
 			} 
-
+*/
 			return 0;
 		}		
 };

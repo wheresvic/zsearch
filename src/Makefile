@@ -7,19 +7,20 @@ ARCH := $(shell uname -m)
 
 CC = g++
 BUILD_DIR = ../build
-LEVELDB_DIR = ../leveldb-1.7.0
+LEVELDB_DIR = ../leveldb
+
 
 BUILD_OBJECTS =
 
-OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
+OBJECTS = $(BUILD_OBJECTS) $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a 
 
 HEADERS = TokenizerImpl.hpp Constants.hpp ZUtil.hpp Statistics.hpp Engine.hpp InvertedIndexImpl.hpp InvertedIndexBatch.hpp DocumentImpl.hpp InvertedIndexSimpleBatch.hpp DocumentKVStore.hpp ZException.hpp ZUtil.hpp WordIndexKVStore.hpp KVStoreLevelDb.hpp IDocument.h IInvertedIndex.h IKVStore.h KVStoreInMemory.hpp NameSpaceKVStore.hpp FieldKVStore.hpp EngineDataKVStore.hpp
 
-CFLAGS_PLAIN = -std=gnu++0x -Wall -g -O3 -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
+CFLAGS_PLAIN =  -flto -std=gnu++0x -Wall -g0 -Ofast -foptimize-register-move -funroll-loops -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/opt/local/include -DOS_MACOSX -DINTEL64
-LIBS = -L/usr/local/lib -L/opt/local/lib -lleveldb -lm -levent
+LIBS = -L/usr/local/lib -L/opt/local/lib -L$(LEVELDB_DIR) -lleveldb -lm -levent
 endif
 
 

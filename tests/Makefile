@@ -6,15 +6,13 @@
 OSNAME  := $(shell uname -s)
 ARCH := $(shell uname -m)
 
-CC = g++
-
 BUILD_DIR_TEST = ../build/tests
 BUILD_DIR = ../build
-LEVELDB_DIR = ../leveldb-1.7.0
+LEVELDB_DIR = ../leveldb
 
 OBJECTS =  $(BUILD_DIR)/CompressedSet.a $(LEVELDB_DIR)/libleveldb.a
 
-CFLAGS_PLAIN = -std=gnu++0x -Wall -O3 -pedantic -msse3 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
+CFLAGS_PLAIN = -std=gnu++0x -Wall -g  -pedantic -msse3 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I..
 
 ifeq ($(OSNAME), Darwin)
 CFLAGS = $(CFLAGS_PLAIN) -I/opt/local/include

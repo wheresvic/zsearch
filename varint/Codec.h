@@ -14,13 +14,12 @@ private:
 	CompositeCodec<SIMDBinaryPacking,VariableByte> codec;
 
  public:
-	Codec();
+    Codec(){
+    }
     
-	~Codec();
-  
-    //Code below is part of the public interface
-	bool findInDeltaArray(const unsigned int* array, size_t size,unsigned int target) const;
-    size_t Uncompress(Source& src, unsigned int* dst,size_t size) const;
+    
+    ~Codec(){
+    }
 
     /**
      * @return the compressed size in bytes
@@ -39,6 +38,29 @@ private:
      //compblock->resize(memavailable*4);
      return compblock;
     }
+    
+    size_t Uncompress(Source& src, unsigned int* dst,size_t size) const  {
+       assert(!needPaddingTo128Bits(dst));
+    
+    
+       size_t sourceSize;
+       const uint8* srcptr = src.Peek(&sourceSize);
+       const uint32_t* srcptr2= (const uint32_t*)srcptr;
+       assert(!needPaddingTo128Bits(srcptr2));
+       size_t memavailable = size;
+       codec.decodeArray(srcptr2, sourceSize/4,dst,memavailable);
+       return memavailable*4;
+    }
+
+    bool findInArray(const unsigned int* array, size_t size,unsigned int target) const {       
+       for(unsigned int idx = 0; idx<size; ++idx){
+         unsigned int lastId = array[idx];
+         if (lastId >= target)
+            return (lastId == target);
+       }
+       return false;
+    }
+
 };
 
 #endif  // CODEC_H__

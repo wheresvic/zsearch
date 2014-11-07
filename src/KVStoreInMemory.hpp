@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <sstream>
 #include <iostream>
 #include <memory>
@@ -18,11 +19,15 @@ namespace KVStore
 		private:
 
 			std::map<std::string, std::string> store;
-
+            std::vector<std::pair<std::string,std::string>> batch;
 		public:
 
 			KVStoreInMemory(const std::string& path) 
 			{ }
+
+			~KVStoreInMemory()
+			{
+			}
 
 			Status Open()
 			{
@@ -140,7 +145,33 @@ namespace KVStore
 			}
 			
 
+			void PutBatch(const std::string& key, const std::string& value)
+			{
+				batch.push_back(std::pair<std::string,std::string>(key,value));
+			}
 
+			void PutBatch(uint64_t key, const std::string& value)
+			{
+				string keystr;
+				ZUtil::PutVarint64(keystr, key);
+				PutBatch(keystr,value);
+			}
+
+			void DeleteBatch(const std::string& key)
+			{
+				//batch.Delete(key);
+			}
+
+			void ClearBatch()
+			{
+				batch.clear();
+			}
+
+			Status writeBatch()
+			{
+				Put(batch);
+			    return Status::OK();
+			}
 	}; // end class
 
 

@@ -18,7 +18,6 @@
         memcpy(&currentNoCompBlock[0], &other.currentNoCompBlock[0], sizeof(uint32_t)* DEFAULT_BATCH_SIZE);
     }
 
-
     // CompressedSet::CompressedSet() : currentNoCompBlock(DEFAULT_BATCH_SIZE, 0)
     CompressedSet::CompressedSet() : currentNoCompBlock(0)
     {
@@ -30,7 +29,7 @@
     }
 
 
-    void CompressedSet::write(ostream & out)
+    void CompressedSet::write(ostream& out)
     {
         out.write((char*)&totalDocIdNum,4);
         if (totalDocIdNum > 0 ){
@@ -52,12 +51,11 @@
         out.flush();
     }
 
-    void CompressedSet::read(istream & in)
+    void CompressedSet::read(istream& in)
     {
         //read totalDocIdNum
         in.read((char*)&totalDocIdNum,4);
-        if (totalDocIdNum>0)
-        {
+        if (totalDocIdNum>0) {
             if (totalDocIdNum < DEFAULT_BATCH_SIZE) {
                 sizeOfCurrentNoCompBlock = totalDocIdNum;
             } else {
@@ -67,7 +65,7 @@
             currentNoCompBlock.resize(sizeOfCurrentNoCompBlock);
             in.read((char*)&currentNoCompBlock[0],sizeOfCurrentNoCompBlock*4);
 
-            if (totalDocIdNum  > DEFAULT_BATCH_SIZE){
+            if (totalDocIdNum  > DEFAULT_BATCH_SIZE) {
                 //read base (skipping info)
                 int baseListForOnlyCompBlocksSize = 0;
                    in.read((char*)&baseListForOnlyCompBlocksSize,4);
@@ -82,7 +80,7 @@
         }
     }
 
-    shared_ptr<Set::Iterator>  CompressedSet::iterator() const {
+    shared_ptr<Set::Iterator> CompressedSet::iterator() const {
        shared_ptr<Set::Iterator> it( new CompressedSet::Iterator(this));
        return it;
     }
@@ -222,6 +220,7 @@
    * Prefix Sum
    *
    */
+   /*
   static void delta(unsigned int block[], size_t size) {
     for(int i=size-1;i>0;--i)
     {
@@ -297,13 +296,15 @@
          pData[i] += pData[i-1];
      }
   }
+  */
   
   const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize){
     return codec.Compress(block,blocksize);
   }
 
   const shared_ptr<CompressedDeltaChunk> CompressedSet::PForDeltaCompressCurrentBlock(){
-    preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
+    // preProcessBlock not needed when using integrated deltacoding
+    // preProcessBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
     const shared_ptr<CompressedDeltaChunk> finalRes = PForDeltaCompressOneBlock(&currentNoCompBlock[0], sizeOfCurrentNoCompBlock);
     return finalRes;
   }
@@ -376,7 +377,7 @@
            ////uncompress block
            Source src = sequenceOfCompBlocks.get(index).getSource();
            size_t uncompSize = codec.Uncompress(src, &myDecompBlock[0] ,DEFAULT_BATCH_SIZE);
-           return codec.findInDeltaArray(&myDecompBlock[0], uncompSize,target);
+           return codec.findInArray(&myDecompBlock[0], uncompSize,target);
         }
         return false;
     }
@@ -440,6 +441,7 @@
     }
 
     unsigned int CompressedSet::Iterator::nextDoc(){
+
         //: if the pointer points to the end
         if(PREDICT_FALSE(++cursor == totalDocIdNum)) {
           lastAccessedDocId = NO_MORE_DOCS;
@@ -461,7 +463,8 @@
                     Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
                     set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
                     #ifndef PREFIX_SUM
-                      postProcessBlock(&iterDecompBlock[0], DEFAULT_BATCH_SIZE);
+                      // postProcessBlock not needed if using integrated delta coding
+                      // postProcessBlock(&iterDecompBlock[0], DEFAULT_BATCH_SIZE);
                     #endif       
                     // assert(uncompSize == DEFAULT_BATCH_SIZE);
                      lastAccessedDocId = iterDecompBlock[0];
@@ -493,7 +496,8 @@
       if (currentBlockIndex != iterBlockIndex || currentOffset == 0){
           Source src = set->sequenceOfCompBlocks.get(iterBlockIndex).getSource();
           set->codec.Uncompress(src, &iterDecompBlock[0], DEFAULT_BATCH_SIZE);
-          postProcessBlock(&iterDecompBlock[0], DEFAULT_BATCH_SIZE);
+          //postProcessBlock not needed if using integrated delta coding
+          //postProcessBlock(&iterDecompBlock[0], DEFAULT_BATCH_SIZE);
       }
       
       int offset = binarySearchForFirstElementEqualOrLargerThanTarget(&(iterDecompBlock[0]), 0, DEFAULT_BATCH_SIZE-1, target);
@@ -562,11 +566,13 @@
             lastAccessedDocId = NO_MORE_DOCS;
             return NO_MORE_DOCS;
         }
+
         // the expected behavior is to find the first element AFTER the current cursor,
         // who is equal or larger than target
-        if(target <= lastAccessedDocId) {
+        if(cursor != 0 && target <= lastAccessedDocId) {
             target = lastAccessedDocId + 1;
         }
+        
 
         int iterBlockIndex = cursor >> BLOCK_SIZE_BIT;
         int offset = cursor & BLOCK_SIZE_MODULO;

@@ -3,11 +3,21 @@
 #include "LazyAndSet.h"
 
 
+
 LazyAndSet::LazyAndSet()
 {
 	sets_ = vector<shared_ptr<Set> >();
 	nonNullSize = 0;
 	setSize = 0;
+  init = false;
+}
+
+LazyAndSet::LazyAndSet(shared_ptr<Set>& left,shared_ptr<Set> & right)
+{
+    sets_.push_back(left);
+    sets_.push_back(right);
+    nonNullSize = sets_.size();
+    setSize = 0;
     init = false;
 }
 
@@ -28,7 +38,7 @@ inline bool LazyAndSet::find(unsigned int val) const
 
 unsigned int LazyAndSet::size() const
 {
-        if (nonNullSize == 0){
+  if (nonNullSize == 0){
           return 0;
 	}
 	// Do the size if we haven't done it so far.

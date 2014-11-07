@@ -6,6 +6,13 @@ LazyOrSet::LazyOrSet(vector<shared_ptr<Set>> docSets)
 	sets = docSets;
 }
 
+LazyOrSet::LazyOrSet(shared_ptr<Set>& left,shared_ptr<Set> & right)
+{
+    sets.push_back(left);
+    sets.push_back(right);
+}
+
+
 shared_ptr<Set::Iterator>  LazyOrSet::iterator() const 
 {
    shared_ptr<Set::Iterator> it(new LazyOrSetIterator(sets));

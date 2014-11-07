@@ -39,7 +39,7 @@ class LazyOrSet : public Set
 	public:
 	
 		LazyOrSet(vector<shared_ptr<Set>> docSets);
-		
+		LazyOrSet(shared_ptr<Set> & left,shared_ptr<Set> & right);
 		shared_ptr<Set::Iterator>  iterator()  const;
 	
 		//Override

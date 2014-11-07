@@ -11,7 +11,7 @@
 #include "ITokenizer.h"
 #include "DocumentImpl.hpp"
 #include "InvertedIndexBatch.hpp"
-#include "InvertedIndexSimpleBatch.hpp"
+
 #include "InvertedIndexImpl.hpp"
 #include "varint/ISetFactory.h"
 #include "varint/CompressedSet.h"
@@ -97,15 +97,14 @@ class Engine
 			{
 				const string& field = iter->first;
 				const string& value = iter->second;
-
+                
 				fields.put(field);
                 
 				tokenizer.setString(value,field);
 				while (tokenizer.nextToken()) // 18%
 				{
-				    unsigned int id = 0;
+				    unsigned long long id = 0;
 				    const string& token = tokenizer.getToken();
-                    
                     
                     if (wordIndex.Get(field, token, id)) // 58%
                     {
@@ -119,8 +118,8 @@ class Engine
 				
 				}
                 	
-			} // end looping through entries
-
+		    } // end looping through entries
+            
             invertedIndex.add(engineData.getDocId(), sparseset);
 			return engineData.getDocId()++;
 		}
@@ -153,7 +152,7 @@ class Engine
 				tokenizer.setString(value,field);
 				while (tokenizer.nextToken())
 				{
-				    unsigned int id = 0;
+				    unsigned long long id = 0;
 				    const string& token = tokenizer.getToken();
 
                     if (wordIndex.Get(field, token, id))
@@ -210,7 +209,7 @@ class Engine
 
 				for (auto field : fields.getFields())
 				{
-					unsigned int wordId = 0;
+					unsigned long long wordId = 0;
 
 					if (wordIndex.Get(field, token, wordId))
 					{
@@ -328,3 +327,4 @@ class Engine
 		
 		SparseSet sparseset;
 };
+

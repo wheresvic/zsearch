@@ -27,6 +27,27 @@
 #include "varint/BasicSetFactory.h"
 
 using namespace std;
+    inline bool fast_getline(std::string& line, FILE* input = stdin)
+    {
+        line.clear();
+        static const size_t max_buffer = 65536;
+        char buffer[max_buffer];
+        bool done = false;
+        while (!done) {
+            if (!fgets(buffer, max_buffer, input)) {
+                if (!line.size()) {
+                    return false;
+                } else {
+                    done = true;
+                }
+            }
+            line += buffer;
+            if (*line.rbegin() == '\n') {
+                done = true;
+            }
+        }
+        return true;
+    }
 
 
 void search(const string& query, const Engine& engine, unsigned int start, unsigned int offset)
@@ -57,24 +78,26 @@ void search(const string& query, const Engine& engine, unsigned int start, unsig
 
 void work(string fileName, bool destroyDb)
 {
-	char LocalBuffer[4096];
-	std::ios::sync_with_stdio(false);
-	ifstream f(fileName.c_str());
-    f.rdbuf()->pubsetbuf(LocalBuffer, 4096);
+    FILE * file = fopen(fileName.c_str() , "r");
 
-	if (f.is_open())
-	{
+	//if (!f.is_open())
+	//{
+	//	
+	//	cerr << "unable to open file :(" << endl;
+	//	return;
+	//}
 		string input;
 
 		char documentDelimiter = ',';
 		int documentId = 1;
 
 		shared_ptr<ISetFactory> setFactory = make_shared<SetFactory>();
-		// shared_ptr<ISetFactory> setFactory = make_shared<BasicSetFactory>();
+
 
 		shared_ptr<ITokenizer> tokenizer = make_shared<TokenizerImpl>();
 
 		shared_ptr<KVStore::IKVStore> storeKV = make_shared<KVStore::KVStoreLevelDb>(zsearch::LEVELDB_TEST_STORE, destroyDb);
+		
 		storeKV->Open();
 
 		shared_ptr<KVStore::IKVStore> engineDataStore = make_shared<KVStore::NameSpaceKVStore>('e', storeKV);
@@ -85,57 +108,39 @@ void work(string fileName, bool destroyDb)
 
 		Engine engine(engineDataStore, fieldStore, documentStore, wordIndexStore, invertedIndexStore, setFactory);
 
-		// engine.disableBatching();
 		engine.setMaxBatchSize(100000);
 
 		cout << "Made engine!" << endl;
+        while (fast_getline(input, file))
+		{    
+			documentId++;
+			shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
+            int fieldId = 0;
+            bool isfound = true;
+            size_t oldpos = 0;
 
-	//	while (getline(f, input))
-	//	{
-	//		// cout << input;
-    //
-	//		/*
-	//		if (documentId > 1000)
-	//			break;
-	//		*/
-    //
-	//		string title = ZUtil::getString(documentId++);
-	//		shared_ptr<IDocument> doc = make_shared<DocumentImpl>(); // (new DocumentImpl());
-	//		// doc->setTitle(title);
-	//		doc->addEntry("t", title);
-    //        int fieldId = 0;
-    //        bool isfound = true;
-  //        do{
-  //          string fieldstr = ZUtil::getString(fieldId++);
-  //          size_t found = input.find_first_of(documentDelimiter);
-  //          string value = input.substr(0, found);
-  //          doc->addEntry(fieldstr, value);
-  //          input = input.substr(found + 1);
-  //          isfound = found != string::npos;
-  //        } while (isfound  );
-  //		// doc->addEntry("memtest", input);
-  //		//engine.addDocument(doc);
-  //		//engine.addDocument(doc);
-  //		cout << "Added document: " << engine.addDocument(doc) << endl;
-  //	}
-  //
-  //	f.close();
+          do{
+            string fieldstr = ZUtil::getString(fieldId++);
+            const size_t newpos = input.find_first_of(documentDelimiter,oldpos);
+            const string& value = input.substr(oldpos, newpos-oldpos);
+            doc->addEntry(fieldstr, value); // 25%
+            isfound = newpos != string::npos;
+            oldpos = newpos+1;
+          } while (isfound  );
+          
+          engine.addDocument(doc);
+  	    }
+  
+    cout << "Done" << endl;
 
-		// flush
-//		engine.flushBatch();
+	// flush
+	engine.flushBatch();
 
-      //  storeKV->Compact();
+    //storeKV->Compact();
 		// test that searching for some more text returns only 1 document
 
-		string query = "1987 SFO 1732";
-		search(query, engine, 1, 0);
-			
-	}
-	else
-	{
-		cerr << "unable to open file :(" << endl;
-	}
-
+	//	string query = "1987 SFO 1732";
+	//	search(query, engine, 1, 0);
 }
 
 int main(int argc, char **argv)
@@ -171,7 +176,6 @@ int main(int argc, char **argv)
 	{
 		destroyDb = true;
 	}
-
 	work(fileName, destroyDb);
 	// work(fileName);
 

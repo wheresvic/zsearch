@@ -128,7 +128,6 @@ public:
 
     void initSet();
 
-    static void preProcessBlock(unsigned int* block, size_t size);
     const shared_ptr<CompressedDeltaChunk> PForDeltaCompressOneBlock(unsigned int* block,size_t blocksize);
 	const shared_ptr<CompressedDeltaChunk> PForDeltaCompressCurrentBlock();
 

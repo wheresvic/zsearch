@@ -68,7 +68,7 @@ namespace KVStore
 				leveldb::Options options;
 				
 				//options.block_cache = leveldb::NewLRUCache(500 * 1048576); 
-				options.write_buffer_size = 200 * 1048576; // 200MB write buffer
+				options.write_buffer_size = 500 * 1048576; // 200MB write buffer
 				options.filter_policy = leveldb::NewBloomFilterPolicy(16);
 				options.create_if_missing = true;
 				options.paranoid_checks = false;
@@ -154,6 +154,8 @@ namespace KVStore
 		        db->CompactRange(NULL,NULL);
 			}
 
+			/*
+
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
 				leveldb::WriteBatch batch;
@@ -199,29 +201,37 @@ namespace KVStore
 			void PutBatch(const std::string& key, const std::string& value)
 			{
 				batch.Put(key, value);
+				batchSize++;
 			}
+
+            unsigned int GetBatchSize(){
+               return batchSize;
+            }
 
 			void PutBatch(uint64_t key, const std::string& value)
 			{
 				string keystr;
 				ZUtil::PutVarint64(keystr, key);
 				batch.Put(keystr, value);
+				batchSize++;
 			}
 
 			void DeleteBatch(const std::string& key)
 			{
 				batch.Delete(key);
+				batchSize++;
 			}
 
 			void ClearBatch()
 			{
 				batch.Clear();
+				batchSize = 0;
 			}
 
 			Status writeBatch()
 			{
 				leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
-
+                ClearBatch();
 				if (s.ok())
 				{
 					return Status::OK();
@@ -229,6 +239,7 @@ namespace KVStore
 
 				return Status::IOError();
 			}
+			*/
 	};
 
 } // namespace KVStore

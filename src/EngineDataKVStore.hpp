@@ -19,7 +19,7 @@ class EngineDataKVStore
 	private:
 
 		unsigned long docId;
-		unsigned long wordId;
+		unsigned long long wordId;
 
 		shared_ptr<KVStore::IKVStore> store;
 
@@ -84,7 +84,7 @@ class EngineDataKVStore
 			return docId;
 		}
 
-		unsigned long& getWordId()
+		unsigned long long& getWordId()
 		{
 			return wordId;
 		}
