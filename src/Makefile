@@ -19,14 +19,14 @@ HEADERS = TokenizerImpl.hpp Constants.hpp ZUtil.hpp Statistics.hpp Engine.hpp In
 CFLAGS_PLAIN =  -flto -std=gnu++0x -Wall -g0 -Ofast -funroll-loops -msse2 -I$(LEVELDB_DIR)/include -I../lib -I../lib/rapidxml-1.13 -I.. -D_GLIBCXX_USE_NANOSLEEP
 
 ifeq ($(OSNAME), Darwin)
-CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/opt/local/include -DOS_MACOSX -DINTEL64
+CFLAGS = $(CFLAGS_PLAIN) -I. -I/usr/local/include -I/opt/local/include -DOS_MACOSX -DINTEL64
 LIBS = -L/usr/local/lib -L/opt/local/lib -L$(LEVELDB_DIR) -lleveldb -lm -levent
 endif
 
 
 ifeq ($(OSNAME), Linux)
-CFLAGS = $(CFLAGS_PLAIN) -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
-LIBS = -L/usr/local/lib -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L$(LEVELDB_DIR) -lm -lpthread -levent 
+CFLAGS = $(CFLAGS_PLAIN) -I. -I/usr/include -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
+LIBS = -L/usr/local/lib -L/usr/lib/i386-linux-gnu -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L$(LEVELDB_DIR) -lm -lpthread -levent 
 endif
 
 clean :
