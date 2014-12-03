@@ -113,12 +113,8 @@ private:
         store->Put(wordId,bitmap);
 	}
 
-
 	int cachePut(unsigned int wordId, const shared_ptr<Set> set)
 	{
-		stringstream ss;
-		set->write(ss);
-		string bitmap = ss.str();
 		wordSetCache.put(wordId,set);
 		return 1;
 	}
