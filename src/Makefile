@@ -1,8 +1,13 @@
 # $@ name of the target
 # $^ name of all prerequisites with duplicates removed
 # $< name of the first prerequisite
-
-OSNAME := $(shell uname -s)
+ifneq (,$(findstring /cygdrive/,$(PATH)))
+    OSNAME := Cygwin
+else ifneq (,$(findstring WINDOWS,$(PATH)))
+    OSNAME := Windows
+else
+    OSNAME := $(shell uname -s)
+endif
 ARCH := $(shell uname -m)
 
 CC = g++
@@ -27,6 +32,12 @@ endif
 ifeq ($(OSNAME), Linux)
 CFLAGS = $(CFLAGS_PLAIN) -I. -I/usr/include -I/usr/local/include -I/ms/dist/fsf/PROJ/libevent/2.0.19/include
 LIBS = -L/usr/local/lib -L/usr/lib/i386-linux-gnu -L/ms/dist/fsf/PROJ/libevent/2.0.19/lib -L$(LEVELDB_DIR) -lm -lpthread -levent 
+endif
+
+
+ifeq ($(OSNAME), Cygwin)
+CFLAGS = $(CFLAGS_PLAIN)
+LIBS = -L/usr/lib -L$(LEVELDB_DIR) -lm -lpthread -levent 
 endif
 
 clean :
