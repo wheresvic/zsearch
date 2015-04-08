@@ -52,7 +52,8 @@ namespace KVStore
 
 			Status Put(uint64_t key, const std::string& value)
 			{
-				std::string strKey = ZUtil::getString(key);
+				std::string strKey;
+				ZUtil::PutVarint64(strKey, key);
 				return Put(strKey, value);
 			}
 
@@ -76,13 +77,15 @@ namespace KVStore
 
 			Status Get(uint64_t key, std::string& value)
 			{
-				std::string strKey = ZUtil::getString(key);
+				std::string strKey;
+				ZUtil::PutVarint64(strKey, key);
 				return Get(strKey, &value);
 			}
 
 			Status Delete(uint64_t key)
 			{
-				std::string strKey = ZUtil::getString(key);
+				std::string strKey;
+				ZUtil::PutVarint64(strKey, key);
 				return Delete(strKey);
 			}
 			

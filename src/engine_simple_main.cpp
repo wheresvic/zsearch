@@ -120,7 +120,8 @@ void work(string fileName, bool destroyDb)
             size_t oldpos = 0;
 
           do{
-            string fieldstr = ZUtil::getString(fieldId++);
+            string fieldstr;
+            ZUtil::PutUint64(fieldstr,fieldId++);
             const size_t newpos = input.find_first_of(documentDelimiter,oldpos);
             const string& value = input.substr(oldpos, newpos-oldpos);
             doc->addEntry(fieldstr, value); // 25%
@@ -168,11 +169,8 @@ int main(int argc, char **argv)
 	string fileName = argv[1];
 
 	bool destroyDb = false;
-
 	string strDestroyDb = argv[2];
-	int iDestroyDb = ZUtil::getInt(strDestroyDb);
-
-	if (iDestroyDb)
+	if ("0" != strDestroyDb)
 	{
 		destroyDb = true;
 	}

@@ -146,45 +146,55 @@ class ZUtil
 		  }
 		}
 		
-		//legacy stuff
-		static string getString(uint64_t v)
+		
+		static long atoi(const char *str)
 		{
-			std::stringstream ss;
-			ss << v;
-			return ss.str();
+		    long num = 0;
+		    while (*str != '\0')
+		    {
+		        num = (num << 1) + (num << 3) + *(str++) - 48;
+		    }
+		    return num;
 		}
 
-
-		static int getInt(const std::string& str)
-		{
-			int x;
-			stringstream ss(str);
-			ss >> x;
-
-			if (!ss)
-			{
-				string msg = "Provided string is not an integer : " + str;
-				throw msg;
-			}
-
-			return x;
+        static void PutUint64(std::string& dst, uint64_t v) {
+		  char buf[numeric_limits<uint64_t>::digits10];
+		  const size_t len = fbUint64ToChar(buf, v);
+		  dst.append(buf, len);
 		}
 
-		static unsigned int getUInt(const std::string& str)
+		// Convert integer to a human readable string and write to dst
+		static uint32_t fbUint64ToChar(char *dst, uint64_t value)
 		{
-			unsigned int x;
-			stringstream ss(str);
-			ss >> x;
+		    static auto const length = numeric_limits<uint64_t>::digits10;
+		    auto next = length - 1;
+		    static const char digits[201] =
+			"0001020304050607080910111213141516171819"
+			"2021222324252627282930313233343536373839"
+			"4041424344454647484950515253545556575859"
+			"6061626364656667686970717273747576777879"
+			"8081828384858687888990919293949596979899";
+		    while (value >= 100) {
+				auto const i = (value % 100) * 2;
+				value /= 100;
+				dst[next] = digits[i + 1];
+				dst[next - 1] = digits[i];
+				next -= 2;
+		    }
 
-			if (!ss)
-			{
-				string msg = "Provided string is not an unsigned integer : " + str;
-				throw msg;
-			}
+		    // Handle last 1-2 digits
+		    if (value < 10) {
+				dst[next] = '0' + uint32_t(value);
+				return length - next;
+		    } else {
 
-			return x;
+		    }
+		    auto i = uint32_t(value) * 2;
+		    dst[next] = digits[i + 1];
+		    dst[next - 1] = digits[i];
+		    return length - next + 1;
 		}
-
+		
 		static string printTimeTaken(const std::chrono::nanoseconds& ns)
 		{
 			stringstream ss;

@@ -118,7 +118,7 @@ static void doc_request_cb(struct evhttp_request *req, void *arg)
 
 					try
 					{
-						docId = ZUtil::getUInt(value);
+						docId = ZUtil::atoi(value.c_str());
 
 						std::cout << "retrieving document " << value << std::endl;
 
@@ -266,7 +266,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 				{
 					try
 					{
-						start = ZUtil::getUInt(value);
+						start = ZUtil::atoi(value.c_str());
 					}
 					catch (const string& e)
 					{
@@ -278,7 +278,7 @@ static void search_request_cb(struct evhttp_request *req, void *arg)
 				{
 					try
 					{
-						offset = ZUtil::getUInt(value);
+						offset = ZUtil::atoi(value.c_str());
 					}
 					catch (const string& e)
 					{
@@ -675,7 +675,7 @@ int main(int argc, char **argv)
 	bool destroyDb = false;
 
 	string strDestroyDb = argv[2];
-	int iDestroyDb = ZUtil::getInt(strDestroyDb);
+	int iDestroyDb = ZUtil::atoi(strDestroyDb.c_str());
 
 	if (iDestroyDb)
 	{

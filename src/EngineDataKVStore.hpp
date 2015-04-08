@@ -34,7 +34,7 @@ class EngineDataKVStore
 			if (store->Get(zsearch::DOC_ID_KEY, strId).ok())
 			{
 				cerr << "got " << strId << endl;
-				docId = ZUtil::getUInt(strId);
+				docId = ZUtil::atoi(strId.c_str());
 			}
 
 			cerr << "current docId is " << docId << endl;
@@ -44,7 +44,7 @@ class EngineDataKVStore
 			if (store->Get(zsearch::WORD_ID_KEY, strId).ok())
 			{
 				cerr << "got " << strId << endl;
-				wordId = ZUtil::getUInt(strId);
+				wordId = ZUtil::atoi(strId.c_str());
 			}
 
 			cerr << "current wordId is " << wordId << endl;
@@ -60,18 +60,20 @@ class EngineDataKVStore
 		{
 			cerr << "Persisting docId " << docId << " to store" << endl;
 
-			string strId = ZUtil::getString(docId);
+			string strDocId;
+			ZUtil::PutUint64(strDocId, docId);
 
-			if (!store->Put(zsearch::DOC_ID_KEY, strId).ok())
+			if (!store->Put(zsearch::DOC_ID_KEY, strDocId).ok())
 			{
 				cerr << "Error persisting docId to storage, db might be corrupt or invalid at startup" << endl;
 			}
 
 			cerr << "Persisting wordId " << wordId << " to store" << endl;
 
-			strId = ZUtil::getString(wordId);
+			string strWordId;
+			ZUtil::PutUint64(strWordId, wordId);
 
-			if (!store->Put(zsearch::WORD_ID_KEY, strId).ok())
+			if (!store->Put(zsearch::WORD_ID_KEY, strWordId).ok())
 			{
 				cerr << "Error persisting wordId to storage, db might be corrupt or invalid at startup" << endl;
 			}
