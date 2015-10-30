@@ -112,8 +112,6 @@
          while(leftLen > DEFAULT_BATCH_SIZE) {
             baseListForOnlyCompBlocks.push_back(docids[newStart+DEFAULT_BATCH_SIZE-1]);
             memcpy( &currentNoCompBlock[0],&docids[newStart], DEFAULT_BATCH_SIZE*4 );
-
-            PForDeltaCompressCurrentBlock();
             compRes = PForDeltaCompressCurrentBlock();
             sequenceOfCompBlocks.add(compRes);
             leftLen -= DEFAULT_BATCH_SIZE;
