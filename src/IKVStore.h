@@ -69,24 +69,14 @@ namespace KVStore
 			virtual Status Open() = 0;
 			virtual Status Put(const std::string& key,const std::string& value) = 0;
 			virtual Status Put(uint64_t key,const std::string& value) = 0;
-			
 			virtual Status Get(const std::string& key, std::string* value) = 0;
 			virtual Status Get(const std::string& key, std::string& value) = 0;
 			virtual Status Get(uint64_t key, std::string& value) = 0;
 			virtual Status Delete(const std::string& key) = 0;
 			virtual Status Delete(uint64_t key) = 0;
-			
 		    virtual	void Compact() = 0;
-		    /*
 		    virtual Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes) = 0;
 			virtual Status Put(const std::vector<std::pair<std::string, std::string>>& writes) = 0;
-            virtual void PutBatch(const std::string& key, const std::string& value)= 0;
-            virtual unsigned int GetBatchSize()= 0;
-			virtual void PutBatch(uint64_t key, const std::string& value)= 0;
-			virtual void DeleteBatch(const std::string& key)= 0;
-			virtual void ClearBatch()= 0;
-			virtual Status writeBatch()= 0;
-			*/
 			virtual ~IKVStore() { }
 
 

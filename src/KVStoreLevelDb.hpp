@@ -15,7 +15,6 @@
  *
  */
 
-
 #ifndef KVSTORE_LEVELDB_H
 #define KVSTORE_LEVELDB_H
 
@@ -80,7 +79,6 @@ namespace KVStore
 				{
 					// could possibly attempt to repair and open via
 					// if (leveldb::RepairDB(path, options).ok()) ... if (!leveldb::DB::Open(options, path, &db).ok()) ... throw ...
-
 					throw ZException("Failed to open leveldb database!");
 				}
 
@@ -154,8 +152,6 @@ namespace KVStore
 		        db->CompactRange(NULL,NULL);
 			}
 
-			/*
-
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
 				leveldb::WriteBatch batch;
@@ -197,49 +193,6 @@ namespace KVStore
 				return Status::NotFound();
 
 			}
-
-			void PutBatch(const std::string& key, const std::string& value)
-			{
-				batch.Put(key, value);
-				batchSize++;
-			}
-
-            unsigned int GetBatchSize(){
-               return batchSize;
-            }
-
-			void PutBatch(uint64_t key, const std::string& value)
-			{
-				string keystr;
-				ZUtil::PutVarint64(keystr, key);
-				batch.Put(keystr, value);
-				batchSize++;
-			}
-
-			void DeleteBatch(const std::string& key)
-			{
-				batch.Delete(key);
-				batchSize++;
-			}
-
-			void ClearBatch()
-			{
-				batch.Clear();
-				batchSize = 0;
-			}
-
-			Status writeBatch()
-			{
-				leveldb::Status s = db->Write(leveldb::WriteOptions(), &batch);
-                ClearBatch();
-				if (s.ok())
-				{
-					return Status::OK();
-				}
-
-				return Status::IOError();
-			}
-			*/
 	};
 
 } // namespace KVStore

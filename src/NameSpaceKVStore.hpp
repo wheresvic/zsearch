@@ -96,7 +96,7 @@ namespace KVStore
 			{
 				store->Compact();
 			}
-			/*
+			
 
 			Status Put(const std::vector<std::pair<unsigned int, std::string>>& writes)
 			{
@@ -120,12 +120,13 @@ namespace KVStore
 				for (auto iter : writes)
 				{
 					std::string keystr = iter.first;
+					keystr.insert(keystr.begin(), ns);
 					writesNs.push_back(pair<std::string, std::string>(keystr, iter.second));
 				}
 
 				return store->Put(writesNs);
 			}
-
+/*
             unsigned int GetBatchSize(){
                return store->GetBatchSize();
             }
