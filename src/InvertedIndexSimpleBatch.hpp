@@ -18,12 +18,9 @@
 #include "varint/Set.h"
 #include "varint/CompressedSet.h"
 #include "varint/BasicSet.h"
-
-#include "port_posix.h"
-
 #include "IKVStore.h"
 #include "IInvertedIndex.h"
-
+#include "SparseSet.hpp"
 
 /**
  * The general strategy here is to add wordId, docId into a
@@ -47,13 +44,8 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		std::atomic<unsigned int> maxBatchSize;
 	    std::atomic<bool> done;
 	    std::atomic<bool> dataReady;
-	    // std::mutex m;
-		// std::condition_variable cond;
-
-		leveldb::port::Mutex m;
-		leveldb::port::CondVar cond;
-
-
+	    std::mutex m;
+		std::condition_variable cond;
 		std::thread batchProcessor;
 
 		unsigned int batchSize; 	// intentionally left naked so that it is always processed under lock
@@ -75,14 +67,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		 */
 		int flush(const std::unordered_map<unsigned int, std::set<unsigned int>>& postings)
 		{
-			// return 1;
-
-			// std::stable_sort(postings.begin(), postings.end(), postingComp());
-
 			unsigned int processed = 0;
-
-			cout << "flushing batch" << endl;
-
 			std::vector<std::pair<unsigned int, std::string>> writes;
 
 			for (auto posting : postings)
@@ -104,9 +89,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 						++processed;
 					}
-
-					// put(wordId, set);
-
 					stringstream ss;
 					set->write(ss);
 					string bitmap = ss.str();
@@ -126,9 +108,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 					stringstream ss;
 					set->write(ss);
 					string bitmap = ss.str();
-
-					// put(wordId, set);
-
 					writes.push_back(make_pair(wordId, bitmap));
 				}
 
@@ -136,7 +115,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 			if (store->Put(writes).ok())
 			{
-				cout << "wrote " << processed << " postings" << endl;
 				return 1;
 			}
 
@@ -156,14 +134,12 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 
 			while(!done)
 			{
-				// unique_lock<mutex> lock(m);
-				m.Lock();
+				unique_lock<mutex> lock(m);
 
 				while(!dataReady) // in case you get woken up and batch size is not hit
 				{
 					cout << "waiting for data" << endl;
-					// cond.wait(lock);
-					cond.Wait();
+					cond.wait(lock);
 				}
 
 				// process data, if shutdown called then we will flush the batch manually
@@ -171,11 +147,8 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 				// then any extra postings wont be flushed
 				//
 				// whether we really care about these is another story
-
 				if (!done)
 				{
-					cout << "processing batchSize " << batchSize << endl;
-
 					unordered_map<unsigned int, set<unsigned int>> postingsCopy(postings);
 
 					postings.clear();
@@ -184,23 +157,19 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 					batchSize = 0;
 					dataReady = false;
 
-					// lock.unlock();
-					m.Unlock();
+					lock.unlock();
 
 					flush(postingsCopy);
 				}
 				else
 				{
-					m.Unlock();
 				}
 			}
-
-			cout << "batch processor done" << endl;
 		}
 
 	public:
 
-		InvertedIndexSimpleBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory), maxBatchSize(5), m(), cond(&m), batchSize(0)
+		InvertedIndexSimpleBatch(std::shared_ptr<KVStore::IKVStore> store, shared_ptr<ISetFactory> setFactory) : store(store), setFactory(setFactory), maxBatchSize(5), batchSize(0)
 		{
 			done = false;
 			dataReady = false;
@@ -215,11 +184,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		~InvertedIndexSimpleBatch()
 		{
 			shutDownBatchProcessor();
-
 			flush(postings);
-
-			// std::this_thread::sleep_for(std::chrono::seconds(1));
-
 			std::cerr << "Destroyed InvertedIndexSimpleBatch" << std::endl;
 		}
 
@@ -233,8 +198,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		 */
 		void flushBatch()
 		{
-			// unique_lock<mutex> lock(m);
-			m.Lock();
+			unique_lock<mutex> lock(m);
 
 			flush(postings);
 
@@ -242,7 +206,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			postings.clear();
 			unordered_map<unsigned int, set<unsigned int>>().swap(postings);
 
-			m.Unlock();
 		}
 
 		/**
@@ -255,9 +218,7 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 				// wake up and kill the thread
 				dataReady = true;
 				done = true;
-				// cond.notify_one();
-				cond.SignalAll();
-
+				cond.notify_one();
 				batchProcessor.join();
 			}
 		}
@@ -265,7 +226,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 		int get(unsigned int wordId, shared_ptr<Set>& outset) const
 		{
 			string bitmap;
-
 			if(store->Get(wordId, bitmap).ok())
 			{
 				outset = setFactory->createSparseSet();
@@ -273,72 +233,52 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 				outset->read(bitmapStream);
 				return 1;
 			}
-
 			return 0;
 		}
 
-		int add(unsigned int docId, const set<unsigned int>& documentWordId)
+		void add(unsigned int docid, const SparseSet& documentWordId)
 		{
-			// unique_lock<mutex> lock(m);
-			m.Lock();
-
-			for (auto wordId : documentWordId)
-			{
-				++batchSize;
-
-				auto iter = postings.find(wordId);
-
-				if (iter != postings.end())
+				unique_lock<mutex> lock(m);
+				for (auto wordId : documentWordId)
 				{
-					(iter->second).insert(docId);
+					++batchSize;
+
+					auto iter = postings.find(wordId);
+
+					if (iter != postings.end())
+					{
+						(iter->second).insert(docid);
+					}
+					else
+					{
+						set<unsigned int> docIds;
+						docIds.insert(docid);
+						postings.insert(make_pair(wordId, docIds));
+					}
+
 				}
-				else
+
+				if (batchSize >= maxBatchSize)
 				{
-					set<unsigned int> docIds;
-					docIds.insert(docId);
-					postings.insert(make_pair(wordId, docIds));
+					if (!done)
+					{
+						dataReady = true;
+						cond.notify_one();
+					}
+					else
+					{
+						flush(postings);
+						batchSize = 0;
+						postings.clear();
+						unordered_map<unsigned int, set<unsigned int>>().swap(postings);
+					}
 				}
-
-			}
-
-			if (batchSize >= maxBatchSize)
-			{
-				if (!done)
-				{
-					// cout << "notifying batch processor" << endl;
-
-					dataReady = true;
-					// cond.notify_one();
-					cond.SignalAll();
-				}
-				else
-				{
-					cout << "batch processor not running, flushing batch in place" << endl;
-
-					int result = flush(postings);
-
-					batchSize = 0;
-					postings.clear();
-					unordered_map<unsigned int, set<unsigned int>>().swap(postings);
-
-					m.Unlock();
-					return result;
-				}
-			}
-
-			m.Unlock();
-			return 1;
 		}
 
 		int add(unsigned int wordId, unsigned int docid)
 		{
-			// cout << "adding item" << endl;
-
-			// unique_lock<mutex> lock(m);
-			m.Lock();
-
+			unique_lock<mutex> lock(m);
 			++batchSize;
-
 			auto iter = postings.find(wordId);
 
 			if (iter != postings.end())
@@ -356,40 +296,25 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			{
 				if (!done)
 				{
-					// cout << "notifying batch processor" << endl;
-
 					dataReady = true;
-					// cond.notify_one();
-					cond.SignalAll();
+					cond.notify_one();
 				}
 				else
 				{
-					cout << "batch processor not running, flushing batch in place" << endl;
-
-					int result = flush(postings);
-
+					flush(postings);
 					batchSize = 0;
 					postings.clear();
 					unordered_map<unsigned int, set<unsigned int>>().swap(postings);
-
-					m.Unlock();
-					return result;
 				}
 			}
-
-			m.Unlock();
 			return 1;
 		}
 
 		int remove(unsigned int wordId, unsigned int docId)
 		{
 			int ret = 0;
-
-			// unique_lock<mutex> lock(m);
-			m.Lock();
-
+			unique_lock<mutex> lock(m);
 			auto iter = postings.find(wordId);
-
 			if (iter != postings.end())
 			{
 				(iter->second).erase(docId);
@@ -397,21 +322,15 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			}
 
 			// is it possible that the same wordId, docId combo also exists in the index?
-
-			// lock.unlock();
-			m.Unlock();
-
+			lock.unlock();
 			shared_ptr<Set> set;
-
 			if (get(wordId, set))
 			{
 				set->removeDocId(docId);
 				ret = put(wordId, set);
 			}
-
 			return ret;
 		}
-
 
 		bool exist(unsigned int wordId)
 		{
@@ -419,7 +338,6 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			bool found = store->Get(wordId,ret).ok();
 			return found;
 		}
-
 
 		int put(unsigned int wordId, const shared_ptr<Set>& set)
 		{
@@ -430,11 +348,8 @@ class InvertedIndexSimpleBatch : public IInvertedIndex
 			{
 				return 1;
 			}
-
 			return 0;
 		}
-
-
 };
 
 #endif

@@ -10,9 +10,7 @@
 
 #include "ITokenizer.h"
 #include "DocumentImpl.hpp"
-#include "InvertedIndexBatch.hpp"
-
-#include "InvertedIndexImpl.hpp"
+#include "InvertedIndexSimpleBatch.hpp"
 #include "varint/ISetFactory.h"
 #include "varint/CompressedSet.h"
 #include "varint/LazyOrSet.h"
@@ -73,7 +71,7 @@ class Engine
 		
         void Compact()
         {
-	         invertedIndex.Compact();
+	      //   invertedIndex.Compact();
         }
 		
 
@@ -119,7 +117,7 @@ class Engine
 				}
                 	
 		    } // end looping through entries
-            
+            std::cout << "invertedIndex.add(docID: " << engineData.getDocId() << " )" << std::endl;
             invertedIndex.add(engineData.getDocId(), sparseset);
 			return engineData.getDocId()++;
 		}
@@ -318,9 +316,7 @@ class Engine
 		WordIndexKVStore wordIndex;
 
 		// inverted index that maps words(wordId) to documents that contain it
-		InvertedIndexBatch invertedIndex;
-		// InvertedIndexImpl invertedIndex;
-		// InvertedIndexSimpleBatch invertedIndex;
+		InvertedIndexSimpleBatch invertedIndex;
 
 		// which type of set to use
 		shared_ptr<ISetFactory> setFactory;
