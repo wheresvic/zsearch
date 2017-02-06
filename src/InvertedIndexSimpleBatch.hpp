@@ -10,9 +10,9 @@
 #include <vector>
 
 #include <thread>
-// #include <mutex>
+#include <mutex>
 #include <atomic>
-// #include <condition_variable>
+#include <condition_variable>
 
 #include "varint/ISetFactory.h"
 #include "varint/Set.h"
