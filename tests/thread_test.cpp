@@ -30,7 +30,7 @@ void test_multiple_threads()
 		t[i] = std::thread(call_from_thread, i);
 	}
 
-	std::cout << "Launched from function\n";
+	std::cout << "Launched from function" << std::endl;
 
 	// Join the threads with the main thread
 	for (int i = 0; i < num_threads; ++i)
@@ -55,7 +55,9 @@ std::atomic<bool> done;
 
 void producer(int id)
 {
-	print(stringstream() << "Producer " << id << " created\n");
+	std::stringstream producerCreatedLogMsg;
+	producerCreatedLogMsg << "Producer " << id << " created" << std::endl;
+	print(producerCreatedLogMsg);
 
 	bool first = true;
 
@@ -66,7 +68,7 @@ void producer(int id)
 
 		std::unique_lock<std::mutex> lock(xmutex);
 
-		// print(stringstream() << "Producer waiting\n");
+		// print(stringstream() << "Producer waiting" << std::endl);
 		if (!first)
 		{
 			first = false;
@@ -74,7 +76,9 @@ void producer(int id)
 		}
 
 		products.push(product);
-		print(stringstream() << "Producer " << id << " produced " << product << "\n");
+		std::stringstream productLogMsg;
+		productLogMsg << "Producer " << id << " produced " << product << std::endl;
+		print(productLogMsg);
 
 		produced.notify_all();
 	}
@@ -82,7 +86,9 @@ void producer(int id)
 
 void consumer(int id)
 {
-	print(stringstream() << "Consumer " << id << " created\n");
+	std::stringstream consumerCreatedLogMsg;
+	consumerCreatedLogMsg << "Consumer " << id << " created" << std::endl;
+	print(consumerCreatedLogMsg);
 
 	while (!done)
 	{
@@ -90,19 +96,22 @@ void consumer(int id)
 
 		unique_lock<mutex> lock(xmutex);
 
-		// print(stringstream() << "Consumer waiting\n");
+		// print(stringstream() << "Consumer waiting" << std::endl);
 		produced.wait(lock);
 
+		std::stringstream consumerLogMsg;
 		if (products.size() > 0)
 		{
 			int product = products.top();
 			products.pop();
 
-			print(stringstream() << "Consumer " << id << " consumed " << product << "\n");
+			consumerLogMsg << "Consumer " << id << " consumed " << product << std::endl;
+			print(consumerLogMsg) ;
 		}
 		else
 		{
-			print(stringstream() << "Consumer " << id << " has nothing to consume :(\n");
+			consumerLogMsg << "Consumer " << id << " has nothing to consume" << std::endl;
+			print(consumerLogMsg);
 		}
 
 		consumed.notify_all();
@@ -111,7 +120,9 @@ void consumer(int id)
 
 void kicker()
 {
-	print(stringstream() << "Kicker created\n");
+	std::stringstream kickerCreateLogMsg;
+	kickerCreateLogMsg << "Kicker created" << std::endl;
+	print(kickerCreateLogMsg);
 
 	while (!done)
 	{
@@ -120,7 +131,9 @@ void kicker()
 		unique_lock<mutex> lock(xmutex);
 
 		int num = products.size();
-		print(stringstream() << "--> " << num << " products produced\n");
+		std::stringstream productionLogMsg;
+		productionLogMsg << "--> " << num << " products produced" << std::endl;
+		print(productionLogMsg);
 
 		if (6 == (rand() % 6 + 1))
 		{
